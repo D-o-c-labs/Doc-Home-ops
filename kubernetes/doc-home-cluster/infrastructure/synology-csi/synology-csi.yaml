@@ -24,19 +24,19 @@ sops:
         - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3eGFWTytQOWsxRVAySUV5
-            YUtyV00wZXYwcnh0VzFLNmRyUGhCdzdyVjFvClVEejdCeVVEcEQvR3lYRi9VQ25w
-            cTd5YzhBSDRwWEJmOHdCYWdTbmcwbjgKLS0tIDRUR1NoVEN1NVljRGtESUJhVm43
-            c1hJNVNwMjlaa0RHMlo4d1lLNjQ5bmcKVH4p9hnJZeX9AuQs1PieQOqGGT0mJQwy
-            Vfa3Lu5dLvNxA32CxrE8xwRSNbxw4NyKrE/++/XvJpQ/wpHfNZwEyQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCM05TSDJOYWtueUZFdkly
+            WlRYZG92VU8yZUowSms5RWt6WHJxckZHUVZnCkFCMzFLRTFtYVpKVG13c3huQ2ts
+            alVhUTZ0YXBsVGdOZUtsWGMxQ1NxdncKLS0tIDdvREVLeU1CbUlIMmJGNktRSlMx
+            aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
+            VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T19:08:21Z"
-    mac: ENC[AES256_GCM,data:efJ71LxLLtfPMSilaWmt2XXBB+7TpyKGFed5H7g6fvvi3x2lWlO0X92ieV0Y8Fhwm8hAzF70cHytC2IUjAloKAd2YRJG+57/KV+VoB9uqKGtuB04mSjTmPCFTjOibRV3hKtSHIh/O5FlZrnicW0ObZZTrUEt1KhAbmwehfNTJ8E=,iv:XPygzPiIVZpKGSs6dkGjHUzWfjyK7OfamnFTATOViu0=,tag:f7yKXdXSGMQ+20vJ13OjXw==,type:str]
+    lastmodified: "2023-04-20T19:21:10Z"
+    mac: ENC[AES256_GCM,data:33rf/GAy+7PnLbeeJ1KDqtkZzP8krl8fYUKnMzIBevpSqL9pj/8hZV72ilpdgFJDqZ3aBx++Io2myOcT4cTx6NLKYCE/cIA7UC/Y7r7ig9zcpBFDLZS6Jgpsy05OhQyRI+ywQHAU4rUfKCEm42dw2CXQefwsAByKCh6Dylp+IPs=,iv:WjqXE7cojQvQkTXqD79ysT9AwPHwcqjS69Uc+IJr1lg=,tag:eXxaS6K2QKEFPpY+jZYahA==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
     name: synology-csi
@@ -46,26 +46,23 @@ spec:
     path: ./deploy/kubernetes/v1.20
     prune: true
     wait: false
-    sourceRef:
-      kind: GitRepository
-      name: synology-csi
-      namespace: flux-system
-    dependsOn:
-      - name: flux
-        namespace: flux-system
     decryption:
-      provider: sops
-      secretRef:
-        name: sops-age
-        namespace: flux-system
+        provider: sops
+        secretRef:
+            name: sops-age
+    sourceRef:
+        kind: GitRepository
+        name: synology-csi
+    dependsOn:
+        - name: flux
     postBuild:
         substituteFrom:
             - kind: ConfigMap
               name: cluster-settings
               optional: false
     patches:
-        - patch: ENC[AES256_GCM,data:qxwBTg5XVq0W2pR57fGoewvr7PI0VOWnQIBS/emeV07rUdi8M/cQX24r0GYE+XVpCuT2mQnxzsOtOiBy3mZCgaH+qJWwteLUetCq1ATWUbpWKQ+JstxUHLYzozerdfIJWt2zpasQA9Elgm4PWVRjzvDPVgpuL566vSEmk0i98w0eDAICAIczqiL7v533rktM5CKtlLITI6RV5RVvlCGgysyhTsmYZ6eItX7V+CWABd23zuzJLyEifPPF0LbMYqi1elqaSaPSCU9/JSV6mw1RRlRQkG7s9UZC4+eDHU8GvJ+d8HDc0vceKlHJ6f5GzLO3kstnQRGD7GIUn4zBiu0lL+IuItmcGeRfXi4DBz/w9YIvfzi0olmT5ekn5n6/ZsVhsjAGsXofWiRRfh8SXwiEuTrvkVMVgxQVxwPIcZMrecZAx40SR/ZcMngytchZRm1fjYvwqxsPYAfPdh2mfXffCTKjIYilr5q4rjBGcHCY0cpQRNXHWQpR,iv:WRIGI8VOIxlrKza6+sPDE/91W5xMhYAM7P5n/o51WnA=,tag:Dh+0gZXjF/mL8bqEllh8hQ==,type:str]
-        - patch: ENC[AES256_GCM,data:E/y8CjRBVjHgbUEiyFRgsvx3Y+KmmpEdjY+YCD2bhfulEcbOudTZYE1hXqHQ2F8oIen3dcEnsvuOj72mEqWxzoj9obgSg9lWtrcKQWX9+n7wNDAicwZXcsiuBWOJFP8U06z9LiMr4juKm3I7VXazUjVRR5Bxhy6T21xf6o5Pc5/jIPQm70wNhZS5K/99UdEvg03/+uxsPo2cbafUwdInpPEOGNrSkIVrKFRQ5tmOwbUiQN4mT3DlXjoJFs/vcxAxjdzEz230pft3CeiBO2Xvi+345hOm3OOjQpTp5hroe9L6IrwI0OPfIHdwLCA05EVNSqAF2OJO6DmrOeCjQa0tL2ALV5j4sxDGO+D8GDSXC37jRb7GCL7wLzWAlgR7vznEKSJA1RdYxTcuVVyTg24t5efDgKrw2p4V860tPQzN3nHu0xh8JzfhcTGhSOwYFHf2CHQJOQy6jBs0UszFU5P8vPynJjkWbvfcJCVC7r1tJqNfiwkOH6OA2lIj0nkjbK3/fzUDekgPyFvL6Q+PYQvoH1M0HylXhvtiwCYlXYC0gXwv8J46/oSUfSDyoejWvGX+ho4/G+mNdfR4Ey0zIxwIIm26LAs49SvgVtygowhUUT/0YedlOfVGhQoX6SL4fXfIJVrxD8zZg6CcJhplUssH0H5jHWvT7UIZgb4yDfgzeqM/326c6urbne0nHA2te4Rc4cWufVQe3EOa80ayWOsxAz59ZCrGMvpLYMaF3oQGXORkAQgZNa9SwvZNnow9eGYX+PKBYNk7HJpmlSMDLTthUciNqCWG/LoKuHRQIzn0lKDJWLZ1p47BX6+Wugr2OOFeH4Q+hb0fWntx2YTxaKN/mzCB8dL+6XXQRbwLu/1fvhyujzJ4I0PZdJ92Y/CUyTJXMRHHdkquncl8qPLqff+r3E/+fv45Z5Gf+RurZDeA/tXuAWrr/0R7LxF36pGLjuBfNcPfoyLl0y6K+yiJxHtwIQ==,iv:cRsVzx4d3taaAiz+w0wkZQaDJh+ONpqWvcM6T0glicY=,tag:nmDcn01uJL4YLlCCwEyeSw==,type:str]
+        - patch: ENC[AES256_GCM,data:VbZu3Om/DxNuN2mz0EI/oD0yguQ0T2n/elY/WPcg5Jq9JsAHO3v3wXTKnmdOe4E07MdI0wgkeHJtuDl6ZZm3lFWkoUwrIdOPTjGFtMIKtR6pEzFvTijBAJJpZ0S0xpF8Mf+LjHNZIh13lKHXSMvylHH//H0CrbRY0dmCO2shZnlXY/5SMSmbw/BFVJzW7xietyUbzmNLMOSx+7WHstW4Uv70NQvg2T6pcBzypMfzP28bbQ1hIh13FlhyW7G7TDohCy3ZDX0cH7I3uEKcyHLtsDXC6Q/TNifPdBVJCO7xUwJO0Qk/acV7rOb4oh01roDvAxklP3BhxyeqrrQ6N+Gx5Z1Iympr01MCHt2mYYe1TnWvrv5FzWI2sHuyHIZcKSUQQDiFgYcRw/xWXORLa5q9x+r16yVxveMB8SSOYdaH3pIznXu0VWv9D9taAQniTT5vFRVMbGyM9hIIOgs3lIQZPNsmxny2UBfg/tLbrtYSCznN4TX8YKO9,iv:kR91zZbyNygzRUhYh+EmiL7XpxMlzcI77IS1DbCFo7c=,tag:KwZTslt7f3fN+rY3wS4KLw==,type:str]
+        - patch: ENC[AES256_GCM,data:EXizjgQBomOcqNt63afA4T3FrwmNJ8V9+7vWfji6lvLQOli5mH3roCCJzH2UZy0gA+ge92i54tstDFbgcyjzaeJ8k4unioVKWYFCBHRHy//wDnJ1TkpJTmF4skA0iQZ+b7BHsIYmqG4Xvk6jGLtJ0uTC+KSapmluDba1ec3BnKAyNnKv5ZdZe1q6Dqs77ne4zzo3S3xiBfEw40maHPrN2U1Um1hF2Rx8DPeEoOnk8JsSr0XOVEGVf1Ew8XOuh0U50YKrS51F0sC7c4X6XGTAaKHkV+nwRxkAcP5dNigMHjZeFgKKrkTCx9KAojdyGQXJY6mKr3cboV5J5TDHC0Frme7bSinTJzjm++aHBrTGuaGEDr7S+TzQz1D0y3n9jSzbEMk42y40tzH0me6Ym3Pao4D949hHDdR3nfIxqmOBKUgsyeRrSHOYDl4bBHjumSD68qgrA1ey3D4Gsy+T2e3EGm5e0pS4HzA09N/Slbt1FhaqUj+Fiy/Pw50pYEybnV75wkGZNoEADzXDsAJ0KMT2JDPkVK0cYmQ69W0rgLQAS538Rl6kPOCcAST7jhcA5OgXzkGY8AYFfTYQW6MDVJVEvie2nIbyCnIj9YjjLy9jV+QLRVxORCsOlMa0rmvmaP4XgHk+Hr0SVoAo6HweVXkJu2mTnJZsRc3QVq5VrK1B5psiLqTzDdbN2LH/hTs8VgWwuAhUKLXbotanIAvTVkVvkKXDoLbCDTknLd1bbMtD3z01wXvXGZbHvVEzUTZTQBeYlffk70KRvyuO4zE0FooR7y/YG+NkqLA6b4U7oSiPuEX1nr9ksYFN9klmgzrntp58zF8ESGajwaaH0hSdHNTvtVcrBGOrUIdnXISsiIvtTibr7P4lOxkBKXl7x69hEx22x6fQy3F0DJTy9obkTbE9nYO2wn1f9m840lJsmMk3VXXVAdI5atBJXrz6LjsfymGgg7bbN+GqFH4j/MyC+tR9+g==,iv:A0YmBqdk7b24VhHg+iG4akNEeW2fgiTcKV9MOv04qso=,tag:KKGP0xmUalkND97ANOUKtw==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -75,14 +72,14 @@ sops:
         - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3eGFWTytQOWsxRVAySUV5
-            YUtyV00wZXYwcnh0VzFLNmRyUGhCdzdyVjFvClVEejdCeVVEcEQvR3lYRi9VQ25w
-            cTd5YzhBSDRwWEJmOHdCYWdTbmcwbjgKLS0tIDRUR1NoVEN1NVljRGtESUJhVm43
-            c1hJNVNwMjlaa0RHMlo4d1lLNjQ5bmcKVH4p9hnJZeX9AuQs1PieQOqGGT0mJQwy
-            Vfa3Lu5dLvNxA32CxrE8xwRSNbxw4NyKrE/++/XvJpQ/wpHfNZwEyQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCM05TSDJOYWtueUZFdkly
+            WlRYZG92VU8yZUowSms5RWt6WHJxckZHUVZnCkFCMzFLRTFtYVpKVG13c3huQ2ts
+            alVhUTZ0YXBsVGdOZUtsWGMxQ1NxdncKLS0tIDdvREVLeU1CbUlIMmJGNktRSlMx
+            aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
+            VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T19:08:21Z"
-    mac: ENC[AES256_GCM,data:efJ71LxLLtfPMSilaWmt2XXBB+7TpyKGFed5H7g6fvvi3x2lWlO0X92ieV0Y8Fhwm8hAzF70cHytC2IUjAloKAd2YRJG+57/KV+VoB9uqKGtuB04mSjTmPCFTjOibRV3hKtSHIh/O5FlZrnicW0ObZZTrUEt1KhAbmwehfNTJ8E=,iv:XPygzPiIVZpKGSs6dkGjHUzWfjyK7OfamnFTATOViu0=,tag:f7yKXdXSGMQ+20vJ13OjXw==,type:str]
+    lastmodified: "2023-04-20T19:21:10Z"
+    mac: ENC[AES256_GCM,data:33rf/GAy+7PnLbeeJ1KDqtkZzP8krl8fYUKnMzIBevpSqL9pj/8hZV72ilpdgFJDqZ3aBx++Io2myOcT4cTx6NLKYCE/cIA7UC/Y7r7ig9zcpBFDLZS6Jgpsy05OhQyRI+ywQHAU4rUfKCEm42dw2CXQefwsAByKCh6Dylp+IPs=,iv:WjqXE7cojQvQkTXqD79ysT9AwPHwcqjS69Uc+IJr1lg=,tag:eXxaS6K2QKEFPpY+jZYahA==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
