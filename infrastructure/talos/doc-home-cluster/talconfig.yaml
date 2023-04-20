@@ -1,0 +1,79 @@
+clusterName: doc-home-cluster
+talosVersion: v1.3.7
+kubernetesVersion: v1.26.3
+endpoint: ${clusterEndpointIP}
+additionalApiServerCertSans: ${additionalApiServerCertSans}
+clusterPodNets:
+    - 10.244.0.0/16
+clusterSvcNets:
+    - 10.96.0.0/12
+cniConfig: ${cniConfig}
+nodes:
+    - hostname: kmaster1
+      ipAddress: ${kmaster1_ipAddress}
+      controlPlane: true
+      installDisk: /dev/vda
+      disableSearchDomain: true
+      kernelModules:
+        - name: br_netfilter
+          parameters:
+            - nf_conntrack_max=131072
+      nameservers: ${nameservers}
+      networkInterfaces:
+        - interface: eth0
+          dhcp: true
+          addresses: ${kmaster1_ipAddress_complete}
+
+    - hostname: kworker1
+      disableSearchDomain: true
+      ipAddress: ${kworker1_ipAddress}
+      controlPlane: false
+      installDisk: /dev/vda
+      networkInterfaces:
+        - interface: eth0
+          dhcp: true
+          addresses: ${kworker1_ipAddress_complete}
+
+    - hostname: kworker2
+      disableSearchDomain: true
+      ipAddress: ${kworker2_ipAddress}
+      controlPlane: false
+      installDisk: /dev/vda
+      networkInterfaces:
+        - interface: eth0
+          dhcp: true
+          addresses: ${kworker2_ipAddress_complete}
+controlPlane:
+  patches:
+    - |-
+      cluster:
+        allowSchedulingOnMasters: false
+        apiServer:
+        controllerManager:
+        discovery:
+          registries:
+            service:
+              disabled: true
+        proxy:
+          disabled: true
+        scheduler:
+
+      machine:
+        files:
+          - content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+            path: /etc/cri/conf.d/20-customization.part
+            op: create
+        kubelet:
+          extraArgs:
+            feature-gates: GracefulNodeShutdown=true
+            rotate-server-certificates: "true"
+        sysctls:
+          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_user_instances: "8192"
+      - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl

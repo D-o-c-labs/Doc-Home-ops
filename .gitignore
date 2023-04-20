@@ -1,0 +1,32 @@
+# Folders
+ignore/
+logs/
+testing/
+future/
+
+# Trash
+.DS_Store
+Thumbs.db
+
+# Sops
+.decrypted~*
+
+# Terraform
+## Local .terraform directories
+**/.terraform/*
+
+## .tfstate files
+*.tfstate
+*.tfstate.*
+
+## .tfvars files
+*.tfvars
+
+## terraform plan output
+*tfplan*
+
+# Other files
+kubeconfig
+
+# Talos clusterconfigs
+infrastructure/talos/**/clusterconfig
