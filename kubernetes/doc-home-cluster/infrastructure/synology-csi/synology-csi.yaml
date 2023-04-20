@@ -30,17 +30,17 @@ sops:
             aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
             VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T19:21:10Z"
-    mac: ENC[AES256_GCM,data:33rf/GAy+7PnLbeeJ1KDqtkZzP8krl8fYUKnMzIBevpSqL9pj/8hZV72ilpdgFJDqZ3aBx++Io2myOcT4cTx6NLKYCE/cIA7UC/Y7r7ig9zcpBFDLZS6Jgpsy05OhQyRI+ywQHAU4rUfKCEm42dw2CXQefwsAByKCh6Dylp+IPs=,iv:WjqXE7cojQvQkTXqD79ysT9AwPHwcqjS69Uc+IJr1lg=,tag:eXxaS6K2QKEFPpY+jZYahA==,type:str]
+    lastmodified: "2023-04-20T21:22:40Z"
+    mac: ENC[AES256_GCM,data:l2/WDKqDcfyP9uuLCHxwID4IfeQM8yL4RZs+mf4Z4gkXa37f28EloTKckvVwuZkYoVFKSBki72jEFXqGqMDogoDKWpyEvUE5DlLG8OwJRK71dKg/RCHHxY+im8k1SHG/oEeSPWrlJOkLRB//e5RWh39SF8fQ1hNck5tmVl3aaTU=,iv:EESVhBqd1d6DHXRQ3afN1LFxmg9NpwcQ54sv9dsAF7k=,tag:0sN0QOrlL9aOFz5nK0BZzw==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
     name: synology-csi
-    namespace: synology-csi
+    namespace: flux-system
 spec:
     interval: 30m
     path: ./deploy/kubernetes/v1.20
@@ -78,8 +78,8 @@ sops:
             aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
             VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T19:21:10Z"
-    mac: ENC[AES256_GCM,data:33rf/GAy+7PnLbeeJ1KDqtkZzP8krl8fYUKnMzIBevpSqL9pj/8hZV72ilpdgFJDqZ3aBx++Io2myOcT4cTx6NLKYCE/cIA7UC/Y7r7ig9zcpBFDLZS6Jgpsy05OhQyRI+ywQHAU4rUfKCEm42dw2CXQefwsAByKCh6Dylp+IPs=,iv:WjqXE7cojQvQkTXqD79ysT9AwPHwcqjS69Uc+IJr1lg=,tag:eXxaS6K2QKEFPpY+jZYahA==,type:str]
+    lastmodified: "2023-04-20T21:22:40Z"
+    mac: ENC[AES256_GCM,data:l2/WDKqDcfyP9uuLCHxwID4IfeQM8yL4RZs+mf4Z4gkXa37f28EloTKckvVwuZkYoVFKSBki72jEFXqGqMDogoDKWpyEvUE5DlLG8OwJRK71dKg/RCHHxY+im8k1SHG/oEeSPWrlJOkLRB//e5RWh39SF8fQ1hNck5tmVl3aaTU=,iv:EESVhBqd1d6DHXRQ3afN1LFxmg9NpwcQ54sv9dsAF7k=,tag:0sN0QOrlL9aOFz5nK0BZzw==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
