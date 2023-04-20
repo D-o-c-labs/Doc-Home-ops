@@ -12,7 +12,7 @@ spec:
         !/deploy/kubernetes/v1.20
     interval: 30m
     ref:
-        branch: master
+        branch: main
     timeout: 60s
     url: https://github.com/SynologyOpenSource/synology-csi.git
 sops:
