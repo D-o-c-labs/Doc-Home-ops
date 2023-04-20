@@ -2,12 +2,18 @@ clusterName: doc-home-cluster
 talosVersion: v1.3.7
 kubernetesVersion: v1.26.3
 endpoint: ${clusterEndpointIP}
-additionalApiServerCertSans: ${additionalApiServerCertSans}
+domain: cluster.local
+additionalApiServerCertSans:
+    - doc-home-cluster.kube.piscio.net
+    - doc-home-cluster.piscio.net
 clusterPodNets:
     - 10.244.0.0/16
 clusterSvcNets:
     - 10.96.0.0/12
-cniConfig: ${cniConfig}
+cniConfig:
+    name: custom
+    urls:
+        - ${cniConfig}
 nodes:
     - hostname: kmaster1
       ipAddress: ${kmaster1_ipAddress}
@@ -18,31 +24,39 @@ nodes:
         - name: br_netfilter
           parameters:
             - nf_conntrack_max=131072
-      nameservers: ${nameservers}
+      nameservers:
+        - ${nameservers}
       networkInterfaces:
         - interface: eth0
           dhcp: true
-          addresses: ${kmaster1_ipAddress_complete}
+          addresses:
+            - ${kmaster1_ipAddress_complete}
 
     - hostname: kworker1
       disableSearchDomain: true
       ipAddress: ${kworker1_ipAddress}
       controlPlane: false
       installDisk: /dev/vda
+      nameservers:
+        - ${nameservers}
       networkInterfaces:
         - interface: eth0
           dhcp: true
-          addresses: ${kworker1_ipAddress_complete}
+          addresses:
+            - ${kworker1_ipAddress_complete}
 
     - hostname: kworker2
       disableSearchDomain: true
       ipAddress: ${kworker2_ipAddress}
+      nameservers:
+        - ${nameservers}
       controlPlane: false
       installDisk: /dev/vda
       networkInterfaces:
         - interface: eth0
           dhcp: true
-          addresses: ${kworker2_ipAddress_complete}
+          addresses:
+            - ${kworker2_ipAddress_complete}
 controlPlane:
   patches:
     - |-
@@ -71,9 +85,15 @@ controlPlane:
           extraArgs:
             feature-gates: GracefulNodeShutdown=true
             rotate-server-certificates: "true"
+        network:
+          extraHostEntries:
+            - ip: ${clusterEndpointIP}
+              aliases:
+                - cluster-0.bjw-s.tech
         sysctls:
           fs.inotify.max_user_watches: "1048576"
           fs.inotify.max_user_instances: "8192"
-      - |-
+
+    - |-
       - op: remove
         path: /cluster/apiServer/admissionControl

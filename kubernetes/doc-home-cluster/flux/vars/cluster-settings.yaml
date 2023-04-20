@@ -1,28 +1,7 @@
-apiVersion: ENC[AES256_GCM,data:45Q=,iv:CXtCti0gLEGdxaMhFsYXgHfPHrXvsBjLU4/WTKatg9o=,tag:XEua9wlXBoOpUbvqNaZXVw==,type:str]
-kind: ENC[AES256_GCM,data:4HrUotYtiUYR,iv:SGtu0yZ3eSY8oluPAS4chIb0LNoG3kSrDIZbnu1WZ/E=,tag:MkkWFmcoutPHb/UZ+ab9gw==,type:str]
+apiVersion: v1
+kind: ConfigMap
 metadata:
-    name: ENC[AES256_GCM,data:e/YUtI0Uelcz9u2+VeOREw==,iv:Ho6fw3tGKXNRmRTcI+YMPNuaxpI/SzuiEs8xPSRoUY4=,tag:lLcsxRYtkXS7I5+BD2dDXw==,type:str]
-    namespace: ENC[AES256_GCM,data:yQmjvsEquZNso44=,iv:GJei9D7mxooTLjCobcmrQ9kVmx8wfVbQFMWOqFaV0es=,tag:z1sACAx1eRwCmxhBnBemMg==,type:str]
+    name: cluster-settings
+    namespace: flux-system
 data:
-    CLUSTER_NAME: ENC[AES256_GCM,data:bkaKCIp9xthUGEoPwQGYZg==,iv:TWcVf9uaB3+046Gi8vvXs16kLi3k9iYOnprPFxLg7Z0=,tag:xQUEPTqHB+1tZ29VSTMuRg==,type:str]
-    CLUSTER_DOMAIN: ENC[AES256_GCM,data:vr7pFIsifB7K4OX1ehyv,iv:Yj6IyIzpjkjpgLL9R2dA8iuuEnd/5QBr5j6n09mlEMA=,tag:DUdGAj545sgWBG5hKH/S6w==,type:str]
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
-    age:
-        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2MjJlTWZxNXJTRmRSMG5W
-            TlRtZGlIQlhLTC8vTU1FT1ZSRnhBdlg5bVYwCm1GOWYyZ1RtcmpkWmk3bWR1RzJv
-            Zm5sOFovdkNQTXVQeGh4aEg3Mml0cHMKLS0tIGtudmhpV2hBZ0luT1ZGOG13OVlV
-            SGIyank2R0VoN2tVa012Z0Q2czE5ckUKj1E/qx/7XM6dinUA11019/VBJRLLvOJs
-            b5pFdB1w0ExebvKNahulciI7u3fAYah51FoxnQPm8RHodX9QEOs96g==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T11:04:32Z"
-    mac: ENC[AES256_GCM,data:iBNw1K8ijbjRMNXJRueaSgg5aCp2jp4rV+7xxUgdg6d4HVE+qfnKbobawJZeIdUF77n5QQqkUeoxCgbgKgDylrM99GnLGUbaPhS8LVx+Rg+9GHioyihTjR+i+aGafaHF9kQWGq2mI15QgeuAMuhQTIpT0Di3oF7THMXjijSx1Ug=,iv:b5p57YXtNlDnznb+uoNXeFwc7xw1PwoFLVOn67Pm8Kw=,tag:pjJZxQ2khGjTGnGnQyP2kg==,type:str]
-    pgp: []
-    unencrypted_suffix: _unencrypted
-    version: 3.7.3
+    CLUSTER_NAME: doc-home-cluster
