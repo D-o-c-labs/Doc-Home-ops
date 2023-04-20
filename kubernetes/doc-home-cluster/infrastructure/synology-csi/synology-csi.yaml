@@ -1,0 +1,81 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+    name: synology-csi
+    namespace: flux-system
+spec:
+    gitImplementation: go-git
+    ignore: |
+        # exclude all
+        /*
+        # include gitops dirs
+        !/deploy/kubernetes/v1.20
+    interval: 30m
+    ref:
+        branch: master
+    timeout: 60s
+    url: https://github.com/SynologyOpenSource/synology-csi.git
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3eGFWTytQOWsxRVAySUV5
+            YUtyV00wZXYwcnh0VzFLNmRyUGhCdzdyVjFvClVEejdCeVVEcEQvR3lYRi9VQ25w
+            cTd5YzhBSDRwWEJmOHdCYWdTbmcwbjgKLS0tIDRUR1NoVEN1NVljRGtESUJhVm43
+            c1hJNVNwMjlaa0RHMlo4d1lLNjQ5bmcKVH4p9hnJZeX9AuQs1PieQOqGGT0mJQwy
+            Vfa3Lu5dLvNxA32CxrE8xwRSNbxw4NyKrE/++/XvJpQ/wpHfNZwEyQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-04-20T19:03:58Z"
+    mac: ENC[AES256_GCM,data:UoSBmuRg7C6jVPMfaU+Up2mxd3lvzG7GAParcjtoyXV3Ki3JWsErIuvB24LuUngv2FmGQe5sYDzNuMWrPsRMhW+xtRx4QIqtSinQS2Wy7gQSuBVlXodusVh8LqJU1pE650Ru3jm4Ty7QBZ5EW9Sy1S1/R1rozuXusbLQw1QnbRs=,iv:Rea1hnp+a+ykVbHSPzTBd4mbw//mT1JllWo9oNkuaDY=,tag:KnnFzfUZi6yin4yKsKutAA==,type:str]
+    pgp: []
+    encrypted_regex: ^(patch)$
+    version: 3.7.3
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+    name: synology-csi
+    namespace: synology-csi
+spec:
+    interval: 30m
+    path: ./deploy/kubernetes/v1.20
+    prune: true
+    wait: false
+    sourceRef:
+        kind: GitRepository
+        name: synology-csi
+    dependsOn:
+        - name: flux
+    postBuild:
+        substituteFrom:
+            - kind: ConfigMap
+              name: cluster-settings
+              optional: false
+    patches:
+        - patch: ENC[AES256_GCM,data:qxwBTg5XVq0W2pR57fGoewvr7PI0VOWnQIBS/emeV07rUdi8M/cQX24r0GYE+XVpCuT2mQnxzsOtOiBy3mZCgaH+qJWwteLUetCq1ATWUbpWKQ+JstxUHLYzozerdfIJWt2zpasQA9Elgm4PWVRjzvDPVgpuL566vSEmk0i98w0eDAICAIczqiL7v533rktM5CKtlLITI6RV5RVvlCGgysyhTsmYZ6eItX7V+CWABd23zuzJLyEifPPF0LbMYqi1elqaSaPSCU9/JSV6mw1RRlRQkG7s9UZC4+eDHU8GvJ+d8HDc0vceKlHJ6f5GzLO3kstnQRGD7GIUn4zBiu0lL+IuItmcGeRfXi4DBz/w9YIvfzi0olmT5ekn5n6/ZsVhsjAGsXofWiRRfh8SXwiEuTrvkVMVgxQVxwPIcZMrecZAx40SR/ZcMngytchZRm1fjYvwqxsPYAfPdh2mfXffCTKjIYilr5q4rjBGcHCY0cpQRNXHWQpR,iv:WRIGI8VOIxlrKza6+sPDE/91W5xMhYAM7P5n/o51WnA=,tag:Dh+0gZXjF/mL8bqEllh8hQ==,type:str]
+        - patch: ENC[AES256_GCM,data:E/y8CjRBVjHgbUEiyFRgsvx3Y+KmmpEdjY+YCD2bhfulEcbOudTZYE1hXqHQ2F8oIen3dcEnsvuOj72mEqWxzoj9obgSg9lWtrcKQWX9+n7wNDAicwZXcsiuBWOJFP8U06z9LiMr4juKm3I7VXazUjVRR5Bxhy6T21xf6o5Pc5/jIPQm70wNhZS5K/99UdEvg03/+uxsPo2cbafUwdInpPEOGNrSkIVrKFRQ5tmOwbUiQN4mT3DlXjoJFs/vcxAxjdzEz230pft3CeiBO2Xvi+345hOm3OOjQpTp5hroe9L6IrwI0OPfIHdwLCA05EVNSqAF2OJO6DmrOeCjQa0tL2ALV5j4sxDGO+D8GDSXC37jRb7GCL7wLzWAlgR7vznEKSJA1RdYxTcuVVyTg24t5efDgKrw2p4V860tPQzN3nHu0xh8JzfhcTGhSOwYFHf2CHQJOQy6jBs0UszFU5P8vPynJjkWbvfcJCVC7r1tJqNfiwkOH6OA2lIj0nkjbK3/fzUDekgPyFvL6Q+PYQvoH1M0HylXhvtiwCYlXYC0gXwv8J46/oSUfSDyoejWvGX+ho4/G+mNdfR4Ey0zIxwIIm26LAs49SvgVtygowhUUT/0YedlOfVGhQoX6SL4fXfIJVrxD8zZg6CcJhplUssH0H5jHWvT7UIZgb4yDfgzeqM/326c6urbne0nHA2te4Rc4cWufVQe3EOa80ayWOsxAz59ZCrGMvpLYMaF3oQGXORkAQgZNa9SwvZNnow9eGYX+PKBYNk7HJpmlSMDLTthUciNqCWG/LoKuHRQIzn0lKDJWLZ1p47BX6+Wugr2OOFeH4Q+hb0fWntx2YTxaKN/mzCB8dL+6XXQRbwLu/1fvhyujzJ4I0PZdJ92Y/CUyTJXMRHHdkquncl8qPLqff+r3E/+fv45Z5Gf+RurZDeA/tXuAWrr/0R7LxF36pGLjuBfNcPfoyLl0y6K+yiJxHtwIQ==,iv:cRsVzx4d3taaAiz+w0wkZQaDJh+ONpqWvcM6T0glicY=,tag:nmDcn01uJL4YLlCCwEyeSw==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB3eGFWTytQOWsxRVAySUV5
+            YUtyV00wZXYwcnh0VzFLNmRyUGhCdzdyVjFvClVEejdCeVVEcEQvR3lYRi9VQ25w
+            cTd5YzhBSDRwWEJmOHdCYWdTbmcwbjgKLS0tIDRUR1NoVEN1NVljRGtESUJhVm43
+            c1hJNVNwMjlaa0RHMlo4d1lLNjQ5bmcKVH4p9hnJZeX9AuQs1PieQOqGGT0mJQwy
+            Vfa3Lu5dLvNxA32CxrE8xwRSNbxw4NyKrE/++/XvJpQ/wpHfNZwEyQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-04-20T19:03:58Z"
+    mac: ENC[AES256_GCM,data:UoSBmuRg7C6jVPMfaU+Up2mxd3lvzG7GAParcjtoyXV3Ki3JWsErIuvB24LuUngv2FmGQe5sYDzNuMWrPsRMhW+xtRx4QIqtSinQS2Wy7gQSuBVlXodusVh8LqJU1pE650Ru3jm4Ty7QBZ5EW9Sy1S1/R1rozuXusbLQw1QnbRs=,iv:Rea1hnp+a+ykVbHSPzTBd4mbw//mT1JllWo9oNkuaDY=,tag:KnnFzfUZi6yin4yKsKutAA==,type:str]
+    pgp: []
+    encrypted_regex: ^(patch)$
+    version: 3.7.3
