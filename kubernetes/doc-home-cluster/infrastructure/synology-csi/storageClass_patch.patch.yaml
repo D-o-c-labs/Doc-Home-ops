@@ -1,0 +1,30 @@
+apiVersion: ENC[AES256_GCM,data:WzdcTxPUnV35OZp/v304zyo=,iv:PYqylU0+LR3nAetHagNhfwXJqkTELzYKjNuCqQIxKo0=,tag:2umXKghATneRtInIP6GGTw==,type:str]
+kind: ENC[AES256_GCM,data:GzazNz2++dDam7TE,iv:8Bdjw5uFh221PLTn/EPqjj9GXNzca5gB6sdXSE1KR3w=,tag:d9ZP9dd6aI9bwd8wXMWZHg==,type:str]
+metadata:
+    name: ENC[AES256_GCM,data:5wbmyWUx8AoDsvpANI3ABuEAEAagdA==,iv:7WJmanTDzoi+WfvZSzehlwrt1b8VletaUR4SlvlTLwk=,tag:DkiWLgoXtpAHqqf+0oiZPw==,type:str]
+    annotations:
+        storageclass.kubernetes.io/is-default-class: ENC[AES256_GCM,data:6KW8gQ==,iv:mB/JThwp+E+o+EyYaIEdwrUm3+J3VXIOOWhtzwrjvbM=,tag:Us8l139jOF+kY3XvyDUuqQ==,type:str]
+parameters:
+    dsm: ENC[AES256_GCM,data:TRAEKBs5udR+RzozUhs30oTqgtI=,iv:0ZasfnF817SgpcV6RcRt5az8SZAIuiSzOMi3anV5hkw=,tag:dkAO8e8l7SFD+7JPhFMPjA==,type:str]
+    location: ENC[AES256_GCM,data:t2iZ6xvCOqM=,iv:rjLvEyvxnzYfQ7SMzVeaIgx3Dnhafxp8Orfv4jjh6qU=,tag:Qr7rm7OTOu6hS2xZ/GRDzg==,type:str]
+    fsType: ENC[AES256_GCM,data:eOXVTw==,iv:zmd95GM+DwfDr7olmefYgVI4aDzNdWNin2889FhQqrI=,tag:mDlLlOnoB4NBH153ptlQCA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4TUVPU1ZsV1VwNk1Tc3Qz
+            WnVNUWxiUStuVWRTN0pLeWpyeC9odHZYeEhRCmdlb3ZUZXZrWG5LSlcxWWZ1KzM2
+            amZPQ1g4WHJ2bmxpK1ZJak9icVhnRDAKLS0tIHY0bWxNdGxaMDFsUWdKMFh5WGxl
+            WGxGVXhyT1lUU0FIRkRLNGV1Yi9aaHcKjZI3ltRcFWWhK3ME0gYFYwk9ilTBpd11
+            bJus4XS9gxS+dYPQO5o5AhnbMOIBbmxaLKpcqX96NCUoypIhKpkzrg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-04-20T21:45:49Z"
+    mac: ENC[AES256_GCM,data:U1yesmOvFvGUPuFluroGDLC8WP/XQopgKFbshcDWje0L3hvtqgXlpvwHM2ERi9luRWgJqUIjiTpVuulIGIje2MxTLe4y2YdqHhe7AJ1H6K3rqxzwr9hkz1Lilbwqe+drjHvQBwoLSzJtJp0VSxE10bobTetnKV+W2po477i7Wi8=,iv:aWWHoBHdjnLBbbULADWZHVOXY7uOdLvPGhbyCC9EKTA=,tag:jbLY02NJ4A6MFUE4K+6jkQ==,type:str]
+    pgp: []
+    unencrypted_suffix: _unencrypted
+    version: 3.7.3
