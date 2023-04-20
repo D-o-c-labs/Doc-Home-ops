@@ -52,6 +52,7 @@ spec:
         namespace: flux-system
     dependsOn:
         - name: flux
+          namespace: flux-system
     postBuild:
         substituteFrom:
             - kind: ConfigMap
