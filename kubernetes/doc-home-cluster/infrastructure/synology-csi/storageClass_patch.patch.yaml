@@ -4,10 +4,14 @@ metadata:
     name: ENC[AES256_GCM,data:5wbmyWUx8AoDsvpANI3ABuEAEAagdA==,iv:7WJmanTDzoi+WfvZSzehlwrt1b8VletaUR4SlvlTLwk=,tag:DkiWLgoXtpAHqqf+0oiZPw==,type:str]
     annotations:
         storageclass.kubernetes.io/is-default-class: ENC[AES256_GCM,data:6KW8gQ==,iv:mB/JThwp+E+o+EyYaIEdwrUm3+J3VXIOOWhtzwrjvbM=,tag:Us8l139jOF+kY3XvyDUuqQ==,type:str]
+provisioner: ENC[AES256_GCM,data:2VE13XuxkNvfYcMDRIb7zK2YZ/c=,iv:9vxDOrOeLtWdzFD70E+yhwzDz8Pbon4nLjK8oDj8HPk=,tag:MgDhm9LI1n5ReP3xUExnww==,type:str]
+#ENC[AES256_GCM,data:6jrjbXbmJYrjH3n8qIcX8cp00JCyQRYE0tt+1No0SroZoJfCyZUdbRlVbW+P/1JQYmqNGd6zCV3Q7WfmbBR7JajULgTVmBp1N9VnlcIvp4j5rn0DwOTmdt0=,iv:2dA4ZtpREJ8ccP/4DNcakFs1QkCACogn9L2fE27Nido=,tag:f5dRCvU68N6+CM8iU8SjzA==,type:comment]
 parameters:
     dsm: ENC[AES256_GCM,data:TRAEKBs5udR+RzozUhs30oTqgtI=,iv:0ZasfnF817SgpcV6RcRt5az8SZAIuiSzOMi3anV5hkw=,tag:dkAO8e8l7SFD+7JPhFMPjA==,type:str]
     location: ENC[AES256_GCM,data:t2iZ6xvCOqM=,iv:rjLvEyvxnzYfQ7SMzVeaIgx3Dnhafxp8Orfv4jjh6qU=,tag:Qr7rm7OTOu6hS2xZ/GRDzg==,type:str]
     fsType: ENC[AES256_GCM,data:eOXVTw==,iv:zmd95GM+DwfDr7olmefYgVI4aDzNdWNin2889FhQqrI=,tag:mDlLlOnoB4NBH153ptlQCA==,type:str]
+reclaimPolicy: ENC[AES256_GCM,data:xa9Q4OkV,iv:srUryTLhsIZp0pkzOF3YomokFTtGa5FQHmCUmfWiqt4=,tag:lRPJ/Il5A/vtuVL4idQrww==,type:str]
+allowVolumeExpansion: ENC[AES256_GCM,data:CESk/w==,iv:hN7nX37D74VcefyRfbn16z/HtBuPz7WpTfcuqCAYhK0=,tag:0HQWVLhV4UnLmFGnVVakPA==,type:bool]
 sops:
     kms: []
     gcp_kms: []
@@ -23,8 +27,8 @@ sops:
             WGxGVXhyT1lUU0FIRkRLNGV1Yi9aaHcKjZI3ltRcFWWhK3ME0gYFYwk9ilTBpd11
             bJus4XS9gxS+dYPQO5o5AhnbMOIBbmxaLKpcqX96NCUoypIhKpkzrg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T21:45:49Z"
-    mac: ENC[AES256_GCM,data:U1yesmOvFvGUPuFluroGDLC8WP/XQopgKFbshcDWje0L3hvtqgXlpvwHM2ERi9luRWgJqUIjiTpVuulIGIje2MxTLe4y2YdqHhe7AJ1H6K3rqxzwr9hkz1Lilbwqe+drjHvQBwoLSzJtJp0VSxE10bobTetnKV+W2po477i7Wi8=,iv:aWWHoBHdjnLBbbULADWZHVOXY7uOdLvPGhbyCC9EKTA=,tag:jbLY02NJ4A6MFUE4K+6jkQ==,type:str]
+    lastmodified: "2023-04-20T21:46:56Z"
+    mac: ENC[AES256_GCM,data:UxQ2yb9AsMDMAty2Y3YOS2Cty+VFJB3T4X3SY76MpI+Ea2bNa07PeOAABG47q9D1g9PwSszPo5MRVzB6YcXX+QZjJv917RJhmQiXGJ6jnXfUZl+GKwx6Y6RviVc7t+yTVlCsWm3OSpXuGrJ87Ae8iK16y8imiS8RSPzbVaobv0k=,iv:BMFo6QHPEnOinETXP8o1vH9IFYn8TmRGZIB3KEBPY1w=,tag:vtMkSmTW0xMqVcjM7Qgysw==,type:str]
     pgp: []
     unencrypted_suffix: _unencrypted
     version: 3.7.3
