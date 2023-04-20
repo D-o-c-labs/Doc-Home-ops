@@ -30,8 +30,8 @@ sops:
             c1hJNVNwMjlaa0RHMlo4d1lLNjQ5bmcKVH4p9hnJZeX9AuQs1PieQOqGGT0mJQwy
             Vfa3Lu5dLvNxA32CxrE8xwRSNbxw4NyKrE/++/XvJpQ/wpHfNZwEyQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T19:03:58Z"
-    mac: ENC[AES256_GCM,data:UoSBmuRg7C6jVPMfaU+Up2mxd3lvzG7GAParcjtoyXV3Ki3JWsErIuvB24LuUngv2FmGQe5sYDzNuMWrPsRMhW+xtRx4QIqtSinQS2Wy7gQSuBVlXodusVh8LqJU1pE650Ru3jm4Ty7QBZ5EW9Sy1S1/R1rozuXusbLQw1QnbRs=,iv:Rea1hnp+a+ykVbHSPzTBd4mbw//mT1JllWo9oNkuaDY=,tag:KnnFzfUZi6yin4yKsKutAA==,type:str]
+    lastmodified: "2023-04-20T19:08:21Z"
+    mac: ENC[AES256_GCM,data:efJ71LxLLtfPMSilaWmt2XXBB+7TpyKGFed5H7g6fvvi3x2lWlO0X92ieV0Y8Fhwm8hAzF70cHytC2IUjAloKAd2YRJG+57/KV+VoB9uqKGtuB04mSjTmPCFTjOibRV3hKtSHIh/O5FlZrnicW0ObZZTrUEt1KhAbmwehfNTJ8E=,iv:XPygzPiIVZpKGSs6dkGjHUzWfjyK7OfamnFTATOViu0=,tag:f7yKXdXSGMQ+20vJ13OjXw==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
@@ -49,6 +49,7 @@ spec:
     sourceRef:
         kind: GitRepository
         name: synology-csi
+        namespace: flux-system
     dependsOn:
         - name: flux
     postBuild:
@@ -74,8 +75,8 @@ sops:
             c1hJNVNwMjlaa0RHMlo4d1lLNjQ5bmcKVH4p9hnJZeX9AuQs1PieQOqGGT0mJQwy
             Vfa3Lu5dLvNxA32CxrE8xwRSNbxw4NyKrE/++/XvJpQ/wpHfNZwEyQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T19:03:58Z"
-    mac: ENC[AES256_GCM,data:UoSBmuRg7C6jVPMfaU+Up2mxd3lvzG7GAParcjtoyXV3Ki3JWsErIuvB24LuUngv2FmGQe5sYDzNuMWrPsRMhW+xtRx4QIqtSinQS2Wy7gQSuBVlXodusVh8LqJU1pE650Ru3jm4Ty7QBZ5EW9Sy1S1/R1rozuXusbLQw1QnbRs=,iv:Rea1hnp+a+ykVbHSPzTBd4mbw//mT1JllWo9oNkuaDY=,tag:KnnFzfUZi6yin4yKsKutAA==,type:str]
+    lastmodified: "2023-04-20T19:08:21Z"
+    mac: ENC[AES256_GCM,data:efJ71LxLLtfPMSilaWmt2XXBB+7TpyKGFed5H7g6fvvi3x2lWlO0X92ieV0Y8Fhwm8hAzF70cHytC2IUjAloKAd2YRJG+57/KV+VoB9uqKGtuB04mSjTmPCFTjOibRV3hKtSHIh/O5FlZrnicW0ObZZTrUEt1KhAbmwehfNTJ8E=,iv:XPygzPiIVZpKGSs6dkGjHUzWfjyK7OfamnFTATOViu0=,tag:f7yKXdXSGMQ+20vJ13OjXw==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
