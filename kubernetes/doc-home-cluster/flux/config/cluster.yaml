@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 30m
   ref:
-    branch: main
+    branch: master
   url: https://github.com/D-o-c/Doc-Home-ops.git
   ignore: |
     # exclude all
