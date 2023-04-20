@@ -30,8 +30,8 @@ sops:
             aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
             VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T21:30:59Z"
-    mac: ENC[AES256_GCM,data:wXWObTOt+rOwpQY2rcu9qFl4/QJWVKx5u5xpn7LQW2RL4ZnvX5aPr0qxYOaoLntN10MOeaESr6ZzcCAIpnTsRQrTL5QGeP9/FxelsG1Zx/eiJDasTCRrRnbedNJp2GUrrNqkTDDEdU4rs8KjbfBTPsrXV9Gxcntp+6/npaZQ/Rk=,iv:SRy57HsI1H1K2y4rPS8rhtEit4WH58OFR/agKM8tkG0=,tag:vjy71iZaxi/1a15tflZKvg==,type:str]
+    lastmodified: "2023-04-20T21:40:10Z"
+    mac: ENC[AES256_GCM,data:A8cwqYd7E9UFHQXrohdYTKj7CCKwApH4wbdllbdgk7HM49qmLu5kLKEO15bJ6uJVofQChtqdwvSb2tsZc8ckxE4mSLk7VV858FCcaeVRVS2lK5YGaqOrWKV13rWmEzDNgp1LmfbOjOr+3e6V4jyC9sEUcOAIQ+nhIWX37shctCA=,iv:TS2B8Cv9rtiZd4oDry8H6U558jhcK7OPxNnCU1ScGwk=,tag:YSWdUYHosY/0qYzHu9yl3w==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
@@ -61,7 +61,7 @@ spec:
               name: cluster-settings
               optional: false
     patches:
-        - patch: ENC[AES256_GCM,data:w9XNWx1kAvpDCJ3ifzxCm4Eyrc+aWl8U1BcWSVjLVhstHxsjoKwbXht6lziZmdg6Ve2bI1CPijuUqHh7rGYrUA0Yt3YKIKOuFgOnkFvxrSeQfTZ6fB5ky//AGR2a4rZGI/T/siNmx9WKkODMWHaREhiRDHRG6XSpHv/Dbtf3WZAcEfc/sx4KAEsRsE2M+I0OYK0XWB47eBntFHkii1ASHX43i996h5GNKX4rutqEiBYl92H8cBTwCnQxGE2UgK4B2nrtRBtLviwv0enMB5YKii/4ust5o+CkYkXU8L8vkkXnohLKICxfFf7JQMLWe9oMRkjp7RNMIsuzzuzA/VqsT4JZvzrvNjy9cc0LMsXx2txWAMPVwkvbI0FNBeW1/lyg8HJYEdp7Z04M/A9qN3VdYD6n46e+Yk1QUQIQvBGmc/zTf+rreR0vnf4Dpw3ZbkZwNt0ieya3Iurlk+AAktyhpVH7MnL1ImQWQ2v+zYoFv6o=,iv:T4Q3d6vBFnPOlbZAox+JaBgiB5zxgCdB12beS64ilIo=,tag:dQM6piCLVn0gOiOE02pRXQ==,type:str]
+        - patch: ENC[AES256_GCM,data:iP8lQkC8tvmkqCt2E2xxXoK/7dPZL2wyEGWxTrGvM2e9iZyrSs/8ly/cY9CiEtV4IMszEAz4azfWvraGKBsI2NnGAb3sTbeoUPyrdeu9d8J2KfVMMhXvrTsFuCLWK0szXUDELEc3vtORhh50xphe0Bez+bQ1NpOUwBTR0D1rsdmjkudO5Aq7HMDzAjjz2dzU4kH5X2etcL0U1qlEUJCHjwjEHsBun3zL7VeuU+2TXYn/vai6Ydhd/P/ewVxVutFsZ22psTx3LPTWX8Kf7+BqDWV/kR2phTSQv05NRSH0K+Ra1HAHE4dQQ7QVu4zeKhvWyQRnWv1hEOTnXEBV28fUFCt6khyvkW8y7NdXH/HQZmX44RzoDsHUUhTXZa/f+u7d5PE7tWtlUNR8VI3r2wySBU6v6eg7CKRwsGm8RF75TyvKc01YPGh7C2zh6qgf58QmUOvjSH1M4NYVnU0oOEkZC/mbRBfLCsEYxPIyssjtpQ==,iv:0JSZOJQtRj3pjRG3noBxGCtFO+HsvhiXmt6MpxXC07k=,tag:N0FanLXnk07YTmQ1FhVPMw==,type:str]
           target:
             kind: StorageClass
             name: synology-iscsi-storage
@@ -81,8 +81,8 @@ sops:
             aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
             VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-20T21:30:59Z"
-    mac: ENC[AES256_GCM,data:wXWObTOt+rOwpQY2rcu9qFl4/QJWVKx5u5xpn7LQW2RL4ZnvX5aPr0qxYOaoLntN10MOeaESr6ZzcCAIpnTsRQrTL5QGeP9/FxelsG1Zx/eiJDasTCRrRnbedNJp2GUrrNqkTDDEdU4rs8KjbfBTPsrXV9Gxcntp+6/npaZQ/Rk=,iv:SRy57HsI1H1K2y4rPS8rhtEit4WH58OFR/agKM8tkG0=,tag:vjy71iZaxi/1a15tflZKvg==,type:str]
+    lastmodified: "2023-04-20T21:40:10Z"
+    mac: ENC[AES256_GCM,data:A8cwqYd7E9UFHQXrohdYTKj7CCKwApH4wbdllbdgk7HM49qmLu5kLKEO15bJ6uJVofQChtqdwvSb2tsZc8ckxE4mSLk7VV858FCcaeVRVS2lK5YGaqOrWKV13rWmEzDNgp1LmfbOjOr+3e6V4jyC9sEUcOAIQ+nhIWX37shctCA=,iv:TS2B8Cv9rtiZd4oDry8H6U558jhcK7OPxNnCU1ScGwk=,tag:YSWdUYHosY/0qYzHu9yl3w==,type:str]
     pgp: []
     encrypted_regex: ^(patch)$
     version: 3.7.3
