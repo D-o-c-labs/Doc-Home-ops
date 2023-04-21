@@ -8,7 +8,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/apps/security/oauth2-proxy/redis"
+  path: "./kubernetes/doc-home-cluster/infrastructure/security/oauth2-proxy/redis"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -24,11 +24,11 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/apps/security/oauth2-proxy/app"
+  path: "./kubernetes/doc-home-cluster/infrastructure/security/oauth2-proxy/app"
   prune: true
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-apps-oauth2-proxy-redis
+    - name: cluster-infrastructure-oauth2-proxy-redis
