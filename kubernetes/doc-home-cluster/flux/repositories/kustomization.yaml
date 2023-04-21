@@ -5,3 +5,4 @@ namespace: flux-system
 resources:
   - bjw-s.yaml
   - cilium.yaml
+  - external-secrets.yaml
