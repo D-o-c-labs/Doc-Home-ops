@@ -29,7 +29,7 @@ spec:
                 valueFrom:
                     secretKeyRef:
                         name: onepassword-connect-secret
-                        key: onepassword-credentials.json
+                        key: 1password-credentials.json
         service:
             main:
                 ports:
@@ -101,7 +101,7 @@ spec:
                       valueFrom:
                         secretKeyRef:
                             name: onepassword-connect-secret
-                            key: onepassword-credentials.json
+                            key: 1password-credentials.json
                     - name: OP_HTTP_PORT
                       value: 8081
                     - name: OP_BUS_PORT
@@ -138,8 +138,8 @@ sops:
             UHloeVRyWjhoeUZoSzNZMUFqYjhXc3cKXnCPak/G7a54yUOE5WkJH5F9pfwX9tuS
             p9DBIzUqTN2OAtoO4z71691zy4pAZcWCf0VvcjPg/99f9Qal5w2tkg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-21T12:24:51Z"
-    mac: ENC[AES256_GCM,data:8kLuz4VpuDWZ7yQjbWolHhohHWhqMs8dCWbtRqlMtc4DDoQtSdwPvUTJlyCMRQfzcsX6Iuu8ZL1MmkOhvyhJHSKgJYkiKqIyoKawgLVRnTvTHOSyeuvGfTgLlL35zKfavM27LIxd9D+PMnm9CWPz8T1K3boxza9kI4QqJiOgIcs=,iv:oV2ohkntsfaRYjeIb2Axg6vR9HFP9s6PXRiCRKDBrR4=,tag:Dg/zjaZrE1F9dNilWZ4mVQ==,type:str]
+    lastmodified: "2023-04-21T18:02:32Z"
+    mac: ENC[AES256_GCM,data:j9WQtPVryaOekTNjrI628/k4c6kmjuoB8ax8HX/QawdCM9sskrtj2abwNW/1tkxI4r2Ythr/mcNt9vmujK9n6cKxAW7OV37l7ieXqpkWfh1JUWrDxZ5MJAf8M0NItc7IV99J7qJQB9Mj5M9OXnhnAsWvxsCin3CSo5ZMPijFN+U=,iv:CHKDQJrA2LRvChesQ7mspcVzJB8nmokJ+dSX0tHvoWg=,tag:K6MN6zPsiDTzwIaoqE60Uw==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|hosts)$
     version: 3.7.3
