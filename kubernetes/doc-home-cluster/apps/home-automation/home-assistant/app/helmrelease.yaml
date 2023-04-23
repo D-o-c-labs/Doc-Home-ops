@@ -29,16 +29,16 @@ spec:
     podAnnotations:
       k8s.v1.cni.cncf.io/networks: macvlan-static-iot-hass
 
-    env:
-      SECRET_RECORDER_DB_URL:
-        valueFrom:
-          secretKeyRef:
-            name: database-home-assistant-user
-            key: POSTGRES_URL
+    # env:
+    #   SECRET_RECORDER_DB_URL:
+    #     valueFrom:
+    #       secretKeyRef:
+    #         name: database-home-assistant-user
+    #         key: POSTGRES_URL
 
-    envFrom:
-      - secretRef:
-          name: home-assistant-secret
+    # envFrom:
+    #   - secretRef:
+    #       name: home-assistant-secret
 
     service:
       main:
@@ -46,29 +46,15 @@ spec:
           http:
             port: 8123
 
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: "nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress.bjw-s.dev
-        hosts:
-          - host: &host "domo.bjw-s.dev"
-            paths:
-              - path: /
-        tls:
-          - hosts:
-              - *host
-
-    persistence:
-      deploy-key:
-        enabled: true
-        type: secret
-        name: home-assistant-secret
-        defaultMode: 256
-        subPath:
-          - path: GH_DEPLOY_KEY
-            mountPath: /root/.ssh/id_rsa
+    # persistence:
+    #   deploy-key:
+    #     enabled: true
+    #     type: secret
+    #     name: home-assistant-secret
+    #     defaultMode: 256
+    #     subPath:
+    #       - path: GH_DEPLOY_KEY
+    #         mountPath: /root/.ssh/id_rsa
 
     probes:
       liveness:
@@ -85,9 +71,140 @@ spec:
       limits:
         memory: 4417M
 
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
+    # volumeClaimTemplates:
+    #   - name: config
+    #     mountPath: /config
+    #     accessMode: ReadWriteOnce
+    #     size: 1Gi
+    #     storageClass: ceph-block
+
+    additionalContainers:
+      codeserver:
+        image: lscr.io/linuxserver/code-server:4.12.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8443
+          name: codeserver
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+        volumeMounts:
+          - mountPath: /data/config
+            name: config
+          - name: jupyter-kernel
+            mountPath: "/usr/local/share/jupyter/kernels/pyscript"
+            readOnly: false
+        env:
+          - name: DOCKER_MODS
+            value: linuxserver/mods:code-server-python3|linuxserver/mods:code-server-extension-arguments|linuxserver/mods:universal-package-install
+          - name: INSTALL_PIP_PACKAGES
+            value: hass_pyscript_kernel
+          - name: PUID
+            value: 0
+          - name: PGID
+            value: 0
+          - name: DEFAULT_WORKSPACE
+            value: /data/config
+          - name: TZ
+            value: Europe/Rome
+          - name: VSCODE_EXTENSION_IDS
+            value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python|cstrap.python-snippets
+      service:
+        codeserver:
+          enabled: true
+          ports:
+            codeserver:
+              port: 8443
+              targetPort: 8443
+
+    env:
+      TZ: Europe/Rome
+
+    mariadb:
+      enabled: true
+      architecture: standalone
+      auth:
+        database: home-assistant
+        username: home-assistant
+        existingSecret: homeassistant-secrets
+      primary:
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        persistence:
+          enabled: true
+          existingClaim: home-assistant-mariadb-pvc
+      volumePermissions:
+        enabled: true
+      image:
+        tag: 10.10.2-debian-11-r26
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: cattle-monitoring-system
+        prometheusRule:
+          enabled: true
+          rules:
+            - alert: MariaDB-Down
+              expr: absent(up{job="mariadb"} == 1)
+              for: 5m
+              labels:
+                severity: warning
+                service: mariadb
+              annotations:
+                message: 'MariaDB instance {{ `{{` }} $labels.instance {{ `}}` }} is down'
+                summary: MariaDB instance is down
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: homeassistant.piscio.net
+        hosts:
+          - host: &host "homeassistant.piscio.net"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+      codeserver:
+        enabled: true
+        primary: false
+        hosts:
+          - host: &host "code.homeassistant.piscio.net"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+    
+    metrics:
+      enabled: true
+      prometheusRule:
+        enabled: true
+        labels: {}
+        rules: []
+      serviceMonitor:
+        interval: 1m
+        labels: {}
+        scrapeTimeout: 30s
+        bearerTokenSecret:
+          key: LLToken
+          name: homeassistant-secrets
+    persistence:
+      config:
+        enabled: true
         accessMode: ReadWriteOnce
-        size: 1Gi
-        storageClass: ceph-block
+        existingClaim: home-assistant-pvc
+        size: 10Gi
+        storageClass: synology-iscsi-storage
+      jupyter-kernel:
+        enabled: true
+        name: home-assistant-jupyter-secret
+        type: secret
