@@ -8,7 +8,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   interval: 10m
-  path: "./kubernetes/cluster-0/infrastructure/vpn/pod-gateway/downloads"
+  path: "./kubernetes/doc-home-cluster/infrastructure/vpn/pod-gateway/downloads"
   prune: true
   sourceRef:
     kind: GitRepository
