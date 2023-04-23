@@ -31,11 +31,16 @@ spec:
         args:
           - "[ ! -f /etc/alertmanager/alertmanager.yml ] && envsubst < /data/configfiles/alertmanager.yml > /data/config/alertmanager.yml"
         env:
-          - name: SLACKWEBHOOK
+          - name: TELEGRAM_BOT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: alertmanager-secret
-                key: slack_webhook
+                key: telegram_bot_token
+          - name: CHAT_ID
+            valueFrom:
+              secretKeyRef:
+                name: alertmanager-secret
+                key: telegram_chat_id
         volumeMounts:
           - name: config
             mountPath: /data/config
