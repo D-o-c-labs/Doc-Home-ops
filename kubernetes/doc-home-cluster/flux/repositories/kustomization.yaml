@@ -7,3 +7,8 @@ resources:
   - cilium.yaml
   - external-secrets.yaml
   - jetstack.yaml
+  - fairwinds.yaml
+  - grafana.yaml
+  - ingress-nginx.yaml
+  - prometheus-community.yaml
+  - bitnami.yaml

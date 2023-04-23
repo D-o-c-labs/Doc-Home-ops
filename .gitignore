@@ -30,3 +30,9 @@ kubeconfig
 
 # Talos clusterconfigs
 infrastructure/talos/**/clusterconfig
+
+# 1Password Credential
+1password-credentials.json
+
+
+

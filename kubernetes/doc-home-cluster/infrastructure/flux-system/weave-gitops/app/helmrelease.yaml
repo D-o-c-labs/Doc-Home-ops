@@ -1,0 +1,77 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+    name: weave-gitops
+    namespace: flux-system
+spec:
+    interval: 30m
+    chart:
+        spec:
+            chart: weave-gitops
+            version: 4.0.19
+            interval: 30m
+            sourceRef:
+                kind: HelmRepository
+                name: weave-gitops
+    values:
+        podAnnotations:
+            secret.reloader.stakater.com/reload: weave-gitops-secrets
+        logLevel: info
+        adminUser:
+            create: true
+            username: admin
+        networkPolicy:
+            create: false
+        metrics:
+            enabled: true
+        rbac:
+            create: true
+            impersonationResourceNames:
+                - admin
+            additionalRules:
+                - apiGroups:
+                    - infra.contrib.fluxcd.io
+                  resources:
+                    - terraforms
+                  verbs:
+                    - get
+                    - list
+                    - patch
+        ingress:
+            enabled: true
+            className: nginx
+            annotations:
+                nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8,192.168.0.0/16
+            hosts:
+                - host: ENC[AES256_GCM,data:cDnvTA86+lV92JeWzLUFVJU=,iv:q3EkY/td41l1rPlNc8qdcjkNSuUUdQDqda9dwTS1sWs=,tag:es6XcwwG3XyyOrhvlswbTQ==,type:str]
+                  paths:
+                    - path: ENC[AES256_GCM,data:oQ==,iv:/ADf+kileByGJD/BE/f3HuUOyPAzL7cNbGTvrpq9SBY=,tag:geu7Kq+V8qD61TQ6784d8w==,type:str]
+                      pathType: ENC[AES256_GCM,data:ViNzI7mt,iv:3ReTgq5LRUls/Tm57CDKBjLMJFsEH4sIYvuLS5Mdu7c=,tag:+XNU7g3JF0axobn4+2y+GQ==,type:str]
+            tls:
+                - hosts:
+                    - ENC[AES256_GCM,data:oP9h4E04gUoqnCz4WB1Puqo=,iv:XOi7zJhAh+/xAXAWru6mIxLHnTYwT4kCvGptVKf0siQ=,tag:GgWjyrF/wsdFUSuQ1SycTg==,type:str]
+    valuesFrom:
+        - kind: Secret
+          name: weave-gitops-secrets
+          valuesKey: adminPassword
+          targetPath: adminUser.passwordHash
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRcDF1Q2N0M1NhVGFNTUNt
+            czJOUXJCdFh1OERRdVZSY2R0bDVGeE56Q1E0CjRSbmFSK3YyNFRvK1pqRGluTU5w
+            dTVEL1BXTU5ON25IMzdyUitFMTd6WTAKLS0tIHFXcjRxTVFrenZIZkI1SkRTV3Aw
+            R1dDQ1MwWXFlbVg1K2NzTEppMkFpY2sKHa+XiduUsp0c2mcYguo25SkrMCAyRZ2f
+            Ta54MNnjwZjoGjoIoPgzlgWj8xeORehm3woGjhz7NWovGlY2xyN6WA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-04-23T11:07:21Z"
+    mac: ENC[AES256_GCM,data:cUom4+d7c6Yvj2fwc9oidhrgC4OTSNV66GQWLGYPm/VUN1D/+juvzoF2fdxR5cTNU4cDBhGQq8j+KBsnCfjP+oqAOa6EWgLCzgVu610Y3cC8sgGmQJ67AUUThhdZ5qugaE759sCp6JcZ/wqzoIRM78GRCDPkSn554r66N8EnDUA=,iv:N63Xnhh4FEidl9f0+WGPoqzV60qDNCRpHbS91sN/YL8=,tag:zQoot917YEMHu1m+E93OuA==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|hosts|env|hosts)$
+    version: 3.7.3
