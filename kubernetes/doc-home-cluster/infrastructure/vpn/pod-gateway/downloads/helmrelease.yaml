@@ -77,7 +77,7 @@ spec:
     #         type: tcp
 
     routed_namespaces:
-      - leisure
+      - downloads
 
     settings:
       NOT_ROUTED_TO_GATEWAY_CIDRS: 10.0.0.0/8 192.168.0.0/16
