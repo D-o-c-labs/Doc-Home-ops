@@ -18,24 +18,39 @@ spec:
 
   values:
     domainFilters:
-      - bjw-s.dev
+      - piscio.net
 
     env:
-      - name: CF_API_TOKEN
+      - name: EXTERNAL_DNS_RFC2136_ZONE
+        value: piscio.net
+      - name: EXTERNAL_DNS_RFC2136_PORT
+        value: 53
+      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
+        value: hmac-sha512
+      - name: EXTERNAL_DNS_RFC2136_HOST
         valueFrom:
           secretKeyRef:
             name: externaldns-secrets
-            key: cloudflare_api_token
+            key: host
+      - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
+        valueFrom:
+          secretKeyRef:
+            name: externaldns-secrets
+            key: tsig-keyname
+      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: externaldns-secrets
+            key: tsig-secret
 
-    extraArgs:
-      - --cloudflare-proxied
-      - --annotation-filter=external-dns.alpha.kubernetes.io/target
+    # extraArgs:
+    #   - --annotation-filter=external-dns.alpha.kubernetes.io/target
 
     podAnnotations:
       secret.reloader.stakater.com/reload: externaldns-secrets
 
     policy: sync
-    provider: cloudflare
+    provider: rfc2136
 
     serviceMonitor:
       enabled: true
