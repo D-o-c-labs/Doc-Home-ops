@@ -16,3 +16,4 @@ resources:
   - kubernetes-sigs-metrics-server.yaml
   - kubernetes-sigs-nfd.yaml
   - prometheus-community.yaml
+  - weave-gitops.yaml
