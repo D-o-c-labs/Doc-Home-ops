@@ -90,10 +90,10 @@ spec:
     defaultBackend:
       enabled: false
 
-  # valuesFrom:
-  #   # Cloudflare Networks
-  #   # https://www.cloudflare.com/ips/
-  #   - kind: ConfigMap
-  #     name: cloudflare-proxied-networks
-  #     valuesKey: cloudflare-proxied-networks.txt
-  #     targetPath: controller.config.proxy-real-ip-cidr
+  valuesFrom:
+    # Cloudflare Networks
+    # https://www.cloudflare.com/ips/
+    - kind: ConfigMap
+      name: cloudflare-proxied-networks
+      valuesKey: cloudflare-proxied-networks.txt
+      targetPath: controller.config.proxy-real-ip-cidr
