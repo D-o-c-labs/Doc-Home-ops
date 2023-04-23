@@ -1,0 +1,61 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cloudflared
+  namespace: network
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 30m
+
+  values:
+    image:
+      # -- image repository
+      repository: cloudflare/cloudflared
+      # -- image pull policy
+      pullPolicy: IfNotPresent
+      # -- image tag
+      # this example is not automatically updated, so be sure to use the latest image
+      tag: 2023.4.1
+
+    probes:
+      liveness:
+        enabled: true
+        httpGet:
+          # Cloudflared has a /ready endpoint which returns 200 if and only if
+          # it has an active connection to the edge.
+          path: /ready
+          port: 2000
+        failureThreshold: 1
+        initialDelaySeconds: 10
+        periodSeconds: 10
+
+    additionalVolumeMounts:
+    - name: config
+      mountPath: /etc/cloudflared/config
+      readOnly: true
+    - name: creds
+      mountPath: /etc/cloudflared/creds
+      readOnly: true
+    additionalVolumes:
+    - name: creds
+      secret:
+        secretName: cloudflared-secrets
+        items:
+        - key: tunnel-credentials
+          path: credentials.json
+    # Create a config.yaml file from the ConfigMap below.
+    - name: config
+      secret:
+        secretName: cloudflared-secrets
+        items:
+        - key: cloudflared-config
+          path: config.yaml
