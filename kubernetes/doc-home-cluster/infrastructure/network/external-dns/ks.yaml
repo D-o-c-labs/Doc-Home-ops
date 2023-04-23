@@ -2,15 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: cluster-apps-external-dns
+  name: cluster-infrastructure-external-dns
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   interval: 10m
-  path: "./kubernetes/cluster-0/apps/network/external-dns/app"
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/app"
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: doc-ops-kubernetes
   wait: true
