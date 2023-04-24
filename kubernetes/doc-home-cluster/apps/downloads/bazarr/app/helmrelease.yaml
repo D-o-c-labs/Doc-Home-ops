@@ -1,0 +1,92 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: bazarr
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/onedr0p/bazarr
+      tag: 1.2.0@sha256:e11328126c07614deb881a6d9291900cc2fe1b39038abe1df4634ed9c49aae45
+
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups:
+        - 65539
+
+    env:
+      BAZARR__INSTANCE_NAME: Bazarr
+      BAZARR__PORT: &port 6767
+      BAZARR__APPLICATION_URL: "https://bazarr.piscio.net"
+      BAZARR__LOG_LEVEL: info
+      BAZARR__API_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: bazarr-secret
+            key: api_key
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16"
+        hosts:
+          - host: &host "bazarr.piscio.net"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: bazarr-config
+
+      media:
+        enabled: true
+        mountPath: null
+        accessMode: ReadWriteMany
+        existingClaim: media-pvc
+        size: 4096Gi
+        storageClass: '-'
+        subPath:
+          - mountPath: /film
+            path: library/film
+          - mountPath: /usenet-downloads
+            path: usenet-downloads
+          - mountPath: /torrent-downloads
+            path: torrent-downloads
+
+    resources:
+      requests:
+        cpu: 15m
+        memory: 164M
+      limits:
+        memory: 1408M
