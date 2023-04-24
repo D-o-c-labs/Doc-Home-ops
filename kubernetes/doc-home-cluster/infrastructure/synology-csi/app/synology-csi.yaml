@@ -15,27 +15,7 @@ spec:
     ref:
         branch: main
     timeout: 60s
-    url: https://github.com/kodek/synology-csi-talos.git
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
-    age:
-        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCM05TSDJOYWtueUZFdkly
-            WlRYZG92VU8yZUowSms5RWt6WHJxckZHUVZnCkFCMzFLRTFtYVpKVG13c3huQ2ts
-            alVhUTZ0YXBsVGdOZUtsWGMxQ1NxdncKLS0tIDdvREVLeU1CbUlIMmJGNktRSlMx
-            aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
-            VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-23T22:48:34Z"
-    mac: ENC[AES256_GCM,data:scsFVmGx+hwf/fZxxUAilFvs/ujkfNQRQZ4f8jasx28hRke7bHNxB1qYDi+YCZqmuDZDa6gs/EbrKGvJZoW1pSoyZGFHcDxrLB9pxFQpHTcvz242sds1xJM8P5OnJ7+FOual0AMybfiqSlosC1demqV418sBf+4t9o0tmJ6fWnI=,iv:Y0jDmKsiu4kmgj+PJAB0Rrnm/NinKT4LUclDZNFwDt0=,tag:SD+yEd+dZL+G7Mxk6o88Cg==,type:str]
-    pgp: []
-    encrypted_regex: ^(patch)$
-    version: 3.7.3
+    url: https://github.com/SynologyOpenSource/synology-csi.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
@@ -62,27 +42,21 @@ spec:
               name: cluster-settings
               optional: false
     patches:
-        - patch: ENC[AES256_GCM,data:F+Ye1UP3pCsVpdmkb368RafjfWlVaXvaw9+VTzc1rCUWofY/pSCPcjcEIvi7JbNABYFPqB8BAUGHZtfaWGf985Dd8Zf7FEbVKKRVMOKgRf7iK74guO2G5G9KbMhuPI8xUB1zgD4KKWlw3mEFnVEoUw787MyPx5nGTGI5wiQvQN8jIqfyrJ/dzRz1stTQKvuCZ0HXJo6wR/NsVDqw/Mym/xGn/jvxvEmMyhtCeFZCYADhUZm4F6XQ1gOB/RXprgBfnXLpeWPqB9TcwO2pRKLURQoK0yA+lhfJYcJS1rW2WVWVuywye6Q+BHyZ43MLTAx4hM+UbhvWSL9g9pwGqf1ftDFulaBj8dYzVkbNWWllHXL7ymlQO3QDTIJeP6MmIuWnC1szmRPW5Hk6gE0HTEy14YRbKujVqtEwfrqer0ei1AkARB4ZYbkPwjd4whAgCD31W6e58w9RHX4beb/WLx96OV/BFxMJ/6LoR95DYrN+Y4kb08KkksvwI9jCAyGr6KsbOsR92NJxTeSU/niJ52CdksgR/EMM9klOOscCYW3/GtpR7Q2VGmgguSAVUG1BITSrJlkm,iv:5ojsX2W7u+A4CZ1/IA3H7lfuP+OQBQfJ7JoSUum4ycA=,tag:7IiImlI6Eu2uAG+chVjSbA==,type:str]
+        - patch: |-
+            apiVersion: storage.k8s.io/v1
+            kind: StorageClass
+            metadata:
+                name: synology-iscsi
+                annotations:
+                    storageclass.kubernetes.io/is-default-class: "true"
+            provisioner: csi.san.synology.com
+            # if all params are empty, synology CSI will choose an available location to create volume
+            parameters:
+                dsm: piscionas.piscio.net
+                location: /volume2
+                csi.storage.k8s.io/fstype: ext4
+            reclaimPolicy: Retain
+            allowVolumeExpansion: true
           target:
             name: synology-iscsi
             kind: StorageClass
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
-    age:
-        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCM05TSDJOYWtueUZFdkly
-            WlRYZG92VU8yZUowSms5RWt6WHJxckZHUVZnCkFCMzFLRTFtYVpKVG13c3huQ2ts
-            alVhUTZ0YXBsVGdOZUtsWGMxQ1NxdncKLS0tIDdvREVLeU1CbUlIMmJGNktRSlMx
-            aGNIZENQck5KcWNUaUhVNzArTWovU3cKO/tluNtTuHoOJ77ATukuPsZBlCYpeRPW
-            VLOTANX6s/wDjggjg5a2bm9VdEFgbm0TRG+zjrXwyA/qwL0GsIivlQ==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-23T22:48:34Z"
-    mac: ENC[AES256_GCM,data:scsFVmGx+hwf/fZxxUAilFvs/ujkfNQRQZ4f8jasx28hRke7bHNxB1qYDi+YCZqmuDZDa6gs/EbrKGvJZoW1pSoyZGFHcDxrLB9pxFQpHTcvz242sds1xJM8P5OnJ7+FOual0AMybfiqSlosC1demqV418sBf+4t9o0tmJ6fWnI=,iv:Y0jDmKsiu4kmgj+PJAB0Rrnm/NinKT4LUclDZNFwDt0=,tag:SD+yEd+dZL+G7Mxk6o88Cg==,type:str]
-    pgp: []
-    encrypted_regex: ^(patch)$
-    version: 3.7.3
