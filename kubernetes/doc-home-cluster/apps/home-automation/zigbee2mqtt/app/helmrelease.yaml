@@ -26,6 +26,20 @@ spec:
       repository: ghcr.io/koenkk/zigbee2mqtt
       tag: 1.30.3
 
+    persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteOnce
+        existingClaim: zigbee2mqtt-data-pvc
+        size: 1Gi
+        storageClass: synology-iscsi
+      usb:
+        enabled: true
+        hostPath: /dev/ttyACM0
+        type: hostPath
+    securityContext:
+      privileged: true
+
     env:
       ZIGBEE2MQTT_DATA: /data
 
@@ -58,13 +72,6 @@ spec:
         memory: 127M
       limits:
         memory: 1364M
-
-    volumeClaimTemplates:
-      - name: data
-        mountPath: /data
-        accessMode: ReadWriteOnce
-        size: 1Gi
-        storageClass: synology-iscsi
 
     affinity:
       nodeAffinity:
