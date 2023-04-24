@@ -57,5 +57,7 @@ spec:
 
     sources:
       - ingress
+      - service
+
 
     txtPrefix: "k8s."
