@@ -11,3 +11,18 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: synology-iscsi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: home-assistant-mariadb-pvc
+  namespace: home-automation
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: synology-iscsi
