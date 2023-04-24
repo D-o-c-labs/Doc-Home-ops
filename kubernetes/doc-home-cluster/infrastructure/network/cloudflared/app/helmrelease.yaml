@@ -57,14 +57,18 @@ spec:
         enabled: true
         type: secret
         mountPath: /etc/cloudflared/config
-        existingClaim: cloudflared-secret
-        subPath: config.yaml
+        name: cloudflared-secrets
+        items:
+        - key: config.yaml
+          path: config.yaml
       credentials:
         enabled: true
         type: secret
         mountPath: /etc/cloudflared/creds
-        existingClaim: cloudflared-secret
-        subPath: credentials.json
+        name: cloudflared-secrets
+        items:
+        - key: credentials.json
+          path: credentials.json
 
 
     # additionalVolumeMounts:
