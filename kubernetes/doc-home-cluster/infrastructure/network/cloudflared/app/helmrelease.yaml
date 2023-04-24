@@ -26,6 +26,16 @@ spec:
       # this example is not automatically updated, so be sure to use the latest image
       tag: 2023.4.1
 
+
+    args:
+    - tunnel
+    # Points cloudflared to the config file, which configures what
+    # cloudflared will actually do. This file is created by a ConfigMap
+    # below.
+    - --config
+    - /etc/cloudflared/config/config.yaml
+    - run
+
     probes:
       liveness:
         enabled: true
