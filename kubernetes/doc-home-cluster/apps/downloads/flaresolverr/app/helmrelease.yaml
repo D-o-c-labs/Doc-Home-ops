@@ -1,0 +1,44 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: flaresolverr
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/flaresolverr/flaresolverr
+      tag: v3.1.2@sha256:357eb73000ba35aac096721b7f3006ed69f1773628de5c7ec13dfef6c53952ba
+
+    env:
+      TZ: Europe/Rome
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8191
+
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: "1Gi"
+      # limits:
+      #   memory: "4096M"
