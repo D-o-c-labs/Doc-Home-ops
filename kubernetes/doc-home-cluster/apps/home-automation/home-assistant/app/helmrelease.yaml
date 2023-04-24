@@ -203,7 +203,7 @@ spec:
         accessMode: ReadWriteOnce
         existingClaim: home-assistant-pvc
         size: 10Gi
-        storageClass: synology-iscsi-storage
+        storageClass: synology-iscsi
       jupyter-kernel:
         enabled: true
         name: home-assistant-jupyter-secret

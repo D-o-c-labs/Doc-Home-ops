@@ -15,7 +15,7 @@ spec:
     ref:
         branch: main
     timeout: 60s
-    url: https://github.com/SynologyOpenSource/synology-csi.git
+    url: https://github.com/zebernst/synology-csi-talos.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization

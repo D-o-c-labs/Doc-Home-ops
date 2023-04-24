@@ -5,9 +5,9 @@ metadata:
   namespace: home-automation
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   volumeMode: Filesystem
   resources:
     requests:
       storage: 10Gi
-  storageClassName: synology-iscsi-storage
+  storageClassName: synology-iscsi

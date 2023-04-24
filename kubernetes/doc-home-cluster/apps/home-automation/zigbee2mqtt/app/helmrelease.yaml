@@ -64,7 +64,7 @@ spec:
         mountPath: /data
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: synology-iscsi-storage
+        storageClass: synology-iscsi
 
     affinity:
       nodeAffinity:
