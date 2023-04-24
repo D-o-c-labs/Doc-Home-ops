@@ -38,6 +38,10 @@ spec:
         initialDelaySeconds: 10
         periodSeconds: 10
 
+    service:
+      main:
+        enabled: false
+
     additionalVolumeMounts:
     - name: config
       mountPath: /etc/cloudflared/config
