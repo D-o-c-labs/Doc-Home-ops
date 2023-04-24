@@ -49,6 +49,19 @@ spec:
             mountPath: /data/config
           - name: configfiles
             mountPath: /data/configfiles
+      update-volume-permission:
+        command:
+          - sh
+          - '-c'
+          - chown -R 568:568 /config /data
+        image: busybox
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+          - mountPath: /config
+            name: config
+          - mountPath: /data
+            name: data
 
     env:
       UMASK: "022"
