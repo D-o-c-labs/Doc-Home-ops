@@ -180,6 +180,9 @@ spec:
           - host: &host "code.homeassistant.piscio.net"
             paths:
               - path: /
+                service:
+                  name: home-assistant-codeserver
+                  port: 8443
         tls:
           - hosts:
               - *host
