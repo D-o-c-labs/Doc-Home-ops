@@ -96,10 +96,10 @@ spec:
             name: Prometheus
             type: prometheus
             url: http://thanos-query.monitoring:9090
-          - access: proxy
-            name: Loki
-            type: loki
-            url: http://loki-gateway.monitoring.svc.cluster.local:80
+          # - access: proxy
+          #   name: Loki
+          #   type: loki
+          #   url: http://loki-gateway.monitoring.svc.cluster.local:80
           - name: Alertmanager
             type: alertmanager
             access: proxy
