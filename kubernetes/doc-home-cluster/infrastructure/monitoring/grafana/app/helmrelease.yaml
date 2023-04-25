@@ -95,7 +95,7 @@ spec:
             isDefault: true
             name: Prometheus
             type: prometheus
-            url: http://thanos-query.monitoring:9090
+            url: http://kube-prometheus-stack-prometheus.monitoring:9090
           # - access: proxy
           #   name: Loki
           #   type: loki
