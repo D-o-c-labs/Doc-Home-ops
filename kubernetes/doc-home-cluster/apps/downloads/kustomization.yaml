@@ -6,7 +6,7 @@ resources:
   - ./namespace.yaml
   - ./volume.yaml
   # Flux-Kustomizations
-  #- ./overseerr/ks.yaml
+  - ./overseerr/ks.yaml
   - ./bazarr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
