@@ -1,0 +1,67 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: notifiarr
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: golift/notifiarr
+      tag: 0.5@sha256:29cf5a51a52529126b7f4bf2399b0977dd37527491ff5e2568cb902b374655fc
+
+
+    env:
+      DN_API_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: notifiarr-secret
+            key: api_key
+      DN_PLEX_TOKEN:
+        valueFrom:
+          secretKeyRef:
+            name: notifiarr-secret
+            key: plex_token
+      DN_PLEX_URL: https://plex.piscio.net
+      DN_RADARR_0_API_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: notifiarr-secret
+            key: radarr_api_key
+      DN_RADARR_0_NAME: Radarr
+      DN_RADARR_0_URL: "http://radarr:7878"
+      DN_SONARR_0_API_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: notifiarr-secret
+            key: sonarr_api_key
+      DN_SONARR_0_NAME: Sonarr
+      DN_SONARR_0_URL: http://sonarr:8989
+
+    service:
+      main:
+        ports:
+          http:
+            port: 5454
+
+    resources:
+      requests:
+        cpu: 15m
+        memory: 164M
+      limits:
+        memory: 1408M
