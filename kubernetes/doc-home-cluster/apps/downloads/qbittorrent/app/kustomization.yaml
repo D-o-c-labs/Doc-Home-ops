@@ -13,7 +13,7 @@ configMapGenerator:
     - name: qbittorrent-configmap
       files:
         - config/categories.json
-        - config/qBittorrent.sops.conf
+        - config/qBittorrent.conf
         - config/watched_folders.json
 generatorOptions:
     disableNameSuffixHash: true
