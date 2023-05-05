@@ -3,15 +3,15 @@
   "extends": [
     "github>bjw-s/renovate-config",
     "github>bjw-s/renovate-config:automerge-github-actions",
-    "github>bjw-s/home-ops//.github/renovate/allowedVersions.json5",
-    "github>bjw-s/home-ops//.github/renovate/autoMerge.json5",
-    "github>bjw-s/home-ops//.github/renovate/disabledDatasources.json5",
-    "github>bjw-s/home-ops//.github/renovate/groups.json5",
+    "github>D-o-c/Doc-Home-ops//.github/renovate/allowedVersions.json5",
+    "github>D-o-c/Doc-Home-ops//.github/renovate/autoMerge.json5",
+    "github>D-o-c/Doc-Home-ops//.github/renovate/disabledDatasources.json5",
+    "github>D-o-c/Doc-Home-ops//.github/renovate/groups.json5",
   ],
   "platform": "github",
-  "username": "bjw-s-bot[bot]",
-  "gitAuthor": "bjw-s-bot <87358111+bjw-s-bot[bot]@users.noreply.github.com>",
-  "repositories": ["bjw-s/home-ops"],
+  "username": "Doc-bot[bot]",
+  "gitAuthor": "Doc-bot <87358111+Doc-bot[bot]@users.noreply.github.com>",
+  "repositories": ["D-o-c/Doc-Home-ops"],
   "flux": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
   },
