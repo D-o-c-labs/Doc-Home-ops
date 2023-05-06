@@ -33,5 +33,5 @@ jobs:
       dryRun: ${{ inputs.dryRun || 'false' }}
       renovateLogLevel: ${{ inputs.logLevel || 'debug' }}
     secrets:
-      app_id: ${{ secrets.BJWS_APP_ID }}
-      app_private_key: ${{ secrets.BJWS_APP_PRIVATE_KEY }}
+      app_id: ${{ secrets.DOC_APP_ID }}
+      app_private_key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
