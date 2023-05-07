@@ -15,9 +15,6 @@
   "flux": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
   },
-  "netmaker": {
-    "fileMatch": ["infrastructure/netmaker/docker-compose.yml"]
-  },
   "helm-values": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
   },
@@ -37,6 +34,7 @@
       "description": ["Generic Docker image Regex manager"],
       "fileMatch": [
         "infrastructure/.+\\.ya?ml$",
+        "infrastructure/.+\\.y?ml$",
         "infrastructure/.+\\.tf$"
       ],
       "matchStrings": [
