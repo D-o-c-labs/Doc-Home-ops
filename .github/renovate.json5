@@ -15,6 +15,9 @@
   "flux": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
   },
+  "netmaker": {
+    "fileMatch": ["infrastructure/netmaker/docker-compose.yml"]
+  },
   "helm-values": {
     "fileMatch": ["kubernetes/.+\\.ya?ml$"]
   },
