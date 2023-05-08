@@ -62,7 +62,7 @@ spec:
             action: replace
 
     kubeProxy:
-      enabled: true
+      enabled: false
 
     kubeScheduler:
       enabled: true
