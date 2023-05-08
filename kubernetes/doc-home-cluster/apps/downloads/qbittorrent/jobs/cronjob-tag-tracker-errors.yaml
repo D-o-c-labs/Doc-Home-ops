@@ -23,5 +23,15 @@ spec:
                   value: http://qbittorrent.downloads.svc.cluster.local:8080
                 - name: QB_TAG
                   value: "Tracker Errors"
+                - name: QB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: qbittorrent-secret
+                      key: password
+                - name: QB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: qbittorrent-secret
+                      key: username   
               args:
                 - "/app/tag-tracker-errors.py"

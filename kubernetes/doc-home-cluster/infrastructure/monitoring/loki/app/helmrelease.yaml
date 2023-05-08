@@ -219,6 +219,10 @@ spec:
       kind: Secret
       name: loki-bucket-secret
       valuesKey: BUCKET_HOST
+    - kind: Secret
+      name: loki-bucket-secret
+      valuesKey: BUCKET_REGION
+      targetPath: loki.structuredConfig.common.storage.s3.region
     - targetPath: loki.structuredConfig.common.storage.s3.access_key_id
       kind: Secret
       name: loki-bucket-secret
