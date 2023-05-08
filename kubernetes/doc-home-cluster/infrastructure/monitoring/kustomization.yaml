@@ -8,9 +8,9 @@ resources:
   - ./alertmanager/ks.yaml
   #- ./blackbox-exporter/ks.yaml
   - ./goldilocks/ks.yaml
-  - ./grafana/ks.yaml
+  #- ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-  - ./loki/ks.yaml
+  #- ./loki/ks.yaml
   - ./node-exporter/ks.yaml
   # - ./thanos/ks.yaml
   #- ./unpoller/ks.yaml
