@@ -142,7 +142,7 @@ spec:
             name: alertmanager
             port: 9093
             apiVersion: v2
-        # additionalScrapeConfigs:
+        additionalScrapeConfigs:
         #   - job_name: coredns
         #     scrape_interval: 1m
         #     scrape_timeout: 10s
@@ -168,16 +168,14 @@ spec:
         #         target_label: __address__
         #         replacement: $1
 
-        #   - job_name: node-exporter
-        #     scrape_interval: 1m
-        #     scrape_timeout: 10s
-        #     honor_timestamps: true
-        #     static_configs:
-        #       - targets:
-        #           - gateway.bjw-s.tech:9100
-        #           - horus.bjw-s.tech:9100
-        #           - nas.bjw-s.tech:9100
-        #           - pikvm.bjw-s.tech:9100
+          - job_name: node-exporter
+            scrape_interval: 1m
+            scrape_timeout: 10s
+            honor_timestamps: true
+            static_configs:
+              - targets:
+                  - tank.piscio.net:9100
+                  #- piscionas.piscio.net:9100
 
         #   - job_name: speedtest-exporter
         #     scrape_interval: 60m
