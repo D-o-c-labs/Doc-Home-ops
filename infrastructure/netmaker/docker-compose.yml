@@ -4,7 +4,7 @@ version: "3.4"
 services:
   netmaker:
     container_name: netmaker
-    image: gravitl/netmaker:v0.19.0-ee
+    image: gravitl/netmaker:v0.19.0-ee@sha256:3bd97547d0f71f18a53e09cfaeb8e1e7c3a36707dcbec6c1d13f6a301fbdf8f9
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -48,7 +48,7 @@ services:
       - "51821-51830:51821-51830/udp"
   netmaker-ui:
     container_name: netmaker-ui
-    image: gravitl/netmaker-ui:v0.19.0
+    image: gravitl/netmaker-ui:v0.19.0@sha256:62c6e9dba210a949925900bd9f95cd98f3df28cc4ca97d2c762cc17fe15a90dd
     depends_on:
       - netmaker
     links:
@@ -57,7 +57,7 @@ services:
     environment:
       BACKEND_URL: "https://api.netmaker.piscio.net"
   caddy:
-    image: caddy:2.6.4
+    image: caddy:2.6.4@sha256:bc23ee7f830ab9d029e5469e82a3e36f8c401001c2c8a5a6d919a82668d8087b
     container_name: caddy
     restart: unless-stopped
     volumes:
@@ -69,7 +69,7 @@ services:
       - "443:443"
   coredns:
     container_name: coredns
-    image: coredns/coredns
+    image: coredns/coredns@sha256:a0ead06651cf580044aeb0a0feba63591858fb2e43ade8c9dea45a6a89ae7e5e
     command: -conf /root/dnsconfig/Corefile
     depends_on:
       - netmaker
@@ -78,7 +78,7 @@ services:
       - dnsconfig:/root/dnsconfig
   mq:
     container_name: mq
-    image: eclipse-mosquitto:2.0.15-openssl
+    image: eclipse-mosquitto:2.0.15-openssl@sha256:4a4413784ab9cd1b2008e9555043bf60e86b6c7ae3d2333e507dba011f1297c6
     depends_on:
       - netmaker
     restart: unless-stopped
@@ -95,7 +95,7 @@ services:
       - "8883:8883"
   prometheus:
     container_name: prometheus
-    image: gravitl/netmaker-prometheus:latest
+    image: gravitl/netmaker-prometheus:latest@sha256:096b3da166c914db70ae1fed535aca9c015ae75a7f471ff2526cc11fb4bb4e79
     environment:
       NETMAKER_METRICS_TARGET: "netmaker-exporter.netmaker.piscio.net"
       LICENSE_KEY: ${LICENSE_KEY}
@@ -106,7 +106,7 @@ services:
       - netmaker
   grafana:
     container_name: grafana
-    image: gravitl/netmaker-grafana:latest
+    image: gravitl/netmaker-grafana:latest@sha256:fe4650a5dfd2f1ad193bffec492efe7ca08459d9b3f8aacd986c79782d8a3968
     environment:
       PROMETHEUS_HOST: "prometheus.netmaker.piscio.net"
       NETMAKER_METRICS_TARGET: "netmaker-exporter.netmaker.piscio.net"
@@ -121,7 +121,7 @@ services:
       - netmaker
   netmaker-exporter:
     container_name: netmaker-exporter
-    image: gravitl/netmaker-exporter:latest
+    image: gravitl/netmaker-exporter:latest@sha256:ddf306077b533413919acc5006114394b19c2bb5bee7e25e4ca7de773a28a1fe
     restart: always
     depends_on:
       - netmaker
