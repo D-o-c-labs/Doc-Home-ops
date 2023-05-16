@@ -45,18 +45,26 @@ spec:
         env:
           - name: VPN_SERVICE_PROVIDER
             value: mullvad
+          - name: TZ
+            value: Europe/Rome
           - name: VPN_TYPE
             value: wireguard
           - name: VPN_INTERFACE
             value: wg0
+          - name: SHADOWSOCKS
+            value: "on"
           - name: FIREWALL
             value: "off"
           - name: DOT
             value: "off"
-          - name: SERVER_CITIES
-            value: Zurich
-          - name: SERVER_HOSTNAMES
-            value: ch2-wireguard
+          - name: OWNED_ONLY
+            value: "yes"
+          - name: SERVER_COUNTRIES
+            values: "Sweden,Switzerland"
+          # - name: SERVER_CITIES
+          #   value: Zurich
+          # - name: SERVER_HOSTNAMES
+          #   value: ch2-wireguard
           - name: WIREGUARD_PRIVATE_KEY
             valueFrom:
               secretKeyRef:
