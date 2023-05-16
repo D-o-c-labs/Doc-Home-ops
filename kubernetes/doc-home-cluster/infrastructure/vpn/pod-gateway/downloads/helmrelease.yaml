@@ -37,7 +37,7 @@ spec:
 
     addons:
       vpn:
-        enabled: false
+        enabled: true
         type: gluetun
         image:
           repository: ghcr.io/qdm12/gluetun
