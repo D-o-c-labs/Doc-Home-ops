@@ -23,6 +23,18 @@ spec:
 
     DNS: 172.16.1.1
 
+    service:
+      vpn:
+        enabled: true
+        type: LoadBalancer
+        annotations:
+          metallb.universe.tf/loadBalancerIPs: "192.168.32.155"
+        externalTrafficPolicy: Local
+        ports:
+          shadowsocks:
+            enabled: true
+            port: 8388
+
     addons:
       vpn:
         enabled: true
@@ -55,6 +67,12 @@ spec:
               secretKeyRef:
                 name: downloads-gateway-vpnconfig
                 key: WIREGUARD_ADDRESSES
+        resources:
+          requests:
+            cpu: 5m
+            memory: 64M
+          limits:
+            memory: 64M
         securityContext:
           capabilities:
             add:
@@ -62,6 +80,12 @@ spec:
 
       netshoot:
         enabled: true
+        resources:
+          requests:
+            cpu: 5m
+            memory: 10M
+          limits:
+            memory: 10M
 
     podAnnotations:
       configmap.reloader.stakater.com/reload: downloads-gateway-pod-gateway
@@ -85,7 +109,6 @@ spec:
       VPN_INTERFACE: wg0
       VPN_LOCAL_CIDRS: 10.0.0.0/8 192.168.0.0/16
       VPN_TRAFFIC_PORT: "51820"
-      DNS_LOCAL_CIDRS: "local"
       VXLAN_ID: 43
       VXLAN_IP_NETWORK: 172.16.1
 
