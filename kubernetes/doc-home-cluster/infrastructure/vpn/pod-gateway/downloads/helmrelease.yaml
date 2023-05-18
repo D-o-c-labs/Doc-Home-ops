@@ -60,7 +60,7 @@ spec:
           - name: OWNED_ONLY
             value: "yes"
           - name: SERVER_COUNTRIES
-            values: "Sweden"
+            value: "Sweden,Switzerland"
           # - name: SERVER_CITIES
           #   value: Zurich
           # - name: SERVER_HOSTNAMES
