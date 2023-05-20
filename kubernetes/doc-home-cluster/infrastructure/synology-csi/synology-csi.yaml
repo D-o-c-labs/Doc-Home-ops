@@ -17,7 +17,7 @@ spec:
     timeout: 60s
     url: https://github.com/zebernst/synology-csi-talos.git
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
     name: cluster-infrastructure-synology-csi
