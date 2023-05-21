@@ -25,7 +25,7 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest", "patch", "minor"],
-      paths: ["/kubernetes/doc-home-cluster/apps/downloads/*"],
+      paths: ["/kubernetes/doc-home-cluster/apps/downloads/**"],
       ignoreTests: true,
     }
   ],
