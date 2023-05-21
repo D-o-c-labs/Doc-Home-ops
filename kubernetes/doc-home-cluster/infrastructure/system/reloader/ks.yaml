@@ -11,6 +11,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
-  dependsOn:
-    - name: cluster-infrastructure-snapshot-controller
+  # dependsOn:
+  #   - name: cluster-infrastructure-snapshot-controller
   wait: true
