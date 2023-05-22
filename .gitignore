@@ -34,5 +34,6 @@ infrastructure/talos/**/clusterconfig
 # 1Password Credential
 1password-credentials.json
 
+.vscode/settings.json
 
 
