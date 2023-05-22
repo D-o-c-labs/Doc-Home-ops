@@ -19,5 +19,14 @@
       matchPackageNames: ["ghcr.io/onedr0p/prowlarr-nightly"],
       ignoreTests: true,
     },
+    {
+      description: "Auto merge downloads namespace",
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["digest", "patch", "minor"],
+      paths: ["/kubernetes/doc-home-cluster/apps/downloads/**"],
+      ignoreTests: true,
+    }
   ],
 }

@@ -4,7 +4,6 @@ metadata:
     name: synology-csi
     namespace: flux-system
 spec:
-    gitImplementation: go-git
     ignore: |
         # exclude all
         /*

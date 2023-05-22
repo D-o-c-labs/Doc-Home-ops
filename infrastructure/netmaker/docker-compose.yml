@@ -4,7 +4,7 @@ version: "3.4"
 services:
   netmaker:
     container_name: netmaker
-    image: gravitl/netmaker:v0.19.0-ee@sha256:3bd97547d0f71f18a53e09cfaeb8e1e7c3a36707dcbec6c1d13f6a301fbdf8f9
+    image: gravitl/netmaker:v0.20.0-ee@sha256:50d99e38a27c50741cc8652b2b08b4328d377af5b3c111f622b9cea1e62007a4
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -48,7 +48,7 @@ services:
       - "51821-51830:51821-51830/udp"
   netmaker-ui:
     container_name: netmaker-ui
-    image: gravitl/netmaker-ui:v0.19.0@sha256:62c6e9dba210a949925900bd9f95cd98f3df28cc4ca97d2c762cc17fe15a90dd
+    image: gravitl/netmaker-ui:v0.20.0@sha256:261abc770dbad40f6f1d327416f0a00717e0b121cdb79e057bd8eda9426090b6
     depends_on:
       - netmaker
     links:

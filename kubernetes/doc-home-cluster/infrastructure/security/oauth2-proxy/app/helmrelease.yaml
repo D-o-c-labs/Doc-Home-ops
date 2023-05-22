@@ -24,49 +24,49 @@ spec:
             repository: quay.io/oauth2-proxy/oauth2-proxy
             tag: v7.4.0
         env:
-            OAUTH2_PROXY_HTTP_ADDRESS: ENC[AES256_GCM,data:itdlJLMnuQAjmmh4,iv:G71XG3p4U5gxHLI36p1pXgy35MmyaVyvNU06/k3EbIc=,tag:Rz4IF6oayQGQUZ+1bYlJuA==,type:str]
-            OAUTH2_PROXY_METRICS_ADDRESS: ENC[AES256_GCM,data:o001/qSdXGW6qbHlbQ==,iv:3SN9747GMpF5qiImk7aK9cL6KRamVr95NvkXksajip8=,tag:qun99WxcBlX0d/V8LRnNyw==,type:str]
-            OAUTH2_PROXY_COOKIE_DOMAINS: ENC[AES256_GCM,data:yJACajMEQzsp/g==,iv:nc3w76YpNabEfvCBnzS8eonku7HdbW5RmDxTsCiLtAU=,tag:gtw/muclau5pulP3jG5WAA==,type:str]
+            OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+            OAUTH2_PROXY_METRICS_ADDRESS: 0.0.0.0:44180
+            OAUTH2_PROXY_COOKIE_DOMAINS: piscio.net
             OAUTH2_PROXY_COOKIE_SECRET:
                 valueFrom:
                     secretKeyRef:
-                        name: ENC[AES256_GCM,data:lrzT24bNkMtwzUbA/v2TEvUb1jk=,iv:IEHxkrkc/+fQQBiEbEY27R20VCq3TIP4ZBcakdRlieE=,tag:XG5GPkWiJVAXRcQ5vw40LQ==,type:str]
-                        key: ENC[AES256_GCM,data:u3Ywnly0Cs8+3OU1Rg==,iv:vpJGbYxpxyDrSDSLHfUGCUI5WUucribGYdDO7ySMIeY=,tag:fUvPTXW+Nwa/4fGHpUd8tw==,type:str]
-            OAUTH2_PROXY_COOKIE_SECURE: ENC[AES256_GCM,data:zXTaPQ==,iv:lFlqeLrXoDWDjyMZxXluLRUOo8jIOWnCiaeQTsSR/q4=,tag:kw5+Cmt17ZU/c0y1xUa7WA==,type:bool]
-            OAUTH2_PROXY_EMAIL_DOMAINS: ENC[AES256_GCM,data:Nw==,iv:NmSXwHxRUY02PQLZR+hNiKvvD7H3L5Ua4vO0jYSR3sw=,tag:vyi4rtjmjXS0rgs1oKU5Nw==,type:str]
-            OAUTH2_PROXY_SCOPE: ENC[AES256_GCM,data:Z2sM9OcMyHv4IgRT/mntxXLBQ/0=,iv:LnHTin0jmkB9kS6IUWiX/qT+B1BALqyfEDbaClhf6Yw=,tag:fywh8HXKQz1CCk7YL0jx4Q==,type:str]
-            OAUTH2_PROXY_PROVIDER: ENC[AES256_GCM,data:qnMPHw==,iv:t7WEPm2htpK2SUJ9gc4gxyFyyAPRZItE6cTouayXJhY=,tag:yXJrJs4wKjkntqN7K74NlA==,type:str]
+                        name: oauth2-proxy-secrets
+                        key: cookie-secret
+            OAUTH2_PROXY_COOKIE_SECURE: true
+            OAUTH2_PROXY_EMAIL_DOMAINS: '*'
+            OAUTH2_PROXY_SCOPE: openid profile email
+            OAUTH2_PROXY_PROVIDER: oidc
             OAUTH2_PROXY_OIDC_ISSUER_URL:
                 valueFrom:
                     secretKeyRef:
-                        name: ENC[AES256_GCM,data:8Ybsjwr8DI50KW6+kRER6+bhDkw=,iv:glNzsQ8UyJZ6brMq5v5cz3LBacKQMPDu/mOy1bwodKE=,tag:3kSFbGpA36LZ2Vx1+OzLlg==,type:str]
-                        key: ENC[AES256_GCM,data:0lTygvnFKy8Il3iBGb6i,iv:cpe08BHYt5vR6craHlx6j+Pw5+Gs0of5JdY2UcWJex0=,tag:+ELBqv9oxqRnTx2hqFNyrg==,type:str]
+                        name: oauth2-proxy-secrets
+                        key: oidc-issuer-url
             OAUTH2_PROXY_CLIENT_ID:
                 valueFrom:
                     secretKeyRef:
-                        name: ENC[AES256_GCM,data:P1cv/E+V2t8wjgoNZZYDNn6Dsx0=,iv:NS1C1bPUKzYHJZyW8GlhPadPqJqJkbiszJubuZqOsn8=,tag:RgwCZzxyd4+PG9Q0IztTvw==,type:str]
-                        key: ENC[AES256_GCM,data:m9+qhQ3940qQ,iv:Ac83gtNRhf269cJ9tS4pTsGZM7ZIhsmifb2r2iIVlFw=,tag:M72J0CF2M6zR53e7S9BbaQ==,type:str]
+                        name: oauth2-proxy-secrets
+                        key: client-id
             OAUTH2_PROXY_CLIENT_SECRET:
                 valueFrom:
                     secretKeyRef:
-                        name: ENC[AES256_GCM,data:9+HSjLmEZtmY8FJQC73YYPshoTY=,iv:gka8HEgYHemEqSr6tnrNKoMnCa9p8A+zgfidFv8aBv4=,tag:Llg0gsSA8EeH/kGfwMkUEA==,type:str]
-                        key: ENC[AES256_GCM,data:Yzt/sf3d3cFVKJ8AEQ==,iv:f5LAxw08E7WfNgrDCQ9cbU0qDtvcwZZ6D+S4zRqHRlg=,tag:angMXSt8tlwQ1GkOhVDNwg==,type:str]
-            OAUTH2_PROXY_OIDC_GROUPS_CLAIM: ENC[AES256_GCM,data:aU4BvGz29YnGgRL20i2zjNpKk0h1JX+hqw==,iv:RgFgs4BkK2Z0VYV9/2s4TYqEyC95CIQToRQnd9uUUXs=,tag:Z4lAmyRii8QHuy13/hznXw==,type:str]
-            OAUTH2_PROXY_SESSION_STORE_TYPE: ENC[AES256_GCM,data:AQIvDp4=,iv:pq6xcv6uo8ullE4hx/mR3hSTkAtxx8giHhBl3gYubMM=,tag:U19f1dsB26izRmFgq4B+Ag==,type:str]
-            OAUTH2_PROXY_REDIS_CONNECTION_URL: ENC[AES256_GCM,data:d4CEbDKiqIiCX9dJV26bTKOupUjSEWrKMS+d0Bov7EZRxcGGH/2P0NHHSK4Uep7I7vVfBrHQcGGmdg==,iv:iVjoMFKs8ty1Zhy+QRLzXceEOtdN4xs4qyhH17YNS/8=,tag:l+leYioYvtk3x5GlYPPZRQ==,type:str]
+                        name: oauth2-proxy-secrets
+                        key: client-secret
+            OAUTH2_PROXY_OIDC_GROUPS_CLAIM: https://piscio.net/groups
+            OAUTH2_PROXY_SESSION_STORE_TYPE: redis
+            OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://oauth2-proxy-redis.security.svc.cluster.local:6379
             OAUTH2_PROXY_REDIS_PASSWORD:
                 valueFrom:
                     secretKeyRef:
-                        name: ENC[AES256_GCM,data:9eEBs5I5I8SnNomGQBU3rWrB0u8=,iv:xvxYgmhVapxodx9vPKFm5OFy3PBQPVScBzC/AjREEMU=,tag:qJOG3okSleOvzvA9EqwydQ==,type:str]
-                        key: ENC[AES256_GCM,data:/mTpIKRzfpxY6w0E9eQ=,iv:dDO98JIimiLVjKG0vwnm+mwNdNti8OSNO/ereD323mE=,tag:+ZY0EvlAY6kaFTEpNab0qw==,type:str]
-            OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER: ENC[AES256_GCM,data:KyV+iA==,iv:UeJGyt80FcWPmrzxXxGzOt54gFo23Hzj+VB6p4VJKGQ=,tag:Y2Qtxfndd1CkeCnN+XRQ6g==,type:bool]
-            OAUTH2_PROXY_PASS_ACCESS_TOKEN: ENC[AES256_GCM,data:qxoRYQ==,iv:pCqczUn/b2ACeCZC8YQz+y71rPFHnr/2CVc+MyMj8Kc=,tag:DaACxuLdcMWDVNY6i3Os1A==,type:bool]
-            OAUTH2_PROXY_PASS_USER_HEADERS: ENC[AES256_GCM,data:8Z/2wA==,iv:DoXegwoF/DUDJ+No/EjXlQ+GeSN6UJKOvvhmeUA6RBc=,tag:s3NHprMkfZujGozkWx7QiA==,type:bool]
-            OAUTH2_PROXY_PREFER_EMAIL_TO_USER: ENC[AES256_GCM,data:SW41Zg==,iv:nNbL0+zBIBx8nbcWgEggVdUlYsKyskywlLpd5D8LpS0=,tag:X7GxHAkfF6o4bFxXvQgr0w==,type:bool]
-            OAUTH2_PROXY_SET_AUTHORIZATION-HEADER: ENC[AES256_GCM,data:18HHHw==,iv:+1UwYZ+HDqJiouyG4cxf3TKQXJrWQK9pBSaqjYYJWUA=,tag:UOUA4V73HQ4nL/q5PxD5dQ==,type:bool]
-            OAUTH2_PROXY_SET_XAUTHREQUEST: ENC[AES256_GCM,data:g+HuIQ==,iv:7Hwr0RxIdXW8YNZp52ZY25g87aDC9qqussKVyqsi3Ys=,tag:BwKcL0hlNoA6IpLpWhhfkQ==,type:bool]
-            OAUTH2_PROXY_REVERSE_PROXY: ENC[AES256_GCM,data:VWDWTQ==,iv:fccj6ebxVcfEbueaK24Y7ZJei1wtL+bJGzAwU1nGpxA=,tag:r0ShejjIpTJN8vWcO40Rqg==,type:bool]
-            OAUTH2_PROXY_WHITELIST_DOMAINS: ENC[AES256_GCM,data:Ax5JoiWsY8V5Cp4=,iv:pzzhRHAv7EQyEG0vW7fOmkaz3dWgpPkliIbVDbAySnw=,tag:lI1CKK0T0G3mKv62AK76xg==,type:str]
+                        name: oauth2-proxy-secrets
+                        key: redis-password
+            OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER: true
+            OAUTH2_PROXY_PASS_ACCESS_TOKEN: true
+            OAUTH2_PROXY_PASS_USER_HEADERS: true
+            OAUTH2_PROXY_PREFER_EMAIL_TO_USER: true
+            OAUTH2_PROXY_SET_AUTHORIZATION-HEADER: true
+            OAUTH2_PROXY_SET_XAUTHREQUEST: true
+            OAUTH2_PROXY_REVERSE_PROXY: true
+            OAUTH2_PROXY_WHITELIST_DOMAINS: .piscio.net
         service:
             main:
                 ports:
@@ -82,13 +82,13 @@ spec:
                 annotations:
                     nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8,192.168.0.0/16
                 hosts:
-                    - host: ENC[AES256_GCM,data:MY69fUZLTen26TzE2EVH,iv:8WAapclaE+ghuOx6tJxxAFwbTzESRaQKvW2P4srIdz8=,tag:pP9RGXy+Yy5PswPzQQsrmQ==,type:str]
+                    - host: auth.piscio.net
                       paths:
-                        - path: ENC[AES256_GCM,data:px+JEjGSew==,iv:zz649AJQuMc3wYRoVrmRWufyXSNYNVLTFQlUpiz/XQk=,tag:CVZN23dbdgbgAdRyvLq0vw==,type:str]
-                          pathType: ENC[AES256_GCM,data:nyO+gOJr,iv:dX/t4BLr1RRvoGFOEhLEQP0Qna6bE2mCJ+Iuo65fVUM=,tag:6nnIoA/NMp8t3Vzz0faa9w==,type:str]
+                        - path: /oauth2
+                          pathType: Prefix
                 tls:
                     - hosts:
-                        - ENC[AES256_GCM,data:eKql7Q+vKxKSqJbGVPd2,iv:esNiC34gijEI3YjVKNy9I/ncwYrLTEk3ZSL6rTavi54=,tag:JH70r0KkLnn53X2wfQ5h6Q==,type:str]
+                        - auth.piscio.net
         resources:
             requests:
                 cpu: 15m
@@ -96,23 +96,3 @@ spec:
             limits:
                 cpu: 20m
                 memory: 105M
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
-    age:
-        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxcWR5aHVmWU8xOWJYS2JG
-            SVAwSUxKOFk5OHF5RktXbitoTUIxTlUwcXljCmFpYUFPKzlRMmFRM3J6NEdZd1Q0
-            OFJTRzErVFloRnlEZ1dWYko2QUh1akEKLS0tIDQ4U2N0T3NRemZFK0lNR3JuR3Rj
-            Uk42azB1REtpNFFlSlJXZWNGSzFDYlkKWrvQxbIzR1UUnEtH41EZevMs8WKaXg0f
-            a+yM7qWV5soKswK70eXl1N/H+sioGxuxRUG0n3d92sPPDwiLWOXu3A==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-21T14:00:50Z"
-    mac: ENC[AES256_GCM,data:4tYNhX3KBxiXSjvn8Lsv068mJ25RzPRiqMZrwNLxqmJ468Tkong1dSthEH1v55ZMIa3q75HsUCcDtV2hwZVrAS2B5Nf9Wt9KAs2HlxknriVd/Gze6RBzACU7HbfASVaxJ8i62x3TeBNofh0O2hwFOray36kPNpxWirbqvQJT03o=,iv:MFUjtIfvhHvlcyhxisOuBxG+u76JG44bXpEGWPjXhfI=,tag:hNSWg0u9X0CJV/eX2SVOVQ==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|hosts|env|hosts)$
-    version: 3.7.3
