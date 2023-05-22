@@ -8,6 +8,7 @@ resources:
   - bitnami.yaml
   - bjw-s.yaml
   - cilium.yaml
+  - ext-postgres-operator.yaml
   - external-secrets.yaml
   - fairwinds.yaml
   - grafana.yaml
@@ -22,3 +23,4 @@ resources:
   - prometheus-community.yaml
   - stakater.yaml
   - weave-gitops.yaml
+  - zalando-postgres-operator.yaml
