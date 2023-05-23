@@ -8,9 +8,9 @@ spec:
   teamId: "PiscioNet"
 
   volume:
-    size: 50Gi
+    size: 30Gi
 
-  numberOfInstances: 3
+  numberOfInstances: 2
 
   users:
     postgres: # database owner
