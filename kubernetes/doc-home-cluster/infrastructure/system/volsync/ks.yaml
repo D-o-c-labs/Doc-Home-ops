@@ -11,5 +11,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
+  dependsOn:
+    - name: cluster-infrastructure-snapshot-controller
   wait: true
   timeout: 2m
