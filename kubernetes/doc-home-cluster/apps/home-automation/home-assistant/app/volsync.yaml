@@ -35,6 +35,6 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 14
     repository: home-assistant-restic-secret
-    volumeSnapshotClassName: synology-snapshotclass
+    volumeSnapshotClassName: synology-iscsi-snapshot
     retain:
       daily: 14
