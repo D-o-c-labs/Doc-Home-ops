@@ -26,19 +26,16 @@ spec:
       repository: ghcr.io/home-assistant/home-assistant
       tag: 2023.5.4
 
-    # podAnnotations:
-    #   k8s.v1.cni.cncf.io/networks: macvlan-static-iot-hass
+    env:
+      SECRET_RECORDER_DB_URL:
+        valueFrom:
+          secretKeyRef:
+            name: database-home-assistant-user
+            key: POSTGRES_URL
 
-    # env:
-    #   SECRET_RECORDER_DB_URL:
-    #     valueFrom:
-    #       secretKeyRef:
-    #         name: database-home-assistant-user
-    #         key: POSTGRES_URL
-
-    # envFrom:
-    #   - secretRef:
-    #       name: home-assistant-secret
+    envFrom:
+      - secretRef:
+          name: home-assistant-secret
 
     service:
       main:
@@ -117,48 +114,6 @@ spec:
           - name: VSCODE_EXTENSION_IDS
             value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python|cstrap.python-snippets
 
-    env:
-      TZ: Europe/Rome
-
-    # mariadb:
-    #   enabled: true
-    #   architecture: standalone
-    #   auth:
-    #     database: home-assistant
-    #     username: home-assistant
-    #     existingSecret: homeassistant-secrets
-    #   primary:
-    #     resources:
-    #       limits:
-    #         cpu: 500m
-    #         memory: 1Gi
-    #       requests:
-    #         cpu: 100m
-    #         memory: 256Mi
-    #     persistence:
-    #       enabled: true
-    #       existingClaim: home-assistant-mariadb-pvc
-    #   volumePermissions:
-    #     enabled: true
-    #   image:
-    #     tag: 10.10.2-debian-11-r26
-    #   metrics:
-    #     enabled: true
-    #     serviceMonitor:
-    #       enabled: true
-    #       namespace: cattle-monitoring-system
-    #     prometheusRule:
-    #       enabled: true
-    #       rules:
-    #         - alert: MariaDB-Down
-    #           expr: absent(up{job="mariadb"} == 1)
-    #           for: 5m
-    #           labels:
-    #             severity: warning
-    #             service: mariadb
-    #           annotations:
-    #             message: 'MariaDB instance {{ `{{` }} $labels.instance {{ `}}` }} is down'
-    #             summary: MariaDB instance is down
     ingress:
       main:
         enabled: true
@@ -177,7 +132,7 @@ spec:
         ingressClassName: "nginx"
         primary: false
         hosts:
-          - host: &host "code-homeassistant.piscio.net"
+          - host: &host "code.homeassistant.piscio.net"
             paths:
               - path: /
                 service:
@@ -187,19 +142,7 @@ spec:
           - hosts:
               - *host
     
-    metrics:
-      enabled: true
-      prometheusRule:
-        enabled: true
-        labels: {}
-        rules: []
-      serviceMonitor:
-        interval: 1m
-        labels: {}
-        scrapeTimeout: 30s
-        bearerTokenSecret:
-          key: LLToken
-          name: homeassistant-secrets
+
     persistence:
       config:
         enabled: true

@@ -8,7 +8,7 @@ spec:
   teamId: "PiscioNet"
 
   volume:
-    size: 30Gi
+    size: 50Gi
 
   numberOfInstances: 2
 
