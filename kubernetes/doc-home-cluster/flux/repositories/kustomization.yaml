@@ -19,6 +19,7 @@ resources:
   - kubernetes-sigs-metrics-server.yaml
   - kubernetes-sigs-nfd.yaml
   - kyverno.yaml
+  - piraeus.yaml
   - postfinance.yaml
   - prometheus-community.yaml
   - stakater.yaml
