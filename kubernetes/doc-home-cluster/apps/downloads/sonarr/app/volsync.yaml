@@ -35,6 +35,7 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 14
     repository: sonarr-restic-secret
+    volumeSnapshotClassName: synology-iscsi-snapshot
     moverSecurityContext:
       runAsUser: 568
       runAsGroup: 568

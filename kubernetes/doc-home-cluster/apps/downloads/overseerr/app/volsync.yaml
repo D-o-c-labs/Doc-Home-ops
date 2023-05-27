@@ -35,5 +35,6 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 14
     repository: overseerr-restic-secret
+    volumeSnapshotClassName: synology-iscsi-snapshot
     retain:
       daily: 14
