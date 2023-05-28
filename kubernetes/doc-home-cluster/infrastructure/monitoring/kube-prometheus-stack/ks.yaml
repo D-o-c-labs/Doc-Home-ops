@@ -16,3 +16,19 @@ spec:
   wait: true
   dependsOn:
     - name: cluster-infrastructure-alertmanager
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-infrastructure-kube-prometheus-stack-addons
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/infrastructure/monitoring/kube-prometheus-stack/addons"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: true
+  dependsOn:
+    - name: cluster-infrastructure-kube-prometheus-stack
