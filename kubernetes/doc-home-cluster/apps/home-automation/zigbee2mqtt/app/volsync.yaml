@@ -28,7 +28,7 @@ metadata:
   name: zigbee2mqtt
   namespace: home-automation
 spec:
-  sourcePVC: data-zigbee2mqtt-0
+  sourcePVC: zigbee2mqtt-data-pvc
   trigger:
     schedule: "0 */12 * * *"
   restic:

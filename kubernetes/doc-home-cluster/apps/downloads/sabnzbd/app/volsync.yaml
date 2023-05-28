@@ -28,7 +28,7 @@ metadata:
   name: sabnzbd
   namespace: downloads
 spec:
-  sourcePVC: config-sabnzbd-0
+  sourcePVC: sabnzbd-config
   trigger:
     schedule: "0 */12 * * *"
   restic:
