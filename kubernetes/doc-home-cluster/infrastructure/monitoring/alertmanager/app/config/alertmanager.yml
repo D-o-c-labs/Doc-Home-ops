@@ -5,6 +5,7 @@ receivers:
       - bot_token: ${TELEGRAM_BOT_TOKEN}
         chat_id: ${CHAT_ID}
         send_resolved: true
+        parse_mode: "HTML"
 
 route:
   group_by: ["alertname", "job"]
