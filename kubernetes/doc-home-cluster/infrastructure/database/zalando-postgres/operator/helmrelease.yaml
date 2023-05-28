@@ -59,3 +59,7 @@ spec:
         memory: 32M
       limits:
         memory: 100M
+
+    configPatroni:
+      # enable Patroni DCS failsafe_mode feature
+      enable_patroni_failsafe_mode: false
