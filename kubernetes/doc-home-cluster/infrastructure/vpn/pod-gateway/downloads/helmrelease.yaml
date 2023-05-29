@@ -53,6 +53,11 @@ spec:
             value: wg0
           - name: SHADOWSOCKS
             value: "on"
+          - name: SHADOWSOCKS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: downloads-gateway-shadowsocks
+                key: SHADOWSOCKS_PASSWORD
           - name: FIREWALL
             value: "off"
           - name: DOT
