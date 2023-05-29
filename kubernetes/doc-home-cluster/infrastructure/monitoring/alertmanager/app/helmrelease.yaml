@@ -54,12 +54,10 @@ spec:
         name: alertmanager-configmap
         mountPath: /etc/alertmanager
         readOnly: true
-      secrets:
-        enabled: true
-        type: secret
-        name: alertmanager-secret
-        mountPath: /etc/secrets
-        readOnly: true
+    
+    envFrom:
+      - secretRef:
+          name: alertmanager-secret
 
     resources:
       requests:
