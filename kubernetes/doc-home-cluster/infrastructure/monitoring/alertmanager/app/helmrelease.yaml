@@ -50,14 +50,24 @@ spec:
     persistence:
       config:
         enabled: true
-        type: configMap
-        name: alertmanager-configmap
+        type: secret
         mountPath: /etc/alertmanager
-        readOnly: true
+        name: alertmanager-config
+        items:
+        - key: alertmanager.yml
+          path: alertmanager.yml
+
     
-    envFrom:
-      - secretRef:
-          name: alertmanager-secret
+    #   config:
+    #     enabled: true
+    #     type: configMap
+    #     name: alertmanager-configmap
+    #     mountPath: /etc/alertmanager
+    #     readOnly: true
+    
+    # envFrom:
+    #   - secretRef:
+    #       name: alertmanager-secret
 
     resources:
       requests:
