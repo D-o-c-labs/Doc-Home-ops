@@ -32,4 +32,4 @@ spec:
   wait: true
   dependsOn:
     - name: cluster-infrastructure-zalando-postgres
-    - name: cluster-apps-external-secrets-stores
+    - name: cluster-infrastructure-external-secrets-stores
