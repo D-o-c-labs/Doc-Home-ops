@@ -1,0 +1,91 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: immich-microservices
+  namespace: selfhosted
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  dependsOn:
+    - name: immich-server
+    - name: immich-typesense
+
+  values:
+    controller:
+      replicas: 1
+      strategy: RollingUpdate
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/immich-app/immich-server
+      tag: v1.59.1
+
+    command: /bin/sh
+    args:
+      - ./start-microservices.sh
+
+    env:
+      DB_HOSTNAME:
+        valueFrom:
+          secretKeyRef:
+            name: database-immich-user
+            key: HOST
+      DB_USERNAME:
+        valueFrom:
+          secretKeyRef:
+            name: database-immich-user
+            key: LOGIN
+      DB_PASSWORD:
+        valueFrom:
+          secretKeyRef:
+            name: database-immich-user
+            key: PASSWORD
+      DB_DATABASE_NAME:
+        valueFrom:
+          secretKeyRef:
+            name: database-immich-user
+            key: DATABASE_NAME
+
+    envFrom:
+      - secretRef:
+          name: immich-secret
+      - configMapRef:
+          name: immich-configmap
+
+    service:
+      main:
+        enabled: false
+
+    persistence:
+      library:
+        enabled: true
+        type: nfs
+        server: "piscionas.piscio.net"
+        path: /volume1/Backup/Photos/Immich
+        mountPath: /usr/src/app/upload
+
+    resources:
+      requests:
+        cpu: 5m
+        memory: 277M
+      limits:
+        memory: 512M
+
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: immich-microservices
