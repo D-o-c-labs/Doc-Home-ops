@@ -6,12 +6,11 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: "./kubernetes/cluster-0/apps/selfhosted/n8n/app"
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/n8n/app"
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-rook-ceph-cluster
+    - name: cluster-infrastructure-external-secrets-stores
