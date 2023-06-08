@@ -45,11 +45,11 @@ spec:
         # One of true or false (default):
         ##disabled: false
         # One of "Retain" or "Delete" (default):
-    #    deletionPolicy: Delete
+        deletionPolicy: Delete
         # One of true or false (default):
         isDefault: true
 
         # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
-        ##parameters:
-        ##  description: "Kubernetes CSI"
-        ##  is_locked: "false"
+        parameters:
+          description: "Kubernetes CSI"
+          is_locked: "false"
