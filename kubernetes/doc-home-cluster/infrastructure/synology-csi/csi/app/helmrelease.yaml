@@ -17,6 +17,10 @@ spec:
         namespace: flux-system
   values:
     storageClasses:
+      delete:
+        disabled: true
+      retain:
+        disabled: true
       synology-iscsi-storage:
         # One of true or false (default):
         ##disabled: false
@@ -41,6 +45,10 @@ spec:
           location: /volume2
           csi.storage.k8s.io/fstype: ext4
     volumeSnapshotClasses:
+      delete:
+        disabled: true
+      retain:
+        disabled: true
       synology-snapshotclass:
         # One of true or false (default):
         ##disabled: false
