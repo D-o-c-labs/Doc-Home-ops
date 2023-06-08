@@ -1,0 +1,21 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-infrastructure-synology-csi
+  namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
+spec:
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/infrastructure/synology-csi/csi/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: synology-csi
+      namespace: synology-csi
+  wait: true

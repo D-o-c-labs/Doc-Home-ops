@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: synology-csi
+  namespace: synology-csi
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: synology-csi
+      version: 0.9.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: synology-csi
+        namespace: flux-system
+  values:
+    storageClasses:
+      synology-iscsi:
+        # One of true or false (default):
+        ##disabled: false
+        # One of true or false (default):
+        isDefault: false
+        # One of "Retain" or "Delete" (default):
+    #    reclaimPolicy: Retain
+        # One of "WaitForFirstConsumer" or "Immediate" (default):
+        ##volumeBindingMode: Immediate
+
+        # If not present, some location will be chosen to create volumes with the filesystem type ext4.
+        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+        parameters:
+          dsm: piscionas.piscio.net
+          location: /volume2
+          csi.storage.k8s.io/fstype: ext4
+      synology-iscsi-delete:
+        isDefault: true
+        reclaimPolicy: Delete
+        parameters:
+          dsm: piscionas.piscio.net
+          location: /volume2
+          csi.storage.k8s.io/fstype: ext4
+    volumeSnapshotClasses:
+      synology-iscsi-snapshot:
+        # One of true or false (default):
+        ##disabled: false
+        # One of "Retain" or "Delete" (default):
+    #    deletionPolicy: Delete
+        # One of true or false (default):
+        isDefault: true
+
+        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+        ##parameters:
+        ##  description: "Kubernetes CSI"
+        ##  is_locked: "false"
