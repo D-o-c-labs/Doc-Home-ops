@@ -41,7 +41,7 @@ spec:
           location: /volume2
           csi.storage.k8s.io/fstype: ext4
     volumeSnapshotClasses:
-      synology-iscsi-snapshot:
+      synology-snapshotclass:
         # One of true or false (default):
         ##disabled: false
         # One of "Retain" or "Delete" (default):
