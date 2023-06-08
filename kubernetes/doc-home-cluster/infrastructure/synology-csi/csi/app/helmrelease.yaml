@@ -23,7 +23,7 @@ spec:
         # One of true or false (default):
         isDefault: false
         # One of "Retain" or "Delete" (default):
-    #    reclaimPolicy: Retain
+        reclaimPolicy: Retain
         # One of "WaitForFirstConsumer" or "Immediate" (default):
         ##volumeBindingMode: Immediate
 
