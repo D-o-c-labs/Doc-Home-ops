@@ -47,8 +47,10 @@ spec:
     volumeSnapshotClasses:
       delete:
         disabled: true
+        deletionPolicy: Delete
       retain:
         disabled: true
+        deletionPolicy: Retain
       synology-snapshotclass:
         # One of true or false (default):
         ##disabled: false
