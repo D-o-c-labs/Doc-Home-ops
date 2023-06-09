@@ -39,10 +39,22 @@ spec:
         tag: v6.2.1
     storageClasses:
       delete:
-        disabled: true
+        # One of true or false (default):
+        ##disabled: false
+        # One of true or false (default):
+        isDefault: true
+        # One of "Retain" or "Delete" (default):
+        reclaimPolicy: Delete
+        # One of "WaitForFirstConsumer" or "Immediate" (default):
+        ##volumeBindingMode: Immediate
+
+        # If not present, some location will be chosen to create volumes with the filesystem type ext4.
+        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+        parameters:
+          dsm: piscionas.piscio.net
+          location: /volume2
+          csi.storage.k8s.io/fstype: ext4
       retain:
-        disabled: true
-      synology-iscsi-storage:
         # One of true or false (default):
         ##disabled: false
         # One of true or false (default):
@@ -58,25 +70,24 @@ spec:
           dsm: piscionas.piscio.net
           location: /volume2
           csi.storage.k8s.io/fstype: ext4
-      synology-iscsi-storage-delete:
-        isDefault: true
-        reclaimPolicy: Delete
-        parameters:
-          dsm: piscionas.piscio.net
-          location: /volume2
-          csi.storage.k8s.io/fstype: ext4
     volumeSnapshotClasses:
       delete:
-        disabled: true
-        deletionPolicy: Delete
-      retain:
-        disabled: true
-        deletionPolicy: Retain
-      synology-snapshotclass:
         # One of true or false (default):
         ##disabled: false
         # One of "Retain" or "Delete" (default):
         deletionPolicy: Delete
+        # One of true or false (default):
+        isDefault: true
+
+        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+        parameters:
+          description: "Kubernetes CSI"
+          is_locked: "false"
+      retain:
+        # One of true or false (default):
+        ##disabled: false
+        # One of "Retain" or "Delete" (default):
+        deletionPolicy: Retain
         # One of true or false (default):
         isDefault: true
 
