@@ -35,6 +35,6 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 14
     repository: sabnzbd-restic-secret
-    volumeSnapshotClassName: synology-iscsi-snapshot
+    volumeSnapshotClassName: synology-csi-delete
     retain:
       daily: 14

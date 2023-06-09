@@ -35,7 +35,7 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 14
     repository: n8n-restic-secret
-    volumeSnapshotClassName: synology-iscsi-snapshot
+    volumeSnapshotClassName: synology-csi-delete
     moverSecurityContext:
       runAsUser: 1000
       runAsGroup: 1000
