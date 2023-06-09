@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: synology-iscsi
+    annotations:
+        storageclass.kubernetes.io/is-default-class: "false"
+provisioner: csi.san.synology.com
+# if all params are empty, synology CSI will choose an available location to create volume
+parameters:
+    dsm: piscionas.piscio.net
+    location: /volume2
+    csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Retain
+allowVolumeExpansion: true

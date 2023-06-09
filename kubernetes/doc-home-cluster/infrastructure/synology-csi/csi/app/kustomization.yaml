@@ -5,4 +5,5 @@ namespace: synology-csi
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./storageclass.yaml # Retrocompatibilità
   
