@@ -26,7 +26,7 @@ spec:
         pullPolicy: IfNotPresent
         tag: v2.6.3
       plugin:
-        image: ghcr.io/zebernst/synology-csi
+        image: ghcr.io/zebernst/synology-csi@sha256:74244be9823bddbabecbb108b1f62cd94102ccd2531b8563bdeed77a707e6621
         pullPolicy: IfNotPresent
       provisioner:
         image: registry.k8s.io/sig-storage/csi-provisioner
