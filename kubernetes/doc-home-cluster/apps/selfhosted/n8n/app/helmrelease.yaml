@@ -84,4 +84,4 @@ spec:
         mountPath: /home/node/.n8n
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: synology-iscsi
+        storageClass: synology-csi-retain

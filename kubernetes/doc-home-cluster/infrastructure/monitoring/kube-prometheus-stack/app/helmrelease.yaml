@@ -181,7 +181,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: synology-iscsi
+              storageClassName: synology-csi-retain
               resources:
                 requests:
                   storage: 10Gi
