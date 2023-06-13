@@ -92,7 +92,7 @@ spec:
         mountPath: /config
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: synology-iscsi
+        storageClass: synology-csi-retain
 
     resources:
       requests:
