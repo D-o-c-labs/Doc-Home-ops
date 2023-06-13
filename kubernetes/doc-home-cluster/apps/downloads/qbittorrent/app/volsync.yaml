@@ -36,5 +36,9 @@ spec:
     pruneIntervalDays: 14
     repository: qbittorrent-restic-secret
     volumeSnapshotClassName: synology-csi-delete
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
     retain:
       daily: 14
