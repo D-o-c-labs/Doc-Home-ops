@@ -23,7 +23,7 @@ spec:
 
     image:
       repository: ghcr.io/onedr0p/radarr-develop
-      tag: 4.5.2.7388@sha256:1e402a29296a90470961904a63e0b87f6d0a1842d2de60e6f82cd842b682a186
+      tag: 4.6.1.7456@sha256:343c2b71d06cafaca622067a23b2c9a3b47a6bdf6e50d4000359f9bc2fe8a8b1
 
     podSecurityContext:
       runAsUser: 568
