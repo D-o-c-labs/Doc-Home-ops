@@ -24,7 +24,7 @@ spec:
       pullPolicy: IfNotPresent
       # -- image tag
       # this example is not automatically updated, so be sure to use the latest image
-      tag: 2023.5.1
+      tag: 2023.6.0
 
 
     args:
