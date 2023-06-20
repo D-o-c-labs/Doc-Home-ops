@@ -26,6 +26,12 @@
       matchUpdateTypes: ["digest", "patch", "minor"],
       matchPaths: ["/kubernetes/doc-home-cluster/apps/downloads/**"],
       ignoreTests: true,
+    },
+    {
+      description: "Auto merge linters & prettiers",
+      matchPackagePatterns: ["lint", "prettier"],
+      automerge: true,
+      ignoreTests: true
     }
   ],
 }
