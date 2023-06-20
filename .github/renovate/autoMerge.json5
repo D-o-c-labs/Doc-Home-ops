@@ -21,7 +21,6 @@
     },
     {
       description: "Auto merge downloads namespace",
-      matchDatasources: ["docker"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest", "patch", "minor"],
