@@ -121,7 +121,7 @@ services:
       - netmaker
   netmaker-exporter:
     container_name: netmaker-exporter
-    image: gravitl/netmaker-exporter:latest@sha256:479a865d1544f22ca461653e3e1303a4769e2019e1b3f102e1e6b048b9bc6409
+    image: gravitl/netmaker-exporter:latest@sha256:78f27368fb877dd48a91ae0c24029580226579110c02073bc843f745abfc8b9d
     restart: always
     depends_on:
       - netmaker
