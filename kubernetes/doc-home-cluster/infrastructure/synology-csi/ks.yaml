@@ -8,7 +8,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/system/synology-csi/app"
+  path: "./kubernetes/doc-home-cluster/infrastructure/synology-csi/app"
   prune: true
   sourceRef:
     kind: GitRepository
