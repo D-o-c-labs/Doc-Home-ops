@@ -106,7 +106,7 @@ services:
       - netmaker
   grafana:
     container_name: grafana
-    image: gravitl/netmaker-grafana:latest@sha256:bdd2d2f14f8e30ea50a45d0ee6131aff2d468ebe439984e0c7b458066d53d9ad
+    image: gravitl/netmaker-grafana:latest@sha256:fa77971e04116ede9b1ea2547020a83a3939df39e25db5905e2047861765dce8
     environment:
       PROMETHEUS_HOST: "prometheus.netmaker.piscio.net"
       NETMAKER_METRICS_TARGET: "netmaker-exporter.netmaker.piscio.net"
