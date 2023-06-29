@@ -60,6 +60,6 @@ spec:
       limits:
         memory: 100M
 
-    configPatroni:
+    #configPatroni:
       # enable Patroni DCS failsafe_mode feature
-      enable_patroni_failsafe_mode: false
+      #enable_patroni_failsafe_mode: false
