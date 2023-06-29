@@ -95,7 +95,7 @@ services:
       - "8883:8883"
   prometheus:
     container_name: prometheus
-    image: gravitl/netmaker-prometheus:latest@sha256:7314618846cec2fb7c7c20bc0b1953da62e5c93eab975da2882add63d06ee82c
+    image: gravitl/netmaker-prometheus:latest@sha256:e6d2ed04580b6a66fb1f1860388bf586d351b4888a465869e0bc03da3fca1cbf
     environment:
       NETMAKER_METRICS_TARGET: "netmaker-exporter.netmaker.piscio.net"
       LICENSE_KEY: ${LICENSE_KEY}
