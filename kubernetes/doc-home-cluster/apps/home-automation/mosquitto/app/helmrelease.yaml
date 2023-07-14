@@ -83,4 +83,4 @@ spec:
         mountPath: /data
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: synology-csi-retain
+        storageClass: synology-csi-delete

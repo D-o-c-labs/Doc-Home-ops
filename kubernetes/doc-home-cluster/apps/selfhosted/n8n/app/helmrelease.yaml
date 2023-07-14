@@ -84,4 +84,4 @@ spec:
         mountPath: /home/node/.n8n
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: synology-csi-retain
+        storageClass: synology-csi-delete
