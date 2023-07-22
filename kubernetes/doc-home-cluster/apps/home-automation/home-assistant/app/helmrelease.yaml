@@ -83,7 +83,7 @@ spec:
 
     additionalContainers:
       codeserver:
-        image: lscr.io/linuxserver/code-server:4.14.1@sha256:4722b7f3309c6c1d3dc939ab5d9a54ed4b55e10ac4da16eefff772b9f716ae1e
+        image: lscr.io/linuxserver/code-server:4.15.0@sha256:160d930682b7e0d306d1067ea668dfe0b53e9f4ba0321b935dc5a2dd1b275d24
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8443
