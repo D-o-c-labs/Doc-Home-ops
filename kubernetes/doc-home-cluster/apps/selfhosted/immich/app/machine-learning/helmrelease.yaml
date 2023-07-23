@@ -28,7 +28,7 @@ spec:
 
     image:
       repository: ghcr.io/immich-app/immich-machine-learning
-      tag: v1.64.0
+      tag: v1.69.0@sha256:1437c602fc626993b426301c4edc29e8ba1ec2ec865b5d72ef66b2e26747d6bc
 
     command:
       - "python"
