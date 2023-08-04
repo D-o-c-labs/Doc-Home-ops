@@ -149,7 +149,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       persistence:
         size: 20Gi
-        storageClass: synology-csi-retain
+        storageClass: synology-csi-delete
 
     read:
       replicas: 3
@@ -170,7 +170,7 @@ spec:
           emptyDir: {}
       persistence:
         size: 20Gi
-        storageClass: synology-csi-retain
+        storageClass: synology-csi-delete
 
     backend:
       replicas: 3
@@ -191,7 +191,7 @@ spec:
           emptyDir: {}
       persistence:
         size: 20Gi
-        storageClass: synology-csi-retain
+        storageClass: synology-csi-delete
 
     monitoring:
       dashboards:
