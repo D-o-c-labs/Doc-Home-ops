@@ -86,9 +86,9 @@ spec:
         image: lscr.io/linuxserver/code-server:4.16.0@sha256:4dc64dd9869c32ee6efb3d9c1e76877349a50b32f099f1e5d6c485ed15f4e235
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8443
-          name: codeserver
-          protocol: TCP
+          - containerPort: 8443
+            name: codeserver
+            protocol: TCP
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 0
@@ -141,7 +141,7 @@ spec:
         tls:
           - hosts:
               - *host
-    
+
 
     persistence:
       config:
