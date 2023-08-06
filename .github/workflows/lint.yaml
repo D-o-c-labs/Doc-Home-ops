@@ -60,7 +60,7 @@ jobs:
           KUBERNETES_DIRECTORY: k8s
           APPLY_FIXES: all
           APPLY_FIXES_EVENT: all
-          APPLY_FIXES_MODE: commit 
+          APPLY_FIXES_MODE: pull_request 
           KUBERNETES_KUBEVAL_ARGUMENTS: --ignore-missing-schemas
           KUBERNETES_KUBEVAL_FILTER_REGEX_INCLUDE: "(kubernetes)"
           MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .github/linters/markdownlint.config.yaml
