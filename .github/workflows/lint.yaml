@@ -58,9 +58,9 @@ jobs:
             }}
           COPYPASTE_JSCPD_CONFIG_FILE: .ci/jscpd/jscpd.json
           KUBERNETES_DIRECTORY: k8s
-#          APPLY_FIXES: all
-#          APPLY_FIXES_EVENT: pull_request
-#          APPLY_FIXES_MODE: pull_request
+          APPLY_FIXES: all
+          APPLY_FIXES_EVENT: pull_request
+          APPLY_FIXES_MODE: pull_request
           KUBERNETES_KUBEVAL_ARGUMENTS: --ignore-missing-schemas
           KUBERNETES_KUBEVAL_FILTER_REGEX_INCLUDE: "(kubernetes)"
           MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .github/linters/markdownlint.config.yaml
@@ -68,3 +68,26 @@ jobs:
           PYTHON_FLAKE8_CONFIG_FILE: .github/linters/.flake8
           YAML_YAMLLINT_CONFIG_FILE: .github/linters/.yamllint.yaml
           YAML_PRETTIER_CONFIG_FILE: .ci/prettier/.prettierrc.yaml
+
+      - name: Create Pull Request with applied fixes
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: "[MegaLinter] Apply linters automatic fixes"
+          title: "[MegaLinter] Apply linters automatic fixes"
+          labels: bot
+
+      - name: Create PR output
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+
+      - name: Prepare commit
+        run: sudo chown -Rc $UID .git/
+        
+      - name: Commit and push applied linter fixes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "[MegaLinter] Apply linters fixes"
