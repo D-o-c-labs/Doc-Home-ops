@@ -24,7 +24,7 @@ spec:
 
     image:
       repository: golift/notifiarr
-      tag: 0.5.2
+      tag: 0.5.2@sha256:2ceb054a3c734b3b7ada1c3d8f003b832dd4a455901db181892f9466195e2c8b
 
 
     env:

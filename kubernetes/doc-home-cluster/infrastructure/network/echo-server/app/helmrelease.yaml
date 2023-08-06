@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/mendhak/http-https-echo
-      tag: "30"
+      tag: "30@sha256:b6fccf52c73a5786b2e79e06e5c86d4689416d0ea41a6477af6ad89c1d81933f"
 
     env:
       HTTP_PORT: &port 8080

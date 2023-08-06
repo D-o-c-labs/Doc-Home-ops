@@ -22,7 +22,7 @@ spec:
 
       image:
         repository: registry.k8s.io/autoscaling/vpa-recommender
-        tag: 0.14.0
+        tag: 0.14.0@sha256:68d0db198edb79c9c5cf81465bb1d0b691435b09929549164df173d9d87004ec
 
       resources:
         requests:
