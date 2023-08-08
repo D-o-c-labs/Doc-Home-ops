@@ -15,6 +15,6 @@ spec:
     name: doc-ops-kubernetes
   wait: false
   dependsOn:
-    - name: cluster-apps-pod-gateway-downloads
+    - name: cluster-infrastructure-pod-gateway-downloads
     - name: cluster-infrastructure-synology-csi
     - name: cluster-apps-external-secrets-stores
