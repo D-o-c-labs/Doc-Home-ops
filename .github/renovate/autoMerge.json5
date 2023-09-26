@@ -26,7 +26,8 @@
         "lscr.io/linuxserver/code-server",
         "ghcr.io/esphome/esphome",
         "gravitl/netmaker",
-        "gravitl/netmaker-ui",],
+        "gravitl/netmaker-ui",
+        "cloudflare/cloudflared"],
       ignoreTests: true,
     },
     {
