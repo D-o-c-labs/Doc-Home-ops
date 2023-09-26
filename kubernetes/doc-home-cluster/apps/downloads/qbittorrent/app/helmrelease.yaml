@@ -82,13 +82,6 @@ spec:
         ingressClassName: "nginx"
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_hide_header "x-webkit-csp";
-            proxy_hide_header "content-security-policy";
-            proxy_hide_header "X-Frame-Options";
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.piscio.net/css/base/qbittorrent/nord.css"></head>';
-            sub_filter_once on;
         hosts:
           - host: &host "qbittorrent.piscio.net"
             paths:

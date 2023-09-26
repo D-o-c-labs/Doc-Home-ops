@@ -75,8 +75,8 @@ spec:
         annotations:
           # external-dns.alpha.kubernetes.io/public: "true"
           # external-dns.alpha.kubernetes.io/target: ingress.piscio.net
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            rewrite /api/(.*) /$1 break;
+          # nginx.ingress.kubernetes.io/configuration-snippet: |
+          #  rewrite /api/(.*) /$1 break;
           nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
