@@ -8,7 +8,7 @@ spec:
   nodeName: kworker2
   containers:
     - name: fake-ssh
-      image: ghcr.io/onedr0p/alpine:3.18.4@sha256:f4f467263cf0cfcd9c9ec2a42f5bea147c53732e56c19d558c9369897530e03c
+      image: ghcr.io/onedr0p/alpine:3.18.4@sha256:dff22a9c3c326c07d7a82edefdedc6f4e65aae1fa461be06d280e423e5029947
       securityContext:
         privileged: true
       resources: {}
