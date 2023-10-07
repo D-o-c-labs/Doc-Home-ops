@@ -24,7 +24,7 @@ spec:
 
     image:
       repository: ghcr.io/onedr0p/sabnzbd
-      tag: 4.1.0@sha256:210e6c0ee247f8c58f8fe7b61cc405bb578e29070b45671cea1c81bef01762c3
+      tag: 4.1.0@sha256:7bf1340d9ca79d8842e9065259e1c30941e041450b34ca8acd3a938ba069a4f2
 
     podAnnotations:
       setGateway: "true"
