@@ -17,14 +17,25 @@ spec:
         namespace: flux-system
 
   values:
-    image:
-      repository: ghcr.io/mendhak/http-https-echo
-      tag: "30"
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/mendhak/http-https-echo
+              tag: "30"
 
-    env:
-      HTTP_PORT: &port 8080
-      LOG_WITHOUT_NEWLINE: "true"
-      LOG_IGNORE_PATH: "/healthz"
+            env:
+              HTTP_PORT: &port 8080
+              LOG_WITHOUT_NEWLINE: "true"
+              LOG_IGNORE_PATH: "/healthz"
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 64M
+              limits:
+                memory: 128M
 
     service:
       main:
@@ -49,9 +60,4 @@ spec:
           - hosts:
               - *host
 
-    resources:
-      requests:
-        cpu: 15m
-        memory: 64M
-      limits:
-        memory: 128M
+    
