@@ -107,7 +107,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         annotations:
           external-dns.alpha.kubernetes.io/target: homeassistant.piscio.net
         hosts:
@@ -122,7 +122,7 @@ spec:
               - *host
       codeserver:
         enabled: true
-        ingressClassName: "nginx"
+        className: "nginx"
         primary: false
         hosts:
           - host: &host "code-homeassistant.piscio.net"
