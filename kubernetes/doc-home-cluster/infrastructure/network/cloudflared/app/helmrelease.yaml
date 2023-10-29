@@ -17,36 +17,35 @@ spec:
       interval: 30m
 
   values:
-    image:
-      # -- image repository
-      repository: cloudflare/cloudflared
-      # -- image pull policy
-      pullPolicy: IfNotPresent
-      # -- image tag
-      # this example is not automatically updated, so be sure to use the latest image
-      tag: 2023.8.2@sha256:93561dfa0032006354be56476f09e3d8743d53d202368672c2847c1631f7be50
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: cloudflare/cloudflared
+              tag: 2023.8.2@sha256:93561dfa0032006354be56476f09e3d8743d53d202368672c2847c1631f7be50
 
 
-    args:
-    - tunnel
-    # Points cloudflared to the config file, which configures what
-    # cloudflared will actually do. This file is created by a ConfigMap
-    # below.
-    - --config
-    - /etc/cloudflared/config/config.yaml
-    - run
+            args:
+              - tunnel
+              # Points cloudflared to the config file, which configures what
+              # cloudflared will actually do. This file is created by a ConfigMap
+              # below.
+              - --config
+              - /etc/cloudflared/config/config.yaml
+              - run
 
-    probes:
-      liveness:
-        enabled: true
-        httpGet:
-          # Cloudflared has a /ready endpoint which returns 200 if and only if
-          # it has an active connection to the edge.
-          path: /ready
-          port: 2000
-        failureThreshold: 1
-        initialDelaySeconds: 10
-        periodSeconds: 10
+            probes:
+              liveness:
+                enabled: true
+                httpGet:
+                  # Cloudflared has a /ready endpoint which returns 200 if and only if
+                  # it has an active connection to the edge.
+                  path: /ready
+                  port: 2000
+                failureThreshold: 1
+                initialDelaySeconds: 10
+                periodSeconds: 10
 
     service:
       main:
