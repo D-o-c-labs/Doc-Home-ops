@@ -55,19 +55,25 @@ spec:
       config:
         enabled: true
         type: secret
-        mountPath: /etc/cloudflared/config
         name: cloudflared-secrets
-        items:
-        - key: config.yaml
-          path: config.yaml
+        globalMounts:
+          - path: /etc/cloudflared/config
+            subpath: config.yaml
+            readOnly: true
+        # items:
+        # - key: config.yaml
+        #   path: config.yaml
       credentials:
         enabled: true
         type: secret
-        mountPath: /etc/cloudflared/creds
         name: cloudflared-secrets
-        items:
-        - key: credentials.json
-          path: credentials.json
+        globalMounts:
+          - path: /etc/cloudflared/creds
+            subpath: credentials.json
+            readOnly: true
+        # items:
+        # - key: credentials.json
+        #   path: credentials.json
 
 
     # additionalVolumeMounts:
