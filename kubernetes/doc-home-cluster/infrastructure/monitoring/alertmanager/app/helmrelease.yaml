@@ -17,16 +17,34 @@ spec:
         namespace: flux-system
   values:
     controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: quay.io/prometheus/alertmanager
-      tag: main@sha256:cdd2386e0c73e1741f92ee4dce66dd714732603d2a5a110bf50ed57c11605945
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+            type: secret
+            mountPath: /etc/alertmanager
+            name: alertmanager-config
+            items:
+              - key: alertmanager.yml
+                path: alertmanager.yml
+          
+          containers:
+            main:
+              image:
+                repository: quay.io/prometheus/alertmanager
+                tag: main@sha256:cdd2386e0c73e1741f92ee4dce66dd714732603d2a5a110bf50ed57c11605945
 
-    podAnnotations:
-      reloader.stakater.com/auto: "true"
+              resources:
+                requests:
+                  cpu: 11m
+                  memory: 50M
+                limits:
+                  memory: 99M
+
 
     service:
       main:
@@ -47,15 +65,15 @@ spec:
           - hosts:
               - *host
 
-    persistence:
-      config:
-        enabled: true
-        type: secret
-        mountPath: /etc/alertmanager
-        name: alertmanager-config
-        items:
-        - key: alertmanager.yml
-          path: alertmanager.yml
+    # persistence:
+    #   config:
+    #     enabled: true
+    #     type: secret
+    #     mountPath: /etc/alertmanager
+    #     name: alertmanager-config
+    #     items:
+    #     - key: alertmanager.yml
+    #       path: alertmanager.yml
 
     
     #   config:
@@ -69,9 +87,4 @@ spec:
     #   - secretRef:
     #       name: alertmanager-secret
 
-    resources:
-      requests:
-        cpu: 11m
-        memory: 50M
-      limits:
-        memory: 99M
+
