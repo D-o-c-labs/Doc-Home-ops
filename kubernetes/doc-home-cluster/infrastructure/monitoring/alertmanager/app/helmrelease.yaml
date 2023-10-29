@@ -25,12 +25,12 @@ spec:
         statefulset:
           volumeClaimTemplates:
             - name: config
-            type: secret
-            mountPath: /etc/alertmanager
-            name: alertmanager-config
-            items:
-              - key: alertmanager.yml
-                path: alertmanager.yml
+              type: secret
+              mountPath: /etc/alertmanager
+              name: alertmanager-config
+              items:
+                - key: alertmanager.yml
+                  path: alertmanager.yml
           
           containers:
             main:
