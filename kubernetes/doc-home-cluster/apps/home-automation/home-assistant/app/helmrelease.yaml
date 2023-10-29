@@ -18,24 +18,78 @@ spec:
 
   values:
     controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: ghcr.io/home-assistant/home-assistant
-      tag: 2023.10.5@sha256:3b2810093b118a77c87f3639e51930ffb0f10e8af679ba8582843e9bbfdd5fa5
+        containers:
+          main:
+            image:
+              repository: ghcr.io/home-assistant/home-assistant
+              tag: 2023.10.5@sha256:3b2810093b118a77c87f3639e51930ffb0f10e8af679ba8582843e9bbfdd5fa5
 
-    env:
-      SECRET_RECORDER_DB_URL:
-        valueFrom:
-          secretKeyRef:
-            name: database-home-assistant-user
-            key: POSTGRES_URL
+            env:
+              SECRET_RECORDER_DB_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: database-home-assistant-user
+                    key: POSTGRES_URL
 
-    envFrom:
-      - secretRef:
-          name: homeassistant-secrets
+            envFrom:
+              - secretRef:
+                  name: homeassistant-secrets
+
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+
+            resources:
+              requests:
+                cpu: 126m
+                memory: 411M
+              limits:
+                memory: 4417M
+
+          codeserver:
+            image:
+              repository: lscr.io/linuxserver/code-server
+              tag: 4.18.0@sha256:db8d152fff7b702e868b1ec2a64c0b3a03127738c653a37c02f3056d3289df76
+            ports:
+              - containerPort: 8443
+                name: codeserver
+                protocol: TCP
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsUser: 0
+
+            resources:
+              requests:
+                cpu: 0m
+                memory: 0M
+              limits:
+                memory: 1024M
+
+            env:
+              - name: DOCKER_MODS
+                value: linuxserver/mods:code-server-python3|linuxserver/mods:code-server-extension-arguments|linuxserver/mods:universal-package-install
+              - name: INSTALL_PIP_PACKAGES
+                value: hass_pyscript_kernel
+              - name: PUID
+                value: 0
+              - name: PGID
+                value: 0
+              - name: DEFAULT_WORKSPACE
+                value: /data/config
+              - name: TZ
+                value: Europe/Rome
+              - name: VSCODE_EXTENSION_IDS
+                value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python|cstrap.python-snippets
+
 
     service:
       main:
@@ -49,71 +103,6 @@ spec:
             port: 8443
             targetPort: 8443
 
-    # persistence:
-    #   deploy-key:
-    #     enabled: true
-    #     type: secret
-    #     name: home-assistant-secret
-    #     defaultMode: 256
-    #     subPath:
-    #       - path: GH_DEPLOY_KEY
-    #         mountPath: /root/.ssh/id_rsa
-
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-      startup:
-        enabled: false
-
-    resources:
-      requests:
-        cpu: 126m
-        memory: 411M
-      limits:
-        memory: 4417M
-
-    # volumeClaimTemplates:
-    #   - name: config
-    #     mountPath: /config
-    #     accessMode: ReadWriteOnce
-    #     size: 1Gi
-    #     storageClass: ceph-block
-
-    additionalContainers:
-      codeserver:
-        image: lscr.io/linuxserver/code-server:4.18.0@sha256:db8d152fff7b702e868b1ec2a64c0b3a03127738c653a37c02f3056d3289df76
-        imagePullPolicy: IfNotPresent
-        ports:
-          - containerPort: 8443
-            name: codeserver
-            protocol: TCP
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsUser: 0
-        volumeMounts:
-          - mountPath: /data/config
-            name: config
-          - name: jupyter-kernel
-            mountPath: "/usr/local/share/jupyter/kernels/pyscript"
-            readOnly: false
-        env:
-          - name: DOCKER_MODS
-            value: linuxserver/mods:code-server-python3|linuxserver/mods:code-server-extension-arguments|linuxserver/mods:universal-package-install
-          - name: INSTALL_PIP_PACKAGES
-            value: hass_pyscript_kernel
-          - name: PUID
-            value: 0
-          - name: PGID
-            value: 0
-          - name: DEFAULT_WORKSPACE
-            value: /data/config
-          - name: TZ
-            value: Europe/Rome
-          - name: VSCODE_EXTENSION_IDS
-            value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python|cstrap.python-snippets
-
     ingress:
       main:
         enabled: true
@@ -124,6 +113,9 @@ spec:
           - host: &host "homeassistant.piscio.net"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -137,7 +129,7 @@ spec:
               - path: /
                 service:
                   name: home-assistant-codeserver
-                  port: 8443
+                  port: codeserver
         tls:
           - hosts:
               - *host
@@ -150,7 +142,23 @@ spec:
         existingClaim: home-assistant-pvc
         size: 10Gi
         storageClass: synology-iscsi
+        advancedMounts:
+          main:
+            main:
+              - path: /config
+                readOnly: false
+            codeserver:
+              - path: /data/config
+                readOnly: false
       jupyter-kernel:
         enabled: true
         name: home-assistant-jupyter-secret
         type: secret
+        advancedMounts:
+          main:
+            main:
+              - path: /jupyter-kernel
+                readOnly: false
+            codeserver:
+              - path: /usr/local/share/jupyter/kernels/pyscript
+                readOnly: false
