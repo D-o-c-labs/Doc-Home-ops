@@ -32,20 +32,20 @@ spec:
                 - key: alertmanager.yml
                   path: alertmanager.yml
           
-          containers:
-            main:
-              image:
-                repository: quay.io/prometheus/alertmanager
-              tag: v0.26.0
-            ports:
-              - name: http
-                containerPort: 9093
-              resources:
-                requests:
-                  cpu: 11m
-                  memory: 50M
-                limits:
-                  memory: 99M
+        containers:
+          main:
+            image:
+              repository: quay.io/prometheus/alertmanager
+            tag: v0.26.0
+          ports:
+            - name: http
+              containerPort: 9093
+            resources:
+              requests:
+                cpu: 11m
+                memory: 50M
+              limits:
+                memory: 99M
 
 
     service:
