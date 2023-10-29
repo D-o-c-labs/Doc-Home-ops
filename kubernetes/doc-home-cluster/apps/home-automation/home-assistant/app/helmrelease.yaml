@@ -131,7 +131,7 @@ spec:
                 pathType: Prefix
                 service:
                   name: home-assistant-codeserver
-                  port: codeserver
+                  port: 8443
         tls:
           - hosts:
               - *host
