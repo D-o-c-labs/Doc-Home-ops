@@ -132,7 +132,7 @@ spec:
         ingressClassName: "nginx"
         primary: false
         hosts:
-          - host: &host "code.homeassistant.piscio.net"
+          - host: &host "code-homeassistant.piscio.net"
             paths:
               - path: /
                 service:
