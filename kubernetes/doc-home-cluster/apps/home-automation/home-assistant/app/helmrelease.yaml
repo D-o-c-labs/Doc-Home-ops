@@ -98,9 +98,10 @@ spec:
             port: 8123
       codeserver:
         enabled: true
-        controller: codeserver
+        controller: main
         ports:
           codeserver:
+            enabled: true
             port: 8443
             targetPort: 8443
 
