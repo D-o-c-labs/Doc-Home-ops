@@ -23,19 +23,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
-        statefulset:
-          volumeClaimTemplates:
-            - name: data
-              accessMode: ReadWriteOnce
-              existingClaim: zigbee2mqtt-data-pvc
-              size: 1Gi
-              storageClass: synology-iscsi
-              globalMounts:
-                - path: /data
 
-        pod:
-          securityContext:
-            privileged: true
 
         containers:
           main:
@@ -48,7 +36,8 @@ spec:
                 memory: 127M
               limits:
                 memory: 1364M
-
+            securityContext:
+              privileged: true
             env:
               ZIGBEE2MQTT_DATA: /data
 
@@ -92,10 +81,18 @@ spec:
               ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: deconz
 
     persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteOnce
+        existingClaim: zigbee2mqtt-data-pvc
+        size: 1Gi
+        globalMounts:
+          - path: /data
+            readOnly: false
       usb:
         enabled: true
-        hostPath: /dev/ttyACM0
         type: hostPath
+        hostPath: /dev/ttyACM0
 
     service:
       main:
