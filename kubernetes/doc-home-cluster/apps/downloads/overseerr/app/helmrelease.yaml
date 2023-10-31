@@ -17,14 +17,26 @@ spec:
         namespace: flux-system
 
   values:
-    image:
-      repository: ghcr.io/sct/overseerr
-      tag: 1.33.2@sha256:714ea6db2bc007a2262d112bef7eec74972eb33d9c72bddb9cbd98b8742de950
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/sct/overseerr
+              tag: 1.33.2@sha256:714ea6db2bc007a2262d112bef7eec74972eb33d9c72bddb9cbd98b8742de950
 
-    env:
-      LOG_LEVEL: "info"
-      PORT: 80
-      TZ: Europe/Rome
+            env:
+              LOG_LEVEL: "info"
+              PORT: 80
+              TZ: Europe/Rome
+
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 226M
+              limits:
+                memory: 1937M
 
     service:
       main:
@@ -36,12 +48,13 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
           - host: &host "overseerr.piscio.net"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -50,11 +63,6 @@ spec:
       config:
         enabled: true
         existingClaim: overseerr-config
-        mountPath: /app/config
+        globalMounts:
+          - path: /app/config
 
-    resources:
-      requests:
-        cpu: 15m
-        memory: 226M
-      limits:
-        memory: 1937M
