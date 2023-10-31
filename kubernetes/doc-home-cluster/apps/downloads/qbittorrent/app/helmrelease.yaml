@@ -17,58 +17,63 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: ghcr.io/onedr0p/qbittorrent
-      tag: 4.6.0@sha256:cb6259df3be61a5108bc4f85b09a523fc4b250589ca9b315ef927cbdf779afb6
+        pod:
+          hostname: qbittorrent
+          annotations:
+            setGateway: "true"
 
-    podAnnotations:
-      setGateway: "true"
+          podSecurityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65539
 
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 65539
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.6.0@sha256:cb6259df3be61a5108bc4f85b09a523fc4b250589ca9b315ef927cbdf779afb6
 
-    initContainers:
-      copy-config:
-        image: busybox:latest@sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
-        command:
-          - "/bin/sh"
-          - -c
-        args:
-          - cp /data/configfiles/* /data/config/
-        volumeMounts:
-          - name: config
-            mountPath: /data/config
-          - name: configfiles
-            mountPath: /data/configfiles
-      update-volume-permission:
-        command:
-          - sh
-          - '-c'
-          - chown -R 568:568 /config /data
-        image: busybox@sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
-        securityContext:
-          runAsUser: 0
-        volumeMounts:
-          - mountPath: /config
-            name: config
-          - mountPath: /data
-            name: data
+            env:
+              UMASK: "022"
+              QBITTORRENT__PORT: &port 8080
+              QBITTORRENT__USE_PROFILE: "true"
 
-    env:
-      UMASK: "022"
-      QBITTORRENT__PORT: &port 8080
-      QBITTORRENT__USE_PROFILE: "true"
+            resources:
+              requests:
+                cpu: 49m
+                memory: 765M
+              limits:
+                memory: 1426M
 
-    hostname: qbittorrent
+        initContainers:
+          copy-config:
+            image:
+              repository: busybox
+              tag: latest@sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
+            command:
+              - "/bin/sh"
+              - -c
+            args:
+              - cp /data/configfiles/* /data/config/
+          update-volume-permission:
+            command:
+              - sh
+              - '-c'
+              - chown -R 568:568 /config /data
+            image:
+              repository: busybox
+              tag: latest@sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
+            securityContext:
+              runAsUser: 0
+
 
     service:
       main:
@@ -80,12 +85,13 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
           - host: &host "qbittorrent.piscio.net"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -94,36 +100,53 @@ spec:
       config:
         enabled: true
         type: emptyDir
-        mountPath: /config/qBittorrent/config
+        advancedMounts:
+          main:
+            main:
+              - path: /config/qBittorrent/config
+                readOnly: false
+            copy-config:
+              - path: /data/config
+                readOnly: false
+            update-volume-permission:
+              - path: /config
+                readOnly: false
 
       cache:
         enabled: true
         type: emptyDir
-        mountPath: /config/qBittorrent/cache
+        advancedMounts:
+          main:
+            main:
+              - path: /config/qBittorrent/cache
+                readOnly: false
 
       configfiles:
         enabled: true
         type: configMap
         name: qbittorrent-configmap
-        mountPath: "-"
+        advancedMounts:
+          main:
+            copy-config:
+              - path: /data/configfiles
 
       data:
         enabled: true
         existingClaim: qbittorrent-config
-        mountPath: /config/qBittorrent/data
+        advancedMounts:
+          main:
+            main:
+              - path: /config/qBittorrent/data
+                readOnly: false
+            update-volume-permission:
+              - path: /data
+                readOnly: false
 
       downloads:
         enabled: true
-        mountPath: /downloads
         accessMode: ReadWriteMany
         existingClaim: media-pvc
         size: 4096Gi
         storageClass: '-'
         subPath: torrent-downloads
 
-    resources:
-      requests:
-        cpu: 49m
-        memory: 765M
-      limits:
-        memory: 1426M
