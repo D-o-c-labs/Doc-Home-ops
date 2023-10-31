@@ -17,28 +17,28 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        
+        containers:
+          main:
+            image:
+              repository: ghcr.io/flaresolverr/flaresolverr
+              tag: v3.3.6@sha256:965e7dfc76d08e175864a9772ab746005087db138f2e2ba8017e75574d4f0286
 
-    image:
-      repository: ghcr.io/flaresolverr/flaresolverr
-      tag: v3.3.6@sha256:965e7dfc76d08e175864a9772ab746005087db138f2e2ba8017e75574d4f0286
+            env:
+              TZ: Europe/Rome
 
-    env:
-      TZ: Europe/Rome
+            resources:
+              requests:
+                cpu: 250m
+                memory: "1Gi"
 
     service:
       main:
         ports:
           http:
             port: 8191
-
-
-    resources:
-      requests:
-        cpu: 250m
-        memory: "1Gi"
-      # limits:
-      #   memory: "4096M"
