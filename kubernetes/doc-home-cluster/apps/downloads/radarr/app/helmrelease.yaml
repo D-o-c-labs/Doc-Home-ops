@@ -17,32 +17,45 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: ghcr.io/onedr0p/radarr-develop
-      tag: 5.1.1.8195@sha256:9579f7c96c5db2f1f98219e83a296b27c696d1f7e18ab4cf2deb90e9e9b3ef37
+        pod:
+          hostname: radarr
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65539
 
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 65539
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.1.1.8195@sha256:9579f7c96c5db2f1f98219e83a296b27c696d1f7e18ab4cf2deb90e9e9b3ef37
+         
 
-    env:
-      RADARR__INSTANCE_NAME: Radarr
-      RADARR__PORT: &port 7878
-      RADARR__APPLICATION_URL: "https://radarr.piscio.net"
-      RADARR__LOG_LEVEL: info
-      RADARR__API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: radarr-secret
-            key: api_key
+            env:
+              RADARR__INSTANCE_NAME: Radarr
+              RADARR__PORT: &port 7878
+              RADARR__APPLICATION_URL: "https://radarr.piscio.net"
+              RADARR__LOG_LEVEL: info
+              RADARR__API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: api_key
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 164M
+              limits:
+                memory: 1408M
 
     service:
       main:
@@ -54,12 +67,13 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
           - host: &host "radarr.piscio.net"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -71,22 +85,15 @@ spec:
 
       media:
         enabled: true
-        mountPath: null
         accessMode: ReadWriteMany
         existingClaim: media-pvc
         size: 4096Gi
         storageClass: '-'
-        subPath:
-          - mountPath: /film
-            path: library/film
-          - mountPath: /usenet-downloads
-            path: usenet-downloads
-          - mountPath: /torrent-downloads
-            path: torrent-downloads
+        globalMounts:
+          - path: /film
+            subPath: library/film
+          - path: /usenet-downloads
+            subPath: usenet-downloads
+          - path: /torrent-downloads
+            subPath: torrent-downloads
 
-    resources:
-      requests:
-        cpu: 15m
-        memory: 164M
-      limits:
-        memory: 1408M

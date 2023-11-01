@@ -17,45 +17,57 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: ghcr.io/onedr0p/sabnzbd
-      tag: 4.1.0@sha256:91f3cd6b9f1c9988af5447f464b299630706eb7f691dee857eab1487d4bb626e
+        pod:
+          hostname: sabnzbd
+          annotations:
+            setGateway: "true"
 
-    podAnnotations:
-      setGateway: "true"
-      
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 65539
+          podSecurityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65539
 
-    env:
-      SABNZBD__PORT: &port 8080
-      SABNZBD__HOST_WHITELIST_ENTRIES: >-
-        sabnzbd,
-        sabnzbd.downloads,
-        sabnzbd.downloads.svc,
-        sabnzbd.downloads.svc.cluster,
-        sabnzbd.downloads.svc.cluster.local,
-        sabnzbd.piscio.net
-      SABNZBD__API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: sabnzbd-secret
-            key: api_key
-      SABNZBD__NZB_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: sabnzbd-secret
-            key: nzb_key
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/sabnzbd
+              tag: 4.1.0@sha256:91f3cd6b9f1c9988af5447f464b299630706eb7f691dee857eab1487d4bb626e
+
+            env:
+              SABNZBD__PORT: &port 8080
+              SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                sabnzbd,
+                sabnzbd.downloads,
+                sabnzbd.downloads.svc,
+                sabnzbd.downloads.svc.cluster,
+                sabnzbd.downloads.svc.cluster.local,
+                sabnzbd.piscio.net
+              SABNZBD__API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: api_key
+              SABNZBD__NZB_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: nzb_key
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: "2048M"
+              # limits:
+              #   memory: "4096M"
 
     service:
       main:
@@ -67,12 +79,13 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
           - host: &host "sabnzbd.piscio.net"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -83,19 +96,13 @@ spec:
         existingClaim: sabnzbd-config
       downloads:
         enabled: true
-        mountPath: /downloads
         accessMode: ReadWriteMany
         existingClaim: media-pvc
         size: 4096Gi
         storageClass: '-'
-        subPath: usenet-downloads
+        globalMounts:
+          - path: downloads
+            subPath: usenet-downloads
       media:
         enabled: false
         mountPath: /media
-
-    resources:
-      requests:
-        cpu: 15m
-        memory: "2048M"
-      # limits:
-      #   memory: "4096M"

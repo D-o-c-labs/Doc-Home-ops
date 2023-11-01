@@ -17,52 +17,56 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: golift/notifiarr
-      tag: 0.6.1
+        containers:
+          main:
+            image:
+              repository: golift/notifiarr
+              tag: 0.6.1
 
 
-    env:
-      DN_API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: notifiarr-secret
-            key: api_key
-      DN_PLEX_TOKEN:
-        valueFrom:
-          secretKeyRef:
-            name: notifiarr-secret
-            key: plex_token
-      DN_PLEX_URL: https://plex.piscio.net
-      DN_RADARR_0_API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: notifiarr-secret
-            key: radarr_api_key
-      DN_RADARR_0_NAME: Radarr
-      DN_RADARR_0_URL: "http://radarr:7878"
-      DN_SONARR_0_API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: notifiarr-secret
-            key: sonarr_api_key
-      DN_SONARR_0_NAME: Sonarr
-      DN_SONARR_0_URL: http://sonarr:8989
+            env:
+              DN_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: notifiarr-secret
+                    key: api_key
+              DN_PLEX_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: notifiarr-secret
+                    key: plex_token
+              DN_PLEX_URL: https://plex.piscio.net
+              DN_RADARR_0_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: notifiarr-secret
+                    key: radarr_api_key
+              DN_RADARR_0_NAME: Radarr
+              DN_RADARR_0_URL: "http://radarr:7878"
+              DN_SONARR_0_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: notifiarr-secret
+                    key: sonarr_api_key
+              DN_SONARR_0_NAME: Sonarr
+              DN_SONARR_0_URL: http://sonarr:8989
+
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 164M
+              limits:
+                memory: 1408M
 
     service:
       main:
         ports:
           http:
             port: 5454
-
-    resources:
-      requests:
-        cpu: 15m
-        memory: 164M
-      limits:
-        memory: 1408M
