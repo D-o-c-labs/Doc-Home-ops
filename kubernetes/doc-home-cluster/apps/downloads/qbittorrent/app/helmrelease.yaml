@@ -148,5 +148,7 @@ spec:
         existingClaim: media-pvc
         size: 4096Gi
         storageClass: '-'
-        subPath: torrent-downloads
+        globalMounts:
+          - path: downloads
+            subPath: torrent-downloads
 
