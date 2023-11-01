@@ -17,32 +17,45 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    image:
-      repository: ghcr.io/onedr0p/sonarr-develop
-      tag: 4.0.0.703@sha256:7f97e4783153bedc1c70568beb2bf925826fc92a4461d61ba58e8eda1649b49f
+        pod:
+          hostname: sonarr
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65539
 
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 65539
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/sonarr-develop
+              tag: 4.0.0.703@sha256:7f97e4783153bedc1c70568beb2bf925826fc92a4461d61ba58e8eda1649b49f
+         
 
-    env:
-      SONARR__INSTANCE_NAME: Sonarr
-      SONARR__PORT: &port 8989
-      SONARR__APPLICATION_URL: "https://sonarr.piscio.net"
-      SONARR__LOG_LEVEL: info
-      SONARR__API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: sonarr-secret
-            key: api_key
+            env:
+              SONARR__INSTANCE_NAME: Sonarr
+              SONARR__PORT: &port 8989
+              SONARR__APPLICATION_URL: "https://sonarr.piscio.net"
+              SONARR__LOG_LEVEL: info
+              SONARR__API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: sonarr-secret
+                    key: api_key
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 164M
+              limits:
+                memory: 1408M
 
     service:
       main:
@@ -54,12 +67,13 @@ spec:
       main:
         enabled: true
         ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
           - host: &host "sonarr.piscio.net"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -68,26 +82,17 @@ spec:
       config:
         enabled: true
         existingClaim: sonarr-config
+
       media:
         enabled: true
-        mountPath: null
         accessMode: ReadWriteMany
         existingClaim: media-pvc
         size: 4096Gi
         storageClass: '-'
-        subPath:
-          - path: library/tv
-            mountPath: /tv
-          - path: library/anime
-            mountPath: /anime
-          - path: usenet-downloads
-            mountPath: /usenet-downloads
-          - path: torrent-downloads
-            mountPath: /torrent-downloads
-
-    resources:
-      requests:
-        cpu: 15m
-        memory: 268M
-      limits:
-        memory: 2357M
+        globalMounts:
+          - path: /tv
+            subPath: library/tv
+          - path: /usenet-downloads
+            subPath: usenet-downloads
+          - path: /torrent-downloads
+            subPath: torrent-downloads
