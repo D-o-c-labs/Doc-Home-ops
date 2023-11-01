@@ -21,16 +21,6 @@ spec:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              type: secret
-              mountPath: /etc/alertmanager
-              name: alertmanager-config
-              items:
-                - key: alertmanager.yml
-                  path: alertmanager.yml
           
         containers:
           main:
@@ -69,15 +59,15 @@ spec:
           - hosts:
               - *host
 
-    # persistence:
-    #   config:
-    #     enabled: true
-    #     type: secret
-    #     mountPath: /etc/alertmanager
-    #     name: alertmanager-config
-    #     items:
-    #     - key: alertmanager.yml
-    #       path: alertmanager.yml
+    persistence:
+      config:
+        enabled: true
+        type: secret
+        mountPath: /etc/alertmanager
+        name: alertmanager-config
+        globalMounts:
+          - path: /etc/alertmanager/alertmanager.yml
+            subPath: alertmanager.yml
 
     
     #   config:
