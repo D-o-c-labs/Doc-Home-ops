@@ -24,7 +24,7 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
-          hostname: qbittorrent
+          hostname: sabnzbd
           annotations:
             setGateway: "true"
 
@@ -62,6 +62,13 @@ spec:
                     name: sabnzbd-secret
                     key: nzb_key
 
+            resources:
+              requests:
+                cpu: 15m
+                memory: "2048M"
+              # limits:
+              #   memory: "4096M"
+
     service:
       main:
         ports:
@@ -89,19 +96,13 @@ spec:
         existingClaim: sabnzbd-config
       downloads:
         enabled: true
-        mountPath: /downloads
         accessMode: ReadWriteMany
         existingClaim: media-pvc
         size: 4096Gi
         storageClass: '-'
-        subPath: usenet-downloads
+        globalMounts:
+          - path: downloads
+            subPath: usenet-downloads
       media:
         enabled: false
         mountPath: /media
-
-    resources:
-      requests:
-        cpu: 15m
-        memory: "2048M"
-      # limits:
-      #   memory: "4096M"
