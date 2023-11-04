@@ -6,6 +6,3 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   #- ./immich/ks.yaml
-  #- ./miniflux/ks.yaml
-  - ./n8n/ks.yaml
-  - ./theme-park/ks.yaml
