@@ -27,7 +27,7 @@ spec:
           main:
             image:
               repository: ghcr.io/flaresolverr/flaresolverr
-              tag: v3.3.9@sha256:747eefe4914f6fc4fa83e1714dbc05938e501fe25c2a3a69fc43b0d1b77f5d9b
+              tag: v3.3.10@sha256:3462ca455468bfe7f37581a29ab67824bd54ec570eb74adf821c1946e7e2f34b
 
             env:
               TZ: Europe/Rome
