@@ -48,7 +48,7 @@ services:
       - "51821-51830:51821-51830/udp"
   netmaker-ui:
     container_name: netmaker-ui
-    image: gravitl/netmaker-ui:v0.21.2@sha256:d4879c6d11ca0cfefd816321ae1b60f72466e16adce2286de23cd8177c57a1a2
+    image: gravitl/netmaker-ui:v0.21.2@sha256:dfb8f4dfcb8f99af206603d968d8586a2254772fb1b99488ba91cae6fb107db9
     depends_on:
       - netmaker
     links:
