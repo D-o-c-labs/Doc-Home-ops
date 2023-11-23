@@ -30,7 +30,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/cluster-0/apps/network/multus/config"
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/multus/config"
   prune: true
   sourceRef:
     kind: GitRepository
