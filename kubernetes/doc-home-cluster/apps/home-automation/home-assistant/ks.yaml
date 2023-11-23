@@ -15,6 +15,5 @@ spec:
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-#    - name: cluster-infrastructure-multus
-    - name: cluster-infrastructure-ext-postgres-operator
+    - name: multus-config
     - name: cluster-infrastructure-external-secrets-stores
