@@ -1,18 +1,42 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-infrastructure-ingress-nginx
+  name: &appname nginx-shared
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/network/ingress-nginx/app"
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/ingress-nginx/shared"
   prune: true
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-infrastructure-kube-prometheus-stack
+    - name: cert-manager-issuers
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname nginx-internal
+  namespace: flux-system
+spec:
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/ingress-nginx/internal"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: nginx-shared
