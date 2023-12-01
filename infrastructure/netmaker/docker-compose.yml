@@ -57,7 +57,7 @@ services:
     environment:
       BACKEND_URL: "https://api.netmaker.piscio.net"
   caddy:
-    image: caddy:2.7.5@sha256:179cbe6dfcc6cd6d82793ec890ff8a84870a17432feff1fa4803d59c221374ae
+    image: caddy:2.7.5@sha256:279a5ff568ff6c9e6185a6151e065aacb01c0f275b85f52dd950ac9ae204d8ab
     container_name: caddy
     restart: unless-stopped
     volumes:
