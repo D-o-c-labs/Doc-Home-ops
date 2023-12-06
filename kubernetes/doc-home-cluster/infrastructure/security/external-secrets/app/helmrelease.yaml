@@ -1,15 +1,15 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: external-secrets
-  namespace: security
 spec:
   interval: 30m
   chart:
     spec:
       chart: external-secrets
-      version: 0.9.8
+      version: 0.9.9
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -20,19 +20,19 @@ spec:
     replicaCount: 3
     leaderElect: true
     grafana:
-      enabled: false # TO BE CHANGED
+      enabled: true
     serviceMonitor:
-      enabled: false # TO BE CHANGED
+      enabled: true
       interval: 1m
     backgroundController:
       serviceMonitor:
-        enabled: false # TO BE CHANGED
+        enabled: true
         interval: 1m
     cleanupController:
       serviceMonitor:
-        enabled: false # TO BE CHANGED
+        enabled: true
         interval: 1m
     reportsController:
       serviceMonitor:
-        enabled: false # TO BE CHANGED
+        enabled: true
         interval: 1m

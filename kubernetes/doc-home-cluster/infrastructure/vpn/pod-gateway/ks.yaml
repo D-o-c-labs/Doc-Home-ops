@@ -15,4 +15,4 @@ spec:
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-infrastructure-external-secrets-stores
+    - name: external-secrets-stores

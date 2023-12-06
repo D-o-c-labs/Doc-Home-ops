@@ -1,145 +1,127 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-    name: onepassword-connect
-    namespace: security
+  name: onepassword-connect
 spec:
-    interval: 30m
-    chart:
-        spec:
-            chart: app-template
-            version: 1.5.1
-            interval: 30m
-            sourceRef:
-                kind: HelmRepository
-                name: bjw-s
-                namespace: flux-system
-    values:
-        controller:
-            annotations:
-                reloader.stakater.com/auto: "true"
-        image:
-            repository: docker.io/1password/connect-api
-            tag: 1.7.2@sha256:6aa94cf713f99c0fa58c12ffdd1b160404b4c13a7f501a73a791aa84b608c5a1
-        env:
-            OP_BUS_PORT: "11220"
-            OP_BUS_PEERS: localhost:11221
-            OP_HTTP_PORT: 8080
-            OP_SESSION:
-                valueFrom:
-                    secretKeyRef:
-                        name: onepassword-connect-secret
-                        key: 1password-credentials.json
-        service:
-            main:
-                ports:
-                    http:
-                        port: 8080
-        ingress:
-            main:
-                enabled: true
-                ingressClassName: nginx
-                annotations:
-                    nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8,192.168.0.0/16
-                hosts:
-                    - host: ENC[AES256_GCM,data:KJDcaOxzOGWpSP79GNBJYwxGFCw6,iv:8qpLBYMKeF1vJPseTB9CUzTtjTvNwt5zBESgBkOGBz4=,tag:y6OXgrHRqZrt6oSOFsi8dg==,type:str]
-                      paths:
-                        - path: ENC[AES256_GCM,data:/g==,iv:5QRhdRMjb2t52Rtcmk5dtOkRo+a2xS+yyE07nmadJnY=,tag:tJsFL4jiRU5TO1om1YMk9g==,type:str]
-                tls:
-                    - hosts:
-                        - ENC[AES256_GCM,data:04CtvuYioCRYHhu9+jsfo+yE3vfU,iv:YGhuLhCsg5/sSDzrP+BXxJZl/nueqFaQ6RRIo77oGSM=,tag:rpKO1XNUVN9hAlCY8nklug==,type:str]
-        probes:
-            liveness:
-                enabled: true
-                custom: true
-                spec:
-                    httpGet:
-                        path: /heartbeat
-                        port: 8080
-                    initialDelaySeconds: 15
-                    periodSeconds: 30
-                    failureThreshold: 3
-            readiness:
-                enabled: true
-                custom: true
-                spec:
-                    httpGet:
-                        path: /health
-                        port: 8080
-                    initialDelaySeconds: 15
-            startup:
-                enabled: true
-                custom: true
-                spec:
-                    httpGet:
-                        path: /health
-                        port: 8080
-                    failureThreshold: 30
-                    periodSeconds: 5
-                    successThreshold: 1
-                    timeoutSeconds: 1
-        podSecurityContext:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.0.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          securityContext:
             runAsUser: 999
             runAsGroup: 999
-        persistence:
-            shared:
-                enabled: true
-                type: emptyDir
-                mountPath: /home/opuser/.op/data
-        resources:
-            requests:
+
+        containers:
+          main:
+            image:
+              repository: docker.io/1password/connect-api
+              tag: 1.7.2@sha256:6aa94cf713f99c0fa58c12ffdd1b160404b4c13a7f501a73a791aa84b608c5a1
+            env:
+              OP_BUS_PORT: "11220"
+              OP_BUS_PEERS: localhost:11221
+              OP_HTTP_PORT: 8080
+              OP_SESSION:
+                valueFrom:
+                  secretKeyRef:
+                    name: onepassword-connect-secret
+                    key: 1password-credentials.json
+
+            resources:
+              requests:
                 cpu: 5m
                 memory: 10Mi
-            limits:
+              limits:
                 memory: 100Mi
-        sidecars:
-            sync:
-                name: sync
-                image: docker.io/1password/connect-sync:1.7.2@sha256:fe527ed9d81f193d8dfbba4140d61f9e8c8dceb0966b3009259087504e5ff79c
-                env:
-                    - name: OP_SESSION
-                      valueFrom:
-                        secretKeyRef:
-                            name: onepassword-connect-secret
-                            key: 1password-credentials.json
-                    - name: OP_HTTP_PORT
-                      value: 8081
-                    - name: OP_BUS_PORT
-                      value: "11221"
-                    - name: OP_BUS_PEERS
-                      value: localhost:11220
-                readinessProbe:
-                    httpGet:
-                        path: /health
-                        port: 8081
-                    initialDelaySeconds: 15
-                livenessProbe:
-                    httpGet:
-                        path: /heartbeat
-                        port: 8081
-                    failureThreshold: 3
-                    periodSeconds: 30
-                    initialDelaySeconds: 15
-                volumeMounts:
-                    - name: shared
-                      mountPath: /home/opuser/.op/data
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
-    age:
-        - recipient: age1lehw0hk4xkp8nnp3qjdxzp899705w7j0wsmfa7jvlt2fn0h86pyq79fusk
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBIbnJLZTZNRlRmdlpoM0xy
-            SmhGd0hVdGpnSkRIK3VJbTBxVEt2elRLU2pJClA3YXBQaDhuejc1OEZpWkpXUUFv
-            S3cxVUdreGZvOVEzVzF2SzE5YVpnUDgKLS0tIGkrbnQyVCs1TEI4NkRHSWdYZ3V5
-            UHloeVRyWjhoeUZoSzNZMUFqYjhXc3cKXnCPak/G7a54yUOE5WkJH5F9pfwX9tuS
-            p9DBIzUqTN2OAtoO4z71691zy4pAZcWCf0VvcjPg/99f9Qal5w2tkg==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-04-21T18:02:32Z"
-    mac: ENC[AES256_GCM,data:j9WQtPVryaOekTNjrI628/k4c6kmjuoB8ax8HX/QawdCM9sskrtj2abwNW/1tkxI4r2Ythr/mcNt9vmujK9n6cKxAW7OV37l7ieXqpkWfh1JUWrDxZ5MJAf8M0NItc7IV99J7qJQB9Mj5M9OXnhnAsWvxsCin3CSo5ZMPijFN+U=,iv:CHKDQJrA2LRvChesQ7mspcVzJB8nmokJ+dSX0tHvoWg=,tag:K6MN6zPsiDTzwIaoqE60Uw==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData|hosts)$
-    version: 3.7.3
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /heartbeat
+                    port: 8080
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8080
+                  initialDelaySeconds: 15
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8080
+                  failureThreshold: 30
+                  periodSeconds: 5
+                  successThreshold: 1
+                  timeoutSeconds: 1
+
+            
+          sync:
+            image:
+              repository: docker.io/1password/connect-sync
+              tag: 1.7.2@sha256:fe527ed9d81f193d8dfbba4140d61f9e8c8dceb0966b3009259087504e5ff79c
+            env:
+              - name: OP_SESSION
+                valueFrom:
+                secretKeyRef:
+                  name: onepassword-connect-secret
+                  key: 1password-credentials.json
+              - name: OP_HTTP_PORT
+                value: 8081
+              - name: OP_BUS_PORT
+                value: "11221"
+              - name: OP_BUS_PEERS
+                value: localhost:11220
+            probes:
+              readinessProbe:
+                httpGet:
+                  path: /health
+                  port: 8081
+                initialDelaySeconds: 15
+              livenessProbe:
+                httpGet:
+                  path: /heartbeat
+                  port: 8081
+                failureThreshold: 3
+                periodSeconds: 30
+                initialDelaySeconds: 15
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      main:
+        enabled: false
+
+    persistence:
+      shared:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /home/opuser/.op/data
+
