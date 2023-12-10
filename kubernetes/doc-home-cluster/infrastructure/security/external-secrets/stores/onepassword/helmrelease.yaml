@@ -85,9 +85,9 @@ spec:
             env:
               - name: OP_SESSION
                 valueFrom:
-                secretKeyRef:
-                  name: onepassword-connect-secret
-                  key: 1password-credentials.json
+                  secretKeyRef:
+                    name: onepassword-connect-secret
+                    key: 1password-credentials.json
               - name: OP_HTTP_PORT
                 value: 8081
               - name: OP_BUS_PORT
