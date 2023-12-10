@@ -22,9 +22,6 @@ spec:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-
-
-
         containers:
           main:
             image:
@@ -131,4 +128,3 @@ spec:
                     operator: In
                     values:
                       - kworker2
-                    
