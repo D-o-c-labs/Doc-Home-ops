@@ -29,5 +29,3 @@ spec:
       APP_UID: "1000"
       APP_GID: "1000"
       VOLSYNC_CLAIM: babybuddy-config
-      DB_NAME: babybuddy
-      DB_USER: babybuddy
