@@ -25,7 +25,7 @@ spec:
         data:
           s3.conf: |
             [global]
-            repo1-s3-key=crunchy-postgres
+            repo1-s3-key={{ .wasabi_crunchy_postgres_access_key }}
             repo1-s3-key-secret={{ .wasabi_crunchy_postgres_secret_key }}
 
     dataFrom:
