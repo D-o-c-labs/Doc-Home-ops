@@ -151,4 +151,3 @@ spec:
         globalMounts:
           - path: downloads
             subPath: torrent-downloads
-
