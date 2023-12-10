@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - angelnu.yaml
+  - authentik.yaml
   - backube.yaml
   - bitnami.yaml
   - bjw-s.yaml
