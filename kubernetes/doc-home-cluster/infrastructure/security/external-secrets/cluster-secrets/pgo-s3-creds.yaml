@@ -8,7 +8,7 @@ spec:
 
   namespaceSelector:
     matchLabels:
-      pgo-enabled: "true"
+      pgo-enabled-piscio.net: "true"
 
   refreshTime: "1m"
 
