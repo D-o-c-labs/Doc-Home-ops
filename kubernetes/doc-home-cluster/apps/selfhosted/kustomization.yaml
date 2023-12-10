@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   #- ./immich/ks.yaml
+  - ./babybuddy/ks.yaml
