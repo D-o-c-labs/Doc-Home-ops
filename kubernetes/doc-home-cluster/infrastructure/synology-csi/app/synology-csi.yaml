@@ -34,7 +34,7 @@ spec:
         kind: GitRepository
         name: synology-csi
     dependsOn:
-        - name: cluster-infrastructure-snapshot-controller
+        - name: snapshot-controller
     postBuild:
         substituteFrom:
             - kind: ConfigMap
