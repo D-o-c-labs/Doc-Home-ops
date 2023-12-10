@@ -103,6 +103,3 @@ spec:
         name: k8s-gateway-config
         mountPath: /etc/coredns
         readOnly: true
-
-
-
