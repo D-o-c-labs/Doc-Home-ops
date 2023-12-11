@@ -17,7 +17,7 @@ spec:
 #      repo:
 #        name: repo1
 #        s3:
-#            bucket: "doc.pgo"
+#            bucket: "doc-pgo"
 #            endpoint: "s3.eu-central-2.wasabisys.com"
 #            region: "eu-central-2"
   patroni:
@@ -66,6 +66,6 @@ spec:
             full: "0 1 * * 0"
             differential: "0 1 * * 1-6"
           s3:
-            bucket: "doc.pgo"
+            bucket: "doc-pgo"
             endpoint: "s3.eu-central-2.wasabisys.com"
             region: "eu-central-2"
