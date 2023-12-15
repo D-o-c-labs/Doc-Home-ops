@@ -1,109 +1,128 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: cloudflared
-  namespace: network
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-      interval: 30m
 
   values:
     controllers:
       main:
+        replicas: 2
+        strategy: RollingUpdate
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: cloudflared
+
         containers:
           main:
             image:
-              repository: cloudflare/cloudflared
-              tag: 2023.10.0@sha256:c18744ae1767c17c5562cc731c24e64a5a2f93f35c3dd6629b90dedaff6dff8f
-
-
+              repository: docker.io/cloudflare/cloudflared
+              tag: 2023.10.0
             args:
               - tunnel
-              # Points cloudflared to the config file, which configures what
-              # cloudflared will actually do. This file is created by a ConfigMap
-              # below.
               - --config
               - /etc/cloudflared/config/config.yaml
               - run
-
+              - "$(TUNNEL_ID)"
+            env:
+              NO_AUTOUPDATE: "true"
+              TUNNEL_CRED_FILE: /etc/cloudflared/creds/credentials.json
+              TUNNEL_METRICS: 0.0.0.0:8080
+              TUNNEL_TRANSPORT_PROTOCOL: auto
+              TUNNEL_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: cloudflared-secret
+                    key: TunnelID
             probes:
               liveness:
                 enabled: true
-                httpGet:
-                  # Cloudflared has a /ready endpoint which returns 200 if and only if
-                  # it has an active connection to the edge.
-                  path: /ready
-                  port: 2000
-                failureThreshold: 1
-                initialDelaySeconds: 10
-                periodSeconds: 10
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: 8080
+                  failureThreshold: 30
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 6m
+                memory: 105Mi
+              limits:
+                memory: 105Mi
 
     service:
       main:
-        enabled: false
+        ports:
+          http:
+            port: 8080
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 30s
 
     persistence:
       config:
         enabled: true
-        type: secret
-        name: cloudflared-secrets
+        type: configMap
+        name: cloudflared-configmap
         globalMounts:
-          - path: /etc/cloudflared/config
-            subpath: config.yaml
+          - path: /etc/cloudflared/config/config.yaml
+            subPath: config.yaml
             readOnly: true
-        # items:
-        # - key: config.yaml
-        #   path: config.yaml
-      credentials:
-        enabled: true
+      creds:
         type: secret
-        name: cloudflared-secrets
+        name: cloudflared-secret
         globalMounts:
-          - path: /etc/cloudflared/creds
-            subpath: credentials.json
+          - path: /etc/cloudflared/creds/credentials.json
+            subPath: credentials.json
             readOnly: true
-        # items:
-        # - key: credentials.json
-        #   path: credentials.json
-
-
-    # additionalVolumeMounts:
-    # - name: config
-    #   mountPath: /etc/cloudflared/config
-    #   readOnly: true
-    #   secret:
-    #     secretName: cloudflared-secrets
-    #     items:
-    #     - key: tunnel-credentials
-    #       path: credentials.json
-    # - name: creds
-    #   mountPath: /etc/cloudflared/creds
-    #   readOnly: true
-    #   secret:
-    #     secretName: cloudflared-secrets
-    #     items:
-    #     - key: cloudflared-config
-    #       path: config.yaml
-    # additionalVolumes:
-    # - name: creds
-    #   secret:
-    #     secretName: cloudflared-secrets
-    #     items:
-    #     - key: tunnel-credentials
-    #       path: credentials.json
-    # # Create a config.yaml file from the ConfigMap below.
-    # - name: config
-    #   secret:
-    #     secretName: cloudflared-secrets
-    #     items:
-    #     - key: cloudflared-config
-    #       path: config.yaml
