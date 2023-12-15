@@ -3,13 +3,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: overseerr
-  namespace: downloads
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.4.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -19,6 +18,9 @@ spec:
   values:
     controllers:
       main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
         containers:
           main:
             image:
@@ -47,9 +49,11 @@ spec:
     ingress:
       main:
         enabled: true
-        className: "internal-nginx"
+        className: "external-nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
         hosts:
-          - host: &host "overseerr.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
@@ -57,12 +61,12 @@ spec:
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
     persistence:
       config:
         enabled: true
-        existingClaim: overseerr-config
+        existingClaim: "${VOLSYNC_CLAIM}"
         globalMounts:
           - path: /app/config
 
