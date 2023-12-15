@@ -1,15 +1,15 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: home-assistant
-  namespace: home-automation
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.4.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -19,7 +19,6 @@ spec:
   values:
     controllers:
       main:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -36,14 +35,13 @@ spec:
           main:
             image:
               repository: ghcr.io/home-assistant/home-assistant
-              tag: 2023.11.3@sha256:feffc0b8227dbbf9d1bf61c465ff54b24aff2c990a1e54ea7219c4b300260ef9
-
+              tag: 2023.12.3
             env:
               SECRET_RECORDER_DB_URL:
                 valueFrom:
                   secretKeyRef:
-                    name: database-home-assistant-user
-                    key: POSTGRES_URL
+                    name: "${APP}-pguser-${DB_USER}"
+                    key: uri
 
             envFrom:
               - secretRef:
@@ -117,11 +115,11 @@ spec:
     ingress:
       main:
         enabled: true
-        className: "internal-nginx"
+        className: "external-nginx"
         annotations:
-          external-dns.alpha.kubernetes.io/target: homeassistant.piscio.net
+          external-dns.alpha.kubernetes.io/target: ingress-ext.bjw-s.dev
         hosts:
-          - host: &host "homeassistant.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
@@ -129,7 +127,7 @@ spec:
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
       codeserver:
         enabled: true
         className: "internal-nginx"
@@ -150,10 +148,7 @@ spec:
     persistence:
       config:
         enabled: true
-        accessMode: ReadWriteOnce
-        existingClaim: home-assistant-pvc
-        size: 10Gi
-        storageClass: synology-iscsi
+        existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
           main:
             main:
