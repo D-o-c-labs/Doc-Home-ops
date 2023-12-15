@@ -32,17 +32,17 @@ spec:
       - name: EXTERNAL_DNS_RFC2136_HOST
         valueFrom:
           secretKeyRef:
-            name: externaldns-secrets
+            name: externaldns-internal-secrets
             key: host
       - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
         valueFrom:
           secretKeyRef:
-            name: externaldns-secrets
+            name: externaldns-internal-secrets
             key: tsig-keyname
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
         valueFrom:
           secretKeyRef:
-            name: externaldns-secrets
+            name: externaldns-internal-secrets
             key: tsig-secret
 
     podAnnotations:

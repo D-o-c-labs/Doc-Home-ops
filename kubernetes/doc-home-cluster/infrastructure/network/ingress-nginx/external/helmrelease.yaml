@@ -92,7 +92,7 @@ spec:
             any: true
 
       extraArgs:
-        default-ssl-certificate: "network/bjw-s-dev-tls"
+        default-ssl-certificate: "network/piscionet-tls"
 
       topologySpreadConstraints:
         - maxSkew: 1
