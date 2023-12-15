@@ -19,7 +19,7 @@ spec:
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: volsync
+    - name: cluster-infrastructure-volsync
   postBuild:
     substitute:
       APP: *appname
