@@ -1,16 +1,62 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-infrastructure-external-dns
+  name: &appname externaldns-shared
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/app"
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/shared"
   prune: true
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: true
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname externaldns-external
+  namespace: flux-system
+spec:
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/external"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: true
+  dependsOn:
+    - name: externaldns-shared
+    - name: external-secrets-stores
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname externaldns-internal
+  namespace: flux-system
+spec:
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/internal"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: true
+  dependsOn:
+    - name: external-secrets-stores
