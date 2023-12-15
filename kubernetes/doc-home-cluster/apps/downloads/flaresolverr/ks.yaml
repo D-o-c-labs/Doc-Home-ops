@@ -2,15 +2,24 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-flaresolverr
+  name: &appname flaresolverr
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
+  targetNamespace: downloads
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
   interval: 10m
   path: "./kubernetes/doc-home-cluster/apps/downloads/flaresolverr/app"
   prune: true
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
-  wait: true
+  wait: false
+  dependsOn:
+    - name: cluster-infrastructure-volsync
+  postBuild:
+    substitute:
+      APP: *appname
