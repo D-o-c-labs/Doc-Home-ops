@@ -20,7 +20,7 @@ spec:
     fullnameOverride: &name externaldns-internal
 
     domainFilters:
-      - bjw-s.dev
+      - piscio.net
 
     env:
       - name: EXTERNAL_DNS_RFC2136_ZONE
