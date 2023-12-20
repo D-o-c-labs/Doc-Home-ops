@@ -3,13 +3,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: prowlarr
-  namespace: downloads
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.4.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -27,10 +26,10 @@ spec:
           annotations:
             setGateway: "true"
           securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
+            runAsUser: ${APP_UID}
+            runAsGroup: ${APP_GID}
+            fsGroup: ${APP_GID}
+            fsGroupChangePolicy: OnRootMismatch
 
         containers:
           main:
@@ -53,9 +52,9 @@ spec:
             resources:
               requests:
                 cpu: 20m
-                memory: 273M
+                memory: 128Mi
               limits:
-                memory: 1841M
+                memory: 256Mi
 
     service:
       main:
@@ -68,7 +67,7 @@ spec:
         enabled: true
         className: "internal-nginx"
         hosts:
-          - host: &host "prowlarr.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
@@ -76,9 +75,9 @@ spec:
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
     persistence:
       config:
         enabled: true
-        existingClaim: prowlarr-config
+        existingClaim: ${VOLSYNC_CLAIM}
