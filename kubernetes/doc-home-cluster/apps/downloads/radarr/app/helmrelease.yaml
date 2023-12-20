@@ -40,7 +40,7 @@ spec:
             env:
               RADARR__INSTANCE_NAME: Radarr
               RADARR__PORT: &port 7878
-              RADARR__APPLICATION_URL: "https://radarr.piscio.net"
+              RADARR__APPLICATION_URL: https://${HOSTNAME}
               RADARR__LOG_LEVEL: info
               RADARR__API_KEY:
                 valueFrom:
