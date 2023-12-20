@@ -66,7 +66,7 @@ spec:
     ingress:
       main:
         enabled: true
-        className: "internal-nginx"
+        className: "external-nginx"
         hosts:
           - host: &host "sonarr.piscio.net"
             paths:
