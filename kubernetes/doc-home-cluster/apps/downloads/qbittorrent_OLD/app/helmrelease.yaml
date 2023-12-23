@@ -1,0 +1,153 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.0.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          hostname: qbittorrent
+          annotations:
+            setGateway: "true"
+
+          podSecurityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65539
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.6.2@sha256:fedb62126c82ae0c7192e9052633411294a27e9c233613c03b0a8d168d160040
+
+            env:
+              UMASK: "022"
+              QBITTORRENT__PORT: &port 8080
+              QBITTORRENT__USE_PROFILE: "true"
+
+            resources:
+              requests:
+                cpu: 49m
+                memory: 765M
+              limits:
+                memory: 1426M
+
+        initContainers:
+          copy-config:
+            image:
+              repository: busybox
+              tag: latest@sha256:6fcbd181125495adab5baffadddcc43345e28b17b6cb719ed02dc2da1796e9dd
+            command:
+              - "/bin/sh"
+              - -c
+            args:
+              - cp /data/configfiles/* /data/config/
+          update-volume-permission:
+            command:
+              - sh
+              - '-c'
+              - chown -R 568:568 /config /data
+            image:
+              repository: busybox
+              tag: latest@sha256:6fcbd181125495adab5baffadddcc43345e28b17b6cb719ed02dc2da1796e9dd
+            securityContext:
+              runAsUser: 0
+
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        className: "internal-nginx"
+        hosts:
+          - host: &host "qbittorrent.piscio.net"
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          main:
+            main:
+              - path: /config/qBittorrent/config
+                readOnly: false
+            copy-config:
+              - path: /data/config
+                readOnly: false
+            update-volume-permission:
+              - path: /config
+                readOnly: false
+
+      cache:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          main:
+            main:
+              - path: /config/qBittorrent/cache
+                readOnly: false
+
+      configfiles:
+        enabled: true
+        type: configMap
+        name: qbittorrent-configmap
+        advancedMounts:
+          main:
+            copy-config:
+              - path: /data/configfiles
+
+      data:
+        enabled: true
+        existingClaim: qbittorrent-config
+        advancedMounts:
+          main:
+            main:
+              - path: /config/qBittorrent/data
+                readOnly: false
+            update-volume-permission:
+              - path: /data
+                readOnly: false
+
+      downloads:
+        enabled: true
+        accessMode: ReadWriteMany
+        existingClaim: media-pvc
+        size: 4096Gi
+        storageClass: '-'
+        globalMounts:
+          - path: downloads
+            subPath: torrent-downloads

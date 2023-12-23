@@ -1,15 +1,15 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: qbittorrent
-  namespace: downloads
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.4.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -23,57 +23,37 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
-          hostname: qbittorrent
           annotations:
             setGateway: "true"
-
-          podSecurityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
+          securityContext:
+            fsGroup: ${APP_GID}
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups:
-              - 65539
+              - 65542 # gladius:external-services
 
         containers:
           main:
+            nameOverride: qbittorrent
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 4.6.2@sha256:fedb62126c82ae0c7192e9052633411294a27e9c233613c03b0a8d168d160040
-
             env:
               UMASK: "022"
               QBITTORRENT__PORT: &port 8080
-              QBITTORRENT__USE_PROFILE: "true"
-
             resources:
               requests:
                 cpu: 49m
-                memory: 765M
+                memory: 1024Mi
               limits:
-                memory: 1426M
-
-        initContainers:
-          copy-config:
-            image:
-              repository: busybox
-              tag: latest@sha256:6fcbd181125495adab5baffadddcc43345e28b17b6cb719ed02dc2da1796e9dd
-            command:
-              - "/bin/sh"
-              - -c
-            args:
-              - cp /data/configfiles/* /data/config/
-          update-volume-permission:
-            command:
-              - sh
-              - '-c'
-              - chown -R 568:568 /config /data
-            image:
-              repository: busybox
-              tag: latest@sha256:6fcbd181125495adab5baffadddcc43345e28b17b6cb719ed02dc2da1796e9dd
+                memory: 8192Mi
             securityContext:
-              runAsUser: 0
+              runAsUser: ${APP_UID}
+              runAsGroup: ${APP_GID}
 
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-18
+              tag: 1.8.3
 
     service:
       main:
@@ -86,7 +66,7 @@ spec:
         enabled: true
         className: "internal-nginx"
         hosts:
-          - host: &host "qbittorrent.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
@@ -94,54 +74,25 @@ spec:
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
     persistence:
       config:
         enabled: true
-        type: emptyDir
+        existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
           main:
             main:
-              - path: /config/qBittorrent/config
-                readOnly: false
-            copy-config:
-              - path: /data/config
-                readOnly: false
-            update-volume-permission:
               - path: /config
-                readOnly: false
-
-      cache:
-        enabled: true
-        type: emptyDir
-        advancedMounts:
-          main:
-            main:
-              - path: /config/qBittorrent/cache
-                readOnly: false
-
-      configfiles:
-        enabled: true
+      scripts:
         type: configMap
-        name: qbittorrent-configmap
-        advancedMounts:
-          main:
-            copy-config:
-              - path: /data/configfiles
-
-      data:
-        enabled: true
-        existingClaim: qbittorrent-config
+        name: qbittorrent-scripts
+        defaultMode: 0775
         advancedMounts:
           main:
             main:
-              - path: /config/qBittorrent/data
-                readOnly: false
-            update-volume-permission:
-              - path: /data
-                readOnly: false
-
+              - path: /scripts
+                readOnly: true
       downloads:
         enabled: true
         accessMode: ReadWriteMany
@@ -151,3 +102,12 @@ spec:
         globalMounts:
           - path: downloads
             subPath: torrent-downloads
+      dnsdist-config:
+        type: configMap
+        name: qbittorrent-dnsdist
+        advancedMounts:
+          main:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
+                readOnly: true
