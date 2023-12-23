@@ -20,6 +20,7 @@ spec:
   dependsOn:
     - name: volsync
     - name: external-secrets-stores
+    - name: cluster-infrastructure-pod-gateway-downloads
   postBuild:
     substitute:
       APP: *appname
@@ -41,7 +42,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/main/apps/downloads/qbittorrent/tools"
+  path: "./kubernetes/doc-home-cluster/apps/downloads/qbittorrent/tools"
   prune: true
   sourceRef:
     kind: GitRepository
