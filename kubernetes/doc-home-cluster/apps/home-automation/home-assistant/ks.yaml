@@ -19,7 +19,7 @@ spec:
   wait: false
   dependsOn:
     - name: multus-config
-    - name: cluster-infrastructure-volsync
+    - name: volsync
     - name: external-secrets-stores
     - name: external-secrets-cluster-secrets
     - name: crunchy-postgres-operator
