@@ -50,11 +50,6 @@ spec:
               runAsUser: ${APP_UID}
               runAsGroup: ${APP_GID}
 
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-18
-              tag: 1.8.3
-
     service:
       main:
         ports:
@@ -102,12 +97,3 @@ spec:
         globalMounts:
           - path: downloads
             subPath: torrent-downloads
-      dnsdist-config:
-        type: configMap
-        name: qbittorrent-dnsdist
-        advancedMounts:
-          main:
-            dnsdist:
-              - path: /etc/dnsdist/dnsdist.conf
-                subPath: dnsdist.conf
-                readOnly: true
