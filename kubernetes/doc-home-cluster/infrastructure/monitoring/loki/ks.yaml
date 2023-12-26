@@ -15,4 +15,4 @@ spec:
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-infrastructure-kube-prometheus-stack
+    - name: kube-prometheus-stack

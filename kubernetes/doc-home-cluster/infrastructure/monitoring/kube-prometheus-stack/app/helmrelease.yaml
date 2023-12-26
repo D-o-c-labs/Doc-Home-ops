@@ -94,11 +94,6 @@ spec:
     grafana:
       enabled: false
       forceDeployDashboards: true
-      sidecar:
-        dashboards:
-          multicluster:
-            etcd:
-              enabled: true
 
     ###
     ### Prometheus operator values
@@ -126,15 +121,13 @@ spec:
     prometheus:
       ingress:
         enabled: true
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
+        ingressClassName: internal-nginx
         pathType: Prefix
         hosts:
-          - &host_prometheus prometheus.piscio.net
+          - ${HOSTNAME}
         tls:
           - hosts:
-              - *host_prometheus
+              - ${HOSTNAME}
 
       prometheusSpec:
         alertingEndpoints:
@@ -142,40 +135,27 @@ spec:
             name: alertmanager
             port: 9093
             apiVersion: v2
-        additionalScrapeConfigs:
-          - job_name: node-exporter
-            scrape_interval: 1m
-            scrape_timeout: 10s
-            honor_timestamps: true
-            static_configs:
-              - targets:
-                  - tank.piscio.net:9100
-                  #- piscionas.piscio.net:9100
-
-        #   - job_name: speedtest-exporter
-        #     scrape_interval: 60m
-        #     scrape_timeout: 60s
-        #     honor_timestamps: true
-        #     static_configs:
-        #       - targets:
-        #           - gateway.bjw-s.tech:9798
-
         enableAdminAPI: true
+        enableFeatures:
+          - auto-gomaxprocs
+          - memory-snapshot-on-shutdown
+          - new-service-discovery-manager
         externalLabels:
-          cluster: doc-home-cluster
+          cluster: ${CLUSTER_NAME}
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         replicas: 1
         replicaExternalLabelName: "__replica__" # must match with thanos value `.query.replicaLabel[0]`
         resources:
           requests:
-            cpu: 587m
-            memory: 4993M
+            cpu: 257m
+            memory: 3760M
           limits:
-            memory: 5977M
+            memory: 3760M
         retention: 2d
-        retentionSize: "6GB"
+        retentionSize: "15GB"
         ruleSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
         scrapeInterval: 1m
         serviceMonitorSelectorNilUsesHelmValues: false
         storageSpec:
@@ -184,7 +164,7 @@ spec:
               storageClassName: synology-csi-delete
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 20Gi
         # thanos:
         #   image: quay.io/thanos/thanos:v0.31.0@sha256:e7d337d6ac2aea3f0f9314ec9830291789e16e2b480b9d353be02d05ce7f2a7e
         #   objectStorageConfig:
