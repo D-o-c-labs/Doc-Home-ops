@@ -89,6 +89,11 @@ spec:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: Prometheus
 
+        opnsense:
+          gnetId: 9291
+          revision: 1
+          datasource: Prometheus
+
         cloudflared:
           gnetId: 17457
           revision: 6
@@ -308,6 +313,7 @@ spec:
       - vonage-status-panel
       - grafana-worldmap-panel
       - grafana-clock-panel
+      - blackmirror1-singlestat-math-panel
 
     rbac:
       pspEnabled: false
