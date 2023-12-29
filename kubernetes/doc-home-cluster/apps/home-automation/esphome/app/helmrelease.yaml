@@ -1,15 +1,15 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: esphome
-  namespace: home-automation
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.4.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -17,16 +17,38 @@ spec:
         namespace: flux-system
 
   values:
-    controller:
-      type: statefulset
+    controllers:
+      main:
+        annotations:
+          secret.reloader.stakater.com/reload: esphome-secrets,esphome-deploykey
 
-    image:
-      repository: ghcr.io/esphome/esphome
-      tag: 2023.12.5@sha256:afe338ecebaba62731d817a0661a9610d7b41c7deb0abbfad225245a9aacc5f4
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name":"multus-iot",
+                "namespace": "network",
+                "ips": ["192.168.32.151/24"]
+              }]
 
-    podAnnotations:
-      secret.reloader.stakater.com/reload: esphome-secrets,esphome-deploykey
-      k8s.v1.cni.cncf.io/networks: macvlan-static-iot-esphome
+        containers:
+          main:
+            image:
+              repository: ghcr.io/esphome/esphome
+              tag: 2023.12.5
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 5m
+                memory: 1374M
+              limits:
+                memory: 2048M
 
     service:
       main:
@@ -38,46 +60,39 @@ spec:
       main:
         enabled: true
         className: "internal-nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
-          - host: &host "esphome.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
     persistence:
-      secrets:
+      config:
         enabled: true
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          main:
+            main:
+              - path: /config
+      secrets:
         type: secret
         name: esphome-secrets
-        mountPath: /config/secrets.yaml
-        subPath: secrets.yaml
+        globalMounts:
+          - path: /config/secrets.yaml
+            subPath: secrets.yaml
       esphome-cache:
-        enabled: true
         type: emptyDir
-        mountPath: /config/.esphome
-      deploy-key:
-        enabled: true
-        type: secret
-        name: esphome-deploykey
-        defaultMode: 256
-        subPath:
-          - path: id_ed25519
-            mountPath: /root/.ssh/id_ed25519
-
-    resources:
-      requests:
-        cpu: 300m
-        memory: 512M
-      limits:
-        memory: 2048M
-
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: ceph-block
+        globalMounts:
+          - path: /config/.esphome
+      # deploy-key:
+      #   type: secret
+      #   name: esphome-deploykey
+      #   defaultMode: 256
+      #   globalMounts:
+      #     - path: /root/.ssh/id_ed25519
+      #       subPath: id_ed25519
