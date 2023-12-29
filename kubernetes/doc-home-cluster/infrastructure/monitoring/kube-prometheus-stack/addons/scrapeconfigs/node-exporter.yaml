@@ -13,3 +13,6 @@ spec:
     - action: replace
       targetLabel: job
       replacement: *name
+    - action: replace
+      targetLabel: group
+      replacement: "Firewall"

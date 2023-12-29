@@ -7,6 +7,7 @@ metadata:
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
+  targetNamespace: monitoring
   interval: 10m
   path: "./kubernetes/doc-home-cluster/infrastructure/monitoring/kube-prometheus-stack/app"
   prune: true
@@ -27,6 +28,7 @@ metadata:
   name: &appname kube-prometheus-stack-addons
   namespace: flux-system
 spec:
+  targetNamespace: monitoring
   interval: 10m
   path: "./kubernetes/doc-home-cluster/infrastructure/monitoring/kube-prometheus-stack/addons"
   prune: true
