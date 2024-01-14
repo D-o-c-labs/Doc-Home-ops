@@ -50,11 +50,46 @@ spec:
               limits:
                 memory: 2048M
 
+          codeserver:
+            image:
+              repository: lscr.io/linuxserver/code-server
+              tag: 4.20.0@sha256:b0b0ac36d4e0b7c77ae05a477c221925b6f674b4fc878b8016c16f1c44ad54f9
+            ports:
+              - containerPort: 8443
+                name: codeserver
+                protocol: TCP
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsUser: 0
+
+            resources:
+              requests:
+                cpu: 0m
+                memory: 0M
+              limits:
+                memory: 1024M
+
+            env:
+              - name: PUID
+                value: 0
+              - name: PGID
+                value: 0
+              - name: DEFAULT_WORKSPACE
+                value: /data/config
+
     service:
       main:
         ports:
           http:
             port: 6052
+      codeserver:
+        enabled: true
+        controller: main
+        ports:
+          codeserver:
+            enabled: true
+            port: 8443
+            targetPort: 8443
 
     ingress:
       main:
@@ -70,6 +105,21 @@ spec:
         tls:
           - hosts:
               - "${HOSTNAME}"
+      codeserver:
+        enabled: true
+        className: "internal-nginx"
+        primary: false
+        hosts:
+          - host: &host "code-esphome.piscio.net"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  name: esphome-codeserver
+                  port: 8443
+        tls:
+          - hosts:
+              - *host
 
     persistence:
       config:
@@ -79,16 +129,32 @@ spec:
           main:
             main:
               - path: /config
+            codeserver:
+              - path: /data/config
+                readOnly: false
       secrets:
         type: secret
         name: esphome-secrets
-        globalMounts:
-          - path: /config/secrets.yaml
-            subPath: secrets.yaml
+        #globalMounts:
+        #  - path: /config/secrets.yaml
+        #    subPath: secrets.yaml
+        advancedMounts:
+          main:
+            main:
+              - path: /config/secrets.yaml
+                subPath: secrets.yaml
+            codeserver:
+              - path: /data/config/secrets.yaml
+                readOnly: false
+                subPath: secrets.yaml
       esphome-cache:
         type: emptyDir
-        globalMounts:
-          - path: /config/.esphome
+        #globalMounts:
+        #  - path: /config/.esphome
+        advancedMounts:
+          main:
+            main:
+              - path: /config/.esphome
       deploy-key:
         type: secret
         name: esphome-deploykey
