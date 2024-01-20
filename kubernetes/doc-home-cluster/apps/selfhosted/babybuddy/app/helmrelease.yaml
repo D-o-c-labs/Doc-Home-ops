@@ -26,7 +26,7 @@ spec:
           main:
             image:
               repository: lscr.io/linuxserver/babybuddy
-              tag: 2.1.2
+              tag: 2.2.0
             probes:
               liveness:
                 enabled: false
