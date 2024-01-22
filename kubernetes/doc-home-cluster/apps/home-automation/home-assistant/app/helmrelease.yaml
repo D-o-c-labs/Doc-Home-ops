@@ -65,7 +65,7 @@ spec:
           codeserver:
             image:
               repository: lscr.io/linuxserver/code-server
-              tag: 4.20.0@sha256:22f6c418277eafb616945685a65de13b464ea2eba5f8294b246cec0b1794bc3d
+              tag: 4.20.1@sha256:894e4bbbb876e64f170938ae2b23de95b55d28f90a4eae064d9a0a5e109bd927
             ports:
               - containerPort: 8443
                 name: codeserver
