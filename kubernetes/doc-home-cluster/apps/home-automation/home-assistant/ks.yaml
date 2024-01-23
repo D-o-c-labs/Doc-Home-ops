@@ -33,3 +33,4 @@ spec:
       DB_NAME: home-assistant
       DB_USER: home-assistant
       VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_CACHE_CAPACITY: 10Gi
