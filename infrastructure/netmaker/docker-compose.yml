@@ -4,7 +4,7 @@ version: "3.4"
 services:
   netmaker:
     container_name: netmaker
-    image: gravitl/netmaker:v0.22.0-ee@sha256:86ead9e269e6430f2233141b55a4a9105e71eeeb8b60c88adeb28e58d08dce13
+    image: gravitl/netmaker:v0.22.0-ee@sha256:698aa378ac31202935d457f7a01c35edf04b55636180590b01973622f853b8b6
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -48,7 +48,7 @@ services:
       - "51821-51830:51821-51830/udp"
   netmaker-ui:
     container_name: netmaker-ui
-    image: gravitl/netmaker-ui:v0.22.0@sha256:2cb80ca3934497a49d1be69732b314f233d8e827cc2a0be2ae05412be1b15883
+    image: gravitl/netmaker-ui:v0.22.0@sha256:0f3dbdd3effa7a9b7afee3a88ffe7313e570da0b38547d0917791b4f46860fbf
     depends_on:
       - netmaker
     links:
@@ -57,7 +57,7 @@ services:
     environment:
       BACKEND_URL: "https://api.netmaker.piscio.net"
   caddy:
-    image: caddy:2.7.6@sha256:bcf45332e3ebd42456f5fe63be2175ebfee971d85c2cd1bd837dd0beb422fa1c
+    image: caddy:2.7.6@sha256:245e14283de7392fd14ef9e425580fe689cc0f8eedf28376016dab4109bc76b2
     container_name: caddy
     restart: unless-stopped
     volumes:
@@ -78,7 +78,7 @@ services:
       - dnsconfig:/root/dnsconfig
   mq:
     container_name: mq
-    image: eclipse-mosquitto:2.0.18-openssl@sha256:2022ede1ff30843285ea3f0c63e6f8b547c7e30f6a313dc2f43f3f7084976832
+    image: eclipse-mosquitto:2.0.18-openssl@sha256:bb88fea73b1a23dd9b7b135772127115d18d9030e0bf7dfc4959dd736bc55e7f
     depends_on:
       - netmaker
     restart: unless-stopped
