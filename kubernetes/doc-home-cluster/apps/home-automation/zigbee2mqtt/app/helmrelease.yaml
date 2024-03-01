@@ -37,7 +37,6 @@ spec:
               privileged: true
             env:
               ZIGBEE2MQTT_DATA: /data
-
               ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
               ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: "false"
               ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: "false"
@@ -116,13 +115,13 @@ spec:
               - "${HOSTNAME}"
 
 
-    # defaultPodOptions:
-    #   affinity:
-    #     nodeAffinity:
-    #       requiredDuringSchedulingIgnoredDuringExecution:
-    #         nodeSelectorTerms:
-    #           - matchExpressions:
-    #               - key: kubernetes.io/hostname
-    #                 operator: In
-    #                 values:
-    #                   - kworker2
+    defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - kworker2
