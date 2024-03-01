@@ -55,7 +55,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
               ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: "true"
               ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
-              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: https://zigbee2mqtt.piscio.net
+              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "${HOSTNAME}"
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
               ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: zigbee2mqtt
               ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
@@ -83,8 +83,7 @@ spec:
       data:
         enabled: true
         accessMode: ReadWriteOnce
-        existingClaim: zigbee2mqtt-data-pvc
-        size: 1Gi
+        existingClaim: "${VOLSYNC_CLAIM}"
         globalMounts:
           - path: /data
             readOnly: false
@@ -106,10 +105,8 @@ spec:
       main:
         enabled: true
         className: "internal-nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16,172.30.0.1/24"
         hosts:
-          - host: &host "zigbee2mqtt.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
@@ -117,7 +114,7 @@ spec:
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
 
     # defaultPodOptions:
