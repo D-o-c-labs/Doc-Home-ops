@@ -85,10 +85,10 @@ spec:
         globalMounts:
           - path: /data
             readOnly: false
-      # usb:
-      #   enabled: true
-      #   type: hostPath
-      #   hostPath: /dev/ttyACM0
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/ttyACM0
 
     service:
       main:
