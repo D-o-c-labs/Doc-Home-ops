@@ -1,12 +1,16 @@
+
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-mosquitto
+  name: &appname mosquitto
   namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
+  targetNamespace: home-automation
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
   interval: 10m
   path: "./kubernetes/doc-home-cluster/apps/home-automation/mosquitto/app"
   prune: true
@@ -14,3 +18,15 @@ spec:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: true
+  dependsOn:
+    - name: volsync
+    - name: external-secrets-stores
+    - name: multus-config
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: mqtt.piscio.net
+      APP_UID: "568"
+      APP_GID: "568"
+      VOLSYNC_CLAIM: mosquitto-data
+      VOLSYNC_CAPACITY: 1Gi

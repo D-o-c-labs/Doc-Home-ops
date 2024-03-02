@@ -22,7 +22,7 @@ spec:
     - name: volsync
     - name: external-secrets-stores
     - name: external-secrets-cluster-secrets
-    - name: cluster-apps-mosquitto
+    - name: mosquitto
   postBuild:
     substitute:
       APP: *appname
