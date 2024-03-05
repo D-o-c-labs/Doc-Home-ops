@@ -43,6 +43,9 @@ spec:
         tcp_connect:
           prober: tcp
           timeout: 5s
+          tcp:
+            ip_protocol_fallback: false
+            preferred_ip_protocol: "ip4"
     ingress:
       enabled: true
       className: internal-nginx
