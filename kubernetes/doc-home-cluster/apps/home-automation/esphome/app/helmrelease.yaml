@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/esphome/esphome
-              tag: 2023.12.9
+              tag: 2024.2.1
             probes:
               liveness:
                 enabled: false
@@ -53,7 +53,7 @@ spec:
           codeserver:
             image:
               repository: lscr.io/linuxserver/code-server
-              tag: 4.21.2@sha256:da5d52fedb7682e4d40cad5d3e28d3e12e638410aa9b396ca11a60e7da37e012
+              tag: 4.22.0@sha256:ae51f24c1252a69555d8a284276a9aefaf1449289dcaddf3e3db025674064e00
             ports:
               - containerPort: 8443
                 name: codeserver

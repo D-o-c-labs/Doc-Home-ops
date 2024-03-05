@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/home-assistant/home-assistant
-              tag: 2024.1.6
+              tag: 2024.2.5
             env:
               SECRET_RECORDER_DB_URL:
                 valueFrom:
@@ -65,7 +65,7 @@ spec:
           codeserver:
             image:
               repository: lscr.io/linuxserver/code-server
-              tag: 4.21.2@sha256:da5d52fedb7682e4d40cad5d3e28d3e12e638410aa9b396ca11a60e7da37e012
+              tag: 4.22.0@sha256:ae51f24c1252a69555d8a284276a9aefaf1449289dcaddf3e3db025674064e00
             ports:
               - containerPort: 8443
                 name: codeserver
