@@ -128,7 +128,7 @@ spec:
           url: "http://zb_co.piscio.net"
         - module: tcp_connect
           name: zigbee-controller-tcp
-          url: "tcp://zb_co.piscio.net:6638"
+          url: "zb_co.piscio.net:6638"
 
         - module: icmp
           name: ping-cloudflare
