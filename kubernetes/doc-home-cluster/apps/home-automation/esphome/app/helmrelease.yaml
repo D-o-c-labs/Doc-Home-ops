@@ -76,6 +76,8 @@ spec:
                 value: 0
               - name: DEFAULT_WORKSPACE
                 value: /data/config
+              - name: ESPHOME_DASHBOARD_USE_PING
+                value: "true"
 
     service:
       main:
