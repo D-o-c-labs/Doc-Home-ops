@@ -67,8 +67,8 @@ spec:
               requests:
                 cpu: 15m
                 memory: "2048M"
-              # limits:
-              #   memory: "4096M"
+                # limits:
+                #   memory: "4096M"
 
     service:
       main:

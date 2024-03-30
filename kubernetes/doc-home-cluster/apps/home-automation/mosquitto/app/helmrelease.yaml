@@ -93,7 +93,3 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /mosquitto/external_config
-
-
-
-

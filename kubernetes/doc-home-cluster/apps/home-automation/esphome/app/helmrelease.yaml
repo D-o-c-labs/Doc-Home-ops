@@ -137,7 +137,7 @@ spec:
       secrets:
         type: secret
         name: esphome-secrets
-        #globalMounts:
+        # globalMounts:
         #  - path: /config/secrets.yaml
         #    subPath: secrets.yaml
         advancedMounts:
@@ -151,7 +151,7 @@ spec:
                 subPath: secrets.yaml
       esphome-cache:
         type: emptyDir
-        #globalMounts:
+        # globalMounts:
         #  - path: /config/.esphome
         advancedMounts:
           main:

@@ -22,7 +22,7 @@ spec:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-          
+
         containers:
           main:
             image:
@@ -37,7 +37,6 @@ spec:
                 memory: 50M
               limits:
                 memory: 99M
-
 
     service:
       main:
@@ -70,16 +69,13 @@ spec:
           - path: /etc/alertmanager/alertmanager.yml
             subPath: alertmanager.yml
 
-    
-    #   config:
-    #     enabled: true
-    #     type: configMap
-    #     name: alertmanager-configmap
-    #     mountPath: /etc/alertmanager
-    #     readOnly: true
-    
+    # config:
+    #   enabled: true
+    #   type: configMap
+    #   name: alertmanager-configmap
+    #   mountPath: /etc/alertmanager
+    #   readOnly: true
+
     # envFrom:
     #   - secretRef:
     #       name: alertmanager-secret
-
-

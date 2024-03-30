@@ -126,4 +126,3 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /home/opuser/.op/data
-
