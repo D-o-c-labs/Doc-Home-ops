@@ -69,13 +69,13 @@ spec:
           - path: /etc/alertmanager/alertmanager.yml
             subPath: alertmanager.yml
 
-    # config:
-    #   enabled: true
-    #   type: configMap
-    #   name: alertmanager-configmap
-    #   mountPath: /etc/alertmanager
-    #   readOnly: true
+      # config:
+      #   enabled: true
+      #   type: configMap
+      #   name: alertmanager-configmap
+      #   mountPath: /etc/alertmanager
+      #   readOnly: true
 
-    # envFrom:
-    #   - secretRef:
-    #       name: alertmanager-secret
+      # envFrom:
+      #   - secretRef:
+      #       name: alertmanager-secret

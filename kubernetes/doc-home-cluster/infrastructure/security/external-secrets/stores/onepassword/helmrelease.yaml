@@ -79,7 +79,6 @@ spec:
                   successThreshold: 1
                   timeoutSeconds: 1
 
-            
           sync:
             image:
               repository: docker.io/1password/connect-sync
