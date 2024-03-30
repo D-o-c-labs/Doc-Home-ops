@@ -22,7 +22,7 @@ spec:
   values:
     controller:
       ## IMAGE ADDED TO FIX https://github.com/vmware-tanzu/velero/issues/7433
-      image: 
+      image:
         repository: registry.k8s.io/sig-storage/snapshot-controller
         pullPolicy: IfNotPresent
         tag: "v6.3.3"

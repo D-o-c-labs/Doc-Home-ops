@@ -35,14 +35,6 @@ spec:
               path: /var/lib/grafana/dashboards/default
             orgId: 1
             type: file
-          # - name: ceph
-          #   orgId: 1
-          #   folder: Ceph
-          #   type: file
-          #   disableDeletion: false
-          #   editable: true
-          #   options:
-          #     path: /var/lib/grafana/dashboards/ceph
           - name: flux
             orgId: 1
             folder: Flux
@@ -59,22 +51,6 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/nginx
-          # - name: thanos
-          #   orgId: 1
-          #   folder: Thanos
-          #   type: file
-          #   disableDeletion: false
-          #   editable: true
-          #   options:
-          #     path: /var/lib/grafana/dashboards/thanos
-          # - name: unpoller
-          #   disableDeletion: false
-          #   editable: true
-          #   folder: "UniFi Poller"
-          #   options:
-          #     path: /var/lib/grafana/dashboards/unpoller
-          #   orgId: 1
-          #   type: file
 
     dashboards:
       default:
@@ -120,25 +96,6 @@ spec:
           revision: 29
           datasource: Prometheus
 
-        # zfs:
-        #   gnetId: 7845
-        #   revision: 4
-        #   datasource: Prometheus
-
-      # ceph:
-      #   ceph-cluster:
-      #     gnetId: 2842
-      #     revision: 17
-      #     datasource: Prometheus
-      #   ceph-osd:
-      #     gnetId: 5336
-      #     revision: 9
-      #     datasource: Prometheus
-      #   ceph-pools:
-      #     gnetId: 5342
-      #     revision: 9
-      #     datasource: Prometheus
-
       flux:
         flux-cluster:
           url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json
@@ -158,55 +115,6 @@ spec:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
           datasource: Prometheus
 
-      # thanos:
-      #   thanos-bucket-replicate:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/bucket-replicate.json
-      #     datasource: Prometheus
-      #   thanos-compact:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/compact.json
-      #     datasource: Prometheus
-      #   thanos-overview:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/overview.json
-      #     datasource: Prometheus
-      #   thanos-query:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query.json
-      #     datasource: Prometheus
-      #   thanos-query-frontend:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query-frontend.json
-      #     datasource: Prometheus
-      #   thanos-receieve:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/receive.json
-      #     datasource: Prometheus
-      #   thanos-rule:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/rule.json
-      #     datasource: Prometheus
-      #   thanos-sidecar:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/sidecar.json
-      #     datasource: Prometheus
-      #   thanos-store:
-      #     url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
-      #     datasource: Prometheus
-
-      # unpoller:
-      #   clients:
-      #     gnetId: 11315
-      #     revision: 9
-      #     datasource:
-      #       - name: "DS_PROMETHEUS"
-      #         value: Prometheus
-      #   usw:
-      #     gnetId: 11312
-      #     revision: 9
-      #     datasource:
-      #       - name: "DS_PROMETHEUS"
-      #         value: Prometheus
-      #   uap:
-      #     gnetId: 11314
-      #     revision: 10
-      #     datasource:
-      #       - name: "DS_PROMETHEUS"
-      #         value: Prometheus
-
     datasources:
       datasources.yaml:
         apiVersion: 1
@@ -216,19 +124,12 @@ spec:
             name: Prometheus
             type: prometheus
             url: http://kube-prometheus-stack-prometheus.monitoring:9090
-          #- access: proxy
-          #  name: Loki
-          #  type: loki
-          #  url: http://loki-gateway.monitoring.svc.cluster.local:80
           - name: Alertmanager
             type: alertmanager
             access: proxy
             url: http://alertmanager.monitoring.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
-        #deleteDatasources:
-        #  - name: Loki
-        #    orgId: 1
           - name: Alertmanager
             orgId: 1
 
