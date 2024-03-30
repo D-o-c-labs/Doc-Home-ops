@@ -36,7 +36,7 @@ spec:
       image:
         repository: registry.k8s.io/sig-storage/snapshot-validation-webhook
         pullPolicy: IfNotPresent
-        tag: "v6.3.3"
+        tag: "v7.0.2"
 
       tls:
         certManagerIssuerRef:
