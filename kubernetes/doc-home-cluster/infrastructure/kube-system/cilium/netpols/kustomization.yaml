@@ -8,7 +8,7 @@ resources:
   # FIXME: Remove when cluster-wide default is in place
   - ./allow-egress-kubedns.yaml
   - ./allow-egress-lan.yaml
-  - ./allow-egress-minio.yaml
+  - ./allow-egress-synology.yaml
   - ./allow-egress-world.yaml
 
   - ./allow-ingress-internet.yaml
