@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname silabs-multipan
+  namespace: flux-system
+spec:
+  targetNamespace: home-automation
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/apps/home-automation/multiPAN/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: multus-config
+    - name: volsync
+    - name: external-secrets-stores
+    - name: external-secrets-cluster-secrets
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: multipan.piscio.net
+      APP_UID: "0"
+      APP_GID: "0"
+      VOLSYNC_CLAIM: multipan-data

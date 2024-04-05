@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: ${APP}
+  namespace: home-automation
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: b2un0/silabs-multipan-docker
+              tag: 2.4.5
+            resources:
+              requests:
+                cpu: 15m
+                memory: 127M
+              limits:
+                memory: 1364M
+            securityContext:
+              privileged: true
+            env:
+              # OCPD environment variables
+              #DEVICE: "tcp://zb_co.piscio.net:6638"
+              BAUDRATE: "460800"
+              CPCD_TRACE: "false"
+              FLOW_CONTROL: "false"
+
+              NETWORK_DEVICES: "zb_co.piscio.net"
+
+              # OTBR-AGENT environment variables
+              OTBR_ENABLE: 1
+              BACKBONE_IF: "eth0"
+              OTBR_LOG_LEVEL: "debug"
+              OTB_FIREWALL: 1
+              OTBR_REST_LISTEN_PORT: "8081"
+
+              # OTBR-WEB environment variables
+              OTBR_WEB_PORT: "8086"
+
+              # SOCAT environment variables
+              NETWORK_DEVICE: ""
+
+              # ZIGBEED environment variables
+              EZSP_LISTEN_PORT: "9999"
+
+              # UNIVERSAL FLASHER variables
+              AUTOFLASH_FIRMWARE: 1
+              FIRMWARE: "86"
+
+    persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteOnce
+        existingClaim: "${VOLSYNC_CLAIM}"
+        globalMounts:
+          - path: /data
+            readOnly: false
+
+    service:
+      main:
+        ports:
+          otbr_http:
+            port: 8086
+          otbr_api:
+            port: 8081
+          zigbee:
+            enabled: true
+            port: 9999
+
+    ingress:
+      main:
+        enabled: true
+        className: "internal-nginx"
+        hosts:
+          - host: "${HOSTNAME}"
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: otbr_http
+        tls:
+          - hosts:
+              - "${HOSTNAME}"
+
