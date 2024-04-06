@@ -100,15 +100,11 @@ spec:
 
     persistence:
       config:
-        enabled: true
         existingClaim: "${VOLSYNC_CLAIM}"
 
       media:
-        enabled: true
-        accessMode: ReadWriteMany
-        existingClaim: media-pvc
-        size: 4096Gi
-        storageClass: '-'
+        type: nfs
+        server: piscionas.piscio.net
         globalMounts:
           - path: /film
             subPath: library/film
