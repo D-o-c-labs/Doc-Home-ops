@@ -18,13 +18,13 @@ spec:
 
   values:
     controllers:
-      main:
+      flaresolverr:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/flaresolverr/flaresolverr
               tag: v3.3.16@sha256:35feb16defbc4a0012143ec14e7eabdf361a1a1f31075db49e85ccd8cc1ee485
