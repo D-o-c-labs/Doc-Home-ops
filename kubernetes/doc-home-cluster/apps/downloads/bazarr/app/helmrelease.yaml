@@ -105,6 +105,7 @@ spec:
       media:
         type: nfs
         server: piscionas.piscio.net
+        path: /volume1/Media
         globalMounts:
           - path: /film
             subPath: library/film
