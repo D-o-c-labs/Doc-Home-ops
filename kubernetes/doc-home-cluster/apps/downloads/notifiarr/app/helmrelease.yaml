@@ -62,8 +62,15 @@ spec:
               DN_SONARR_0_NAME: Sonarr
               DN_SONARR_0_URL: http://sonarr:8989
 
+            resources:
+              requests:
+                cpu: 15m
+                memory: 164M
+              limits:
+                memory: 1408M
+
     ingress:
-      main:
+      app:
         enabled: true
         className: "external-nginx"
         annotations:
@@ -78,13 +85,6 @@ spec:
         tls:
           - hosts:
               - "${HOSTNAME}"
-
-            resources:
-              requests:
-                cpu: 15m
-                memory: 164M
-              limits:
-                memory: 1408M
 
     service:
       app:

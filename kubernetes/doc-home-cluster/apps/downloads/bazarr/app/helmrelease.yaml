@@ -84,7 +84,7 @@ spec:
             port: *port
 
     ingress:
-      main:
+      app:
         enabled: true
         className: "internal-nginx"
         hosts:
