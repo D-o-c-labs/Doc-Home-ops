@@ -23,6 +23,11 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
         containers:
           app:
             image:
@@ -35,7 +40,8 @@ spec:
                 memory: "1Gi"
 
     service:
-      main:
+      app:
+        controller: flaresolverr
         ports:
           http:
             port: 8191
