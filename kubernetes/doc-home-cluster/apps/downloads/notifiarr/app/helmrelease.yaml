@@ -68,6 +68,12 @@ spec:
                 memory: 164M
               limits:
                 memory: 1408M
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
     ingress:
       app:

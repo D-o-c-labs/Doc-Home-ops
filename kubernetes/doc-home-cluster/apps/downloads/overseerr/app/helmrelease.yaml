@@ -43,6 +43,12 @@ spec:
                 memory: 226M
               limits:
                 memory: 1937M
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
     service:
       app:
