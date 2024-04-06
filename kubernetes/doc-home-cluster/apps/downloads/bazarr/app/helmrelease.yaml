@@ -109,7 +109,5 @@ spec:
         globalMounts:
           - path: /film
             subPath: library/film
-          - path: /usenet-downloads
-            subPath: usenet-downloads
-          - path: /torrent-downloads
-            subPath: torrent-downloads
+          - path: /tv
+            subPath: library/tv
