@@ -19,11 +19,14 @@ spec:
 
   values:
     controllers:
-      main:
+      bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           securityContext:
             runAsUser: 568
             runAsGroup: 568
@@ -33,7 +36,7 @@ spec:
               - 65542 # gladius:external-services
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/bazarr
               tag: 1.4.2@sha256:bbf61475c2d2dbc22206b19322b5955f1de2266c7e4a06c49e5e27e460b14574
@@ -49,6 +52,16 @@ spec:
                   secretKeyRef:
                     name: bazarr-secret
                     key: api_key
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
 
             resources:
               requests:
@@ -56,9 +69,16 @@ spec:
                 memory: 164M
               limits:
                 memory: 1408M
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
     service:
-      main:
+      app:
+        controller: bazarr
         ports:
           http:
             port: *port
@@ -72,7 +92,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
