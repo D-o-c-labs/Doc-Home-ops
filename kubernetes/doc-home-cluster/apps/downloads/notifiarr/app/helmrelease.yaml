@@ -18,13 +18,18 @@ spec:
 
   values:
     controllers:
-      main:
+      notifiarr:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
 
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
         containers:
-          main:
+          app:
             image:
               repository: golift/notifiarr
               tag: 0.7.0
@@ -68,7 +73,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -82,7 +87,8 @@ spec:
                 memory: 1408M
 
     service:
-      main:
+      app:
+        controller: notifiarr
         ports:
           http:
             port: 5454
