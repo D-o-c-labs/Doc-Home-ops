@@ -29,8 +29,8 @@ spec:
 
 
     # plex
-    - toFQDNs:
-      - matchName: "piscionas.piscio.net"
+    - toCIDRSet:
+        - cidr: 192.168.32.201/32
       toPorts:
         - ports:
             - port: "32400"
