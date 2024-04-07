@@ -18,12 +18,14 @@ spec:
 
   values:
     controllers:
-      main:
+      prowlarr:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
-          hostname: prowlarr
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           annotations:
             setGateway: "true"
           securityContext:
@@ -33,10 +35,10 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/prowlarr-nightly
-              tag: 1.16.0.4401@sha256:4a8f336c669eda564d6ef0cfab07715fccbd035980c5f5a30c4310203bf5f632
+              tag: 1.16.0.4392@sha256:a3576b426ca449cf127af38dabc2c9ee70ed540d86f86c91b9ae60328a2ae8e7
 
             env:
               PROWLARR__INSTANCE_NAME: Prowlarr
@@ -56,15 +58,22 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
     service:
-      main:
+      app:
+        controller: prowlarr
         ports:
           http:
             port: *port
 
     ingress:
-      main:
+      app:
         enabled: true
         className: "internal-nginx"
         hosts:
@@ -72,7 +81,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -80,5 +89,4 @@ spec:
 
     persistence:
       config:
-        enabled: true
         existingClaim: ${VOLSYNC_CLAIM}
