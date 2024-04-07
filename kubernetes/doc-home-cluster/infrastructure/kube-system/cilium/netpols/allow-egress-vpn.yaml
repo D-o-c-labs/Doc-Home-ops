@@ -17,3 +17,7 @@ spec:
       - k8sService:
           serviceName: downloads-gateway-pod
           namespace: vpn
+    
+    - toEndpoints:
+      - matchLabels:
+          app.kubernetes.io/instance: downloads-gateway
