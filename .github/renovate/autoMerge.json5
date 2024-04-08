@@ -39,6 +39,14 @@
       ignoreTests: true,
     },
     {
+      description: "Auto merge Home Assistant minor/patch",
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["digest", "minor", "patch"],
+      matchPackageNames: ["ghcr.io/home-assistant/home-assistant"],
+      ignoreTests: true
+    },
+    {
       description: "Auto merge linters & prettiers",
       matchPackagePatterns: ["lint", "prettier"],
       automerge: true,
