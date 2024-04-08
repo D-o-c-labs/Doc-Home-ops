@@ -107,3 +107,6 @@ cgroup:
   autoMount:
     enabled: false
   hostRoot: /sys/fs/cgroup
+
+ipv6:
+  enabled: true
