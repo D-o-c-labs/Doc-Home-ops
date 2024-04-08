@@ -109,4 +109,4 @@ cgroup:
   hostRoot: /sys/fs/cgroup
 
 ipv6:
-  enabled: true
+  enabled: false
