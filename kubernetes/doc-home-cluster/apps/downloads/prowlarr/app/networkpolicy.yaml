@@ -27,10 +27,20 @@ spec:
             - port: "7878"
               protocol: TCP
 
-    # plex
-    - toCIDRSet:
-        - cidr: 192.168.32.201/32
+    # qbittorrent
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: qbittorrent
       toPorts:
         - ports:
-            - port: "32400"
+            - port: "8080"
+              protocol: TCP
+
+    # sabnzbd
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: sabnzbd
+      toPorts:
+        - ports:
+            - port: "8080"
               protocol: TCP

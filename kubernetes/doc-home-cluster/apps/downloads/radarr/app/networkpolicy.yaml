@@ -9,28 +9,20 @@ spec:
     matchLabels:
       app.kubernetes.io/name: overseerr
   egress:
-    # sonarr
+    # qbittorrent
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: sonarr
+            app.kubernetes.io/name: qbittorrent
       toPorts:
         - ports:
-            - port: "8989"
+            - port: "8080"
               protocol: TCP
 
-    # radarr
+    # sabnzbd
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: radarr
+            app.kubernetes.io/name: sabnzbd
       toPorts:
         - ports:
-            - port: "7878"
-              protocol: TCP
-
-    # plex
-    - toCIDRSet:
-        - cidr: 192.168.32.201/32
-      toPorts:
-        - ports:
-            - port: "32400"
+            - port: "8080"
               protocol: TCP
