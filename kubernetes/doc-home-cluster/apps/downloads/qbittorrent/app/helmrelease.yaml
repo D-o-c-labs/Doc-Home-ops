@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -18,11 +18,15 @@ spec:
 
   values:
     controllers:
-      main:
+      qbittorrent:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            # egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/vpn: allow
           annotations:
             setGateway: "true"
           securityContext:
@@ -32,7 +36,7 @@ spec:
               - 65542 # gladius:external-services
 
         containers:
-          main:
+          app:
             nameOverride: qbittorrent
             image:
               repository: ghcr.io/onedr0p/qbittorrent
@@ -51,21 +55,21 @@ spec:
               runAsGroup: ${APP_GID}
 
     service:
-      main:
+      app:
+        controller: qbittorrent
         ports:
           http:
             port: *port
 
     ingress:
-      main:
-        enabled: true
+      app:
         className: "internal-nginx"
         hosts:
           - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -73,7 +77,6 @@ spec:
 
     persistence:
       config:
-        enabled: true
         existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
           main:
@@ -88,12 +91,11 @@ spec:
             main:
               - path: /scripts
                 readOnly: true
+
       downloads:
-        enabled: true
-        accessMode: ReadWriteMany
-        existingClaim: media-pvc
-        size: 4096Gi
-        storageClass: '-'
+        type: nfs
+        server: piscionas.piscio.net
+        path: /volume1/Media
         globalMounts:
           - path: downloads
             subPath: torrent-downloads

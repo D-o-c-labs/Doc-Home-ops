@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -20,20 +20,24 @@ spec:
 
   values:
     controllers:
-      main:
+      qbtools-tag:
         type: cronjob
 
         cronjob:
           schedule: "@hourly"
 
         pod:
+          labels:
+            # egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/vpn: allow
           restartPolicy: OnFailure
           securityContext:
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/buroa/qbtools
               tag: v0.15.1
