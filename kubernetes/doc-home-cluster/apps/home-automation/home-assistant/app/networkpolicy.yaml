@@ -17,4 +17,12 @@ spec:
         - ports:
             - port: "1883"
               protocol: TCP
-
+    
+    # postgres
+    - toEndpoints:
+        - matchLabels:
+            postgres-operator.crunchydata.com/cluster: home-assistant
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
