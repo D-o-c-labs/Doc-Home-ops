@@ -131,7 +131,6 @@ spec:
       codeserver:
         enabled: true
         className: "internal-nginx"
-        primary: false
         hosts:
           - host: &host "code-homeassistant.piscio.net"
             paths:
