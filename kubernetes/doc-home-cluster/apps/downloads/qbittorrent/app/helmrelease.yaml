@@ -77,21 +77,11 @@ spec:
 
     persistence:
       config:
-        enabled: true
         existingClaim: "${VOLSYNC_CLAIM}"
-        advancedMounts:
-          main:
-            main:
-              - path: /config
       scripts:
         type: configMap
         name: qbittorrent-scripts
         defaultMode: 0775
-        advancedMounts:
-          main:
-            main:
-              - path: /scripts
-                readOnly: true
 
       downloads:
         type: nfs
