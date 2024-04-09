@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -18,11 +18,14 @@ spec:
 
   values:
     controllers:
-      main:
+      esphome:
         annotations:
           secret.reloader.stakater.com/reload: esphome-secrets,esphome-deploykey
 
         pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           annotations:
             k8s.v1.cni.cncf.io/networks: |
               [{
@@ -32,7 +35,7 @@ spec:
               }]
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/esphome/esphome
               tag: 2024.3.2
@@ -80,56 +83,50 @@ spec:
                 value: "true"
 
     service:
-      main:
+      app:
+        controller: esphome
         ports:
           http:
             port: 6052
       codeserver:
-        enabled: true
-        controller: main
+        controller: esphome
         ports:
           codeserver:
-            enabled: true
             port: 8443
-            targetPort: 8443
 
     ingress:
       main:
-        enabled: true
         className: "internal-nginx"
         hosts:
           - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - "${HOSTNAME}"
       codeserver:
-        enabled: true
         className: "internal-nginx"
         primary: false
         hosts:
           - host: &host "code-esphome.piscio.net"
             paths:
               - path: /
-                pathType: Prefix
                 service:
-                  name: esphome-codeserver
-                  port: 8443
+                  identifier: codeserver
+                  port: codeserver
         tls:
           - hosts:
               - *host
 
     persistence:
       config:
-        enabled: true
         existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
-          main:
-            main:
+          esphome:
+            app:
               - path: /config
             codeserver:
               - path: /data/config
@@ -141,8 +138,8 @@ spec:
         #  - path: /config/secrets.yaml
         #    subPath: secrets.yaml
         advancedMounts:
-          main:
-            main:
+          esphome:
+            app:
               - path: /config/secrets.yaml
                 subPath: secrets.yaml
             codeserver:
@@ -154,8 +151,8 @@ spec:
         # globalMounts:
         #  - path: /config/.esphome
         advancedMounts:
-          main:
-            main:
+          esphome:
+            app:
               - path: /config/.esphome
       deploy-key:
         type: secret
