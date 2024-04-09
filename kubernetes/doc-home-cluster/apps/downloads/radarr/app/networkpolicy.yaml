@@ -3,11 +3,11 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: overseerr
+  name: radarr
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: overseerr
+      app.kubernetes.io/name: radarr
   egress:
     # qbittorrent
     - toEndpoints:
