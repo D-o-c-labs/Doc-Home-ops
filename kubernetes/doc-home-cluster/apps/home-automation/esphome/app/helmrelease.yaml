@@ -95,7 +95,7 @@ spec:
             port: 8443
 
     ingress:
-      main:
+      app:
         className: "internal-nginx"
         hosts:
           - host: "${HOSTNAME}"

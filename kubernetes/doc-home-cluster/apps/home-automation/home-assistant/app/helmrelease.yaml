@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -18,11 +18,14 @@ spec:
 
   values:
     controllers:
-      main:
+      home-assistant:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           annotations:
             k8s.v1.cni.cncf.io/networks: |
               [{
@@ -32,7 +35,7 @@ spec:
               }]
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/home-assistant/home-assistant
               tag: 2024.4.2
@@ -99,22 +102,19 @@ spec:
 
 
     service:
-      main:
+      app:
+        controller: home-assistant
         ports:
           http:
             port: 8123
       codeserver:
-        enabled: true
-        controller: main
+        controller: home-assistant
         ports:
           codeserver:
-            enabled: true
             port: 8443
-            targetPort: 8443
 
     ingress:
-      main:
-        enabled: true
+      app:
         className: "external-nginx"
         annotations:
           external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
@@ -123,7 +123,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -136,34 +136,30 @@ spec:
           - host: &host "code-homeassistant.piscio.net"
             paths:
               - path: /
-                pathType: Prefix
                 service:
-                  name: home-assistant-codeserver
-                  port: 8443
+                  identifier: codeserver
+                  port: codeserver
         tls:
           - hosts:
               - *host
 
-
     persistence:
       config:
-        enabled: true
         existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
-          main:
-            main:
+          home-assistant:
+            app:
               - path: /config
                 readOnly: false
             codeserver:
               - path: /data/config
                 readOnly: false
       jupyter-kernel:
-        enabled: true
         name: home-assistant-jupyter-secret
         type: secret
         advancedMounts:
-          main:
-            main:
+          home-assistant:
+            app:
               - path: /jupyter-kernel
                 readOnly: false
             codeserver:
