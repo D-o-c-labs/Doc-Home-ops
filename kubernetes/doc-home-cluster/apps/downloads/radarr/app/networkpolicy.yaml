@@ -26,3 +26,13 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+
+
+    # sabnzbd
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: prowlarr
+      toPorts:
+        - ports:
+            - port: "9696"
+              protocol: TCP
