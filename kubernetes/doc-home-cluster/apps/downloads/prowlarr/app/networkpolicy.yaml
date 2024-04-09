@@ -44,3 +44,13 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+
+
+    # flaresolverr
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: flaresolverr
+      toPorts:
+        - ports:
+            - port: "8191"
+              protocol: TCP
