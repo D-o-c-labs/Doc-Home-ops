@@ -109,7 +109,6 @@ spec:
               - "${HOSTNAME}"
       codeserver:
         className: "internal-nginx"
-        primary: false
         hosts:
           - host: &host "code-esphome.piscio.net"
             paths:
