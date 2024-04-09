@@ -26,3 +26,13 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
+    
+    # babybuddy
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: babybuddy
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+
