@@ -5,8 +5,4 @@ namespace: downloads
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-  - ./pvc.yaml
-  - ./volsync.yaml
-commonLabels:
-  app.kubernetes.io/name: sabnzbd
-  app.kubernetes.io/instance: sabnzbd
+  - ../../../../templates/volsync

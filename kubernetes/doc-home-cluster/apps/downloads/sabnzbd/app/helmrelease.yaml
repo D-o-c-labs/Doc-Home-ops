@@ -4,13 +4,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: sabnzbd
-  namespace: downloads
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -19,13 +18,15 @@ spec:
 
   values:
     controllers:
-      main:
-        type: statefulset
+      sabnzbd:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
-          hostname: sabnzbd
+          labels:
+            # egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/vpn: allow
           annotations:
             setGateway: "true"
 
@@ -38,7 +39,7 @@ spec:
               - 65539
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/sabnzbd
               tag: 4.2.3@sha256:bb20d3940ff32c672111ad7169ce4156f1c4c08bb653241f1b14f6d00f93b3cc
@@ -67,43 +68,36 @@ spec:
               requests:
                 cpu: 15m
                 memory: "2048M"
-                # limits:
-                #   memory: "4096M"
 
     service:
-      main:
+      app:
+        controller: sabnzbd
         ports:
           http:
             port: *port
 
     ingress:
-      main:
+      app:
         enabled: true
         className: "internal-nginx"
         hosts:
-          - host: &host "sabnzbd.piscio.net"
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
     persistence:
       config:
-        enabled: true
-        existingClaim: sabnzbd-config
+        existingClaim: "${VOLSYNC_CLAIM}"
       downloads:
-        enabled: true
-        accessMode: ReadWriteMany
-        existingClaim: media-pvc
-        size: 4096Gi
-        storageClass: '-'
+        type: nfs
+        server: piscionas.piscio.net
+        path: /volume1/Media
         globalMounts:
           - path: downloads
             subPath: usenet-downloads
-      media:
-        enabled: false
-        mountPath: /media
