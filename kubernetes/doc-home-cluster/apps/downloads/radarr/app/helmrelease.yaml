@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -18,11 +18,14 @@ spec:
 
   values:
     controllers:
-      main:
+      radarr:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           securityContext:
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
@@ -32,7 +35,7 @@ spec:
               - 65542 # gladius:external-services
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
               tag: 5.4.5.8715@sha256:70c1f8ad136803e0a525d0a274a9f0e4788ef2b9e1215410469b27e91f5ee423
@@ -56,14 +59,14 @@ spec:
                 memory: 1408M
 
     service:
-      main:
+      app:
+        controller: radarr
         ports:
           http:
             port: *port
 
     ingress:
-      main:
-        enabled: true
+      app:
         annotations:
           external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
         className: "external-nginx"
@@ -72,7 +75,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -80,14 +83,11 @@ spec:
 
     persistence:
       config:
-        enabled: true
         existingClaim: "${VOLSYNC_CLAIM}"
       media:
-        enabled: true
-        accessMode: ReadWriteMany
-        existingClaim: media-pvc
-        size: 4096Gi
-        storageClass: '-'
+        type: nfs
+        server: piscionas.piscio.net
+        path: /volume1/Media
         globalMounts:
           - path: /film
             subPath: library/film
