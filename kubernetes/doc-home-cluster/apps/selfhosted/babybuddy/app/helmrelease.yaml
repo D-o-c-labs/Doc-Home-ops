@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 2.6.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -50,9 +50,7 @@ spec:
     ingress:
       main:
         enabled: true
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "${HOSTNAME}"
+        className: "internal-nginx"
         hosts:
           - host: "${HOSTNAME}"
             paths:
