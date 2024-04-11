@@ -31,6 +31,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: babybuddy
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "8000"
