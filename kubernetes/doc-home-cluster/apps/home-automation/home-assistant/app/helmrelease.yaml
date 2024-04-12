@@ -95,8 +95,6 @@ spec:
                 value: 0
               - name: DEFAULT_WORKSPACE
                 value: /data/config
-              - name: TZ
-                value: Europe/Rome
               - name: VSCODE_EXTENSION_IDS
                 value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python|cstrap.python-snippets
 
@@ -129,7 +127,6 @@ spec:
           - hosts:
               - "${HOSTNAME}"
       codeserver:
-        enabled: true
         className: "internal-nginx"
         hosts:
           - host: &host "code-homeassistant.piscio.net"
