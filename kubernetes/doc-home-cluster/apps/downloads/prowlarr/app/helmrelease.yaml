@@ -27,8 +27,8 @@ spec:
             # egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             egress.home.arpa/vpn: allow
-          annotations:
-            setGateway: "true"
+          #annotations:
+          #  setGateway: "true"
           securityContext:
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
