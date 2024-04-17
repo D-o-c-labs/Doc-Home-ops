@@ -120,15 +120,14 @@ spec:
             port: 9000
 
     ingress:
-      main:
-        enabled: true
+      app:
         className: "internal-nginx"
         hosts:
           - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
