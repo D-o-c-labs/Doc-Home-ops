@@ -19,11 +19,18 @@ spec:
 
   values:
     controllers:
-      main:
+      zigbee2mqtt:
         annotations:
           reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            ingress.home.arpa/nginx-internal: allow
+            egress.home.arpa/world: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/koenkk/zigbee2mqtt
               tag: 1.36.1
@@ -79,27 +86,37 @@ spec:
               ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ezsp"
               # ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ember"
               DEBUG: "zigbee-herdsman*"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
 
     persistence:
       data:
-        enabled: true
-        accessMode: ReadWriteOnce
         existingClaim: "${VOLSYNC_CLAIM}"
-        globalMounts:
-          - path: /data
-            readOnly: false
-      usb:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/ttyUSB0
+        advancedMounts:
+          zigbee2mqtt:
+            app:
+              - path: /data
+      # usb:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: /dev/ttyUSB0
 
     service:
-      main:
+      app:
+        controller: zigbee2mqtt
         ports:
           http:
+            primary: true
             port: 8080
           metrics:
-            enabled: true
             port: 9000
 
     ingress:
@@ -118,13 +135,13 @@ spec:
               - "${HOSTNAME}"
 
 
-    defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - kworker2
+    # defaultPodOptions:
+    #   affinity:
+    #     nodeAffinity:
+    #       requiredDuringSchedulingIgnoredDuringExecution:
+    #         nodeSelectorTerms:
+    #           - matchExpressions:
+    #               - key: kubernetes.io/hostname
+    #                 operator: In
+    #                 values:
+    #                   - kworker2
