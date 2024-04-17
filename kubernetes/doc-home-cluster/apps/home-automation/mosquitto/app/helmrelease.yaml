@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -19,11 +19,14 @@ spec:
 
   values:
     controllers:
-      main:
+      mosquitto:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            ingress.home.arpa/lan: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           securityContext:
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
@@ -39,13 +42,25 @@ spec:
               - "/bin/sh"
               - -c
             args:
-              - "cp /tmp/secret/* /mosquitto/external_config/ && mosquitto_passwd -U /mosquitto/external_config/mosquitto_pwd"
+              - cp /tmp/secret/* /mosquitto/external_config/;
+                mosquitto_passwd -U /mosquitto/external_config/mosquitto_pwd;
+                chmod 0600 /mosquitto/external_config/mosquitto_pwd;
 
         containers:
-          main:
+          app:
             image:
               repository: public.ecr.aws/docker/library/eclipse-mosquitto
               tag: 2.0.18
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 15m
@@ -54,15 +69,14 @@ spec:
                 memory: 124M
 
     service:
-      main:
+      app:
+        controller: mosquitto
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "${HOSTNAME}."
           io.cilium/lb-ipam-ips: "192.168.32.156"
         externalTrafficPolicy: Local
         ports:
-          http:
-            enabled: false
           mqtt:
             enabled: true
             port: 1883
@@ -71,22 +85,22 @@ spec:
       data:
         existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
-          main:
-            main:
+          mosquitto:
+            app:
               - path: /data
       mosquitto-configfile:
         type: configMap
         name: mosquitto-configmap
         advancedMounts:
-          main:
-            main:
+          mosquitto:
+            app:
               - path: /mosquitto/config/mosquitto.conf
                 subPath: mosquitto.conf
       mosquitto-secret:
         type: secret
         name: mosquitto-secret
         advancedMounts:
-          main:
+          mosquitto:
             init-config:
               - path: /tmp/secret
       mosquitto-externalconfig:

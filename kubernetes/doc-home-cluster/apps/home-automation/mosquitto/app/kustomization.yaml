@@ -5,6 +5,7 @@ namespace: home-automation
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./networkpolicy.yaml
   - ../../../../templates/volsync
 configMapGenerator:
   - name: mosquitto-configmap
