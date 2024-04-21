@@ -25,7 +25,7 @@ spec:
       image:
         repository: registry.k8s.io/sig-storage/snapshot-controller
         pullPolicy: IfNotPresent
-        tag: "v6.3.3"
+        tag: "v6.3.4"
 
       serviceMonitor:
         create: true
