@@ -1,15 +1,8 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./reannounce
-  - ./tags
-  - ./prune
-configMapGenerator:
-  - name: qbtools-configmap
-    files:
-      - config.yaml=./config/config.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
+  - ./helmrelease.yaml
+  #- ./secret.sops.yaml
+  - ./networkpolicy.yaml
