@@ -16,7 +16,7 @@ spec:
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-infrastructure-alertmanager
+    - name: alertmanager
   postBuild:
     substitute:
       APP: *appname

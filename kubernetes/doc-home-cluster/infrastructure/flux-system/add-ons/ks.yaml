@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-infrastructure-flux-monitoring
+  name: flux-monitoring
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
@@ -20,7 +20,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-infrastructure-flux-notifications
+  name: flux-notifications
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
@@ -33,14 +33,14 @@ spec:
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: cluster-infrastructure-alertmanager
+    - name: alertmanager
     
 
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
 # metadata:
-#   name: cluster-infrastructure-flux-webhooks
+#   name: flux-webhooks
 #   namespace: flux-system
 #   labels:
 #     substitution.flux.home.arpa/enabled: "true"
@@ -53,4 +53,4 @@ spec:
 #     name: doc-ops-kubernetes
 #   wait: true
 #  dependsOn:
-#    - name: cluster-infrastructure-alertmanager
+#    - name: alertmanager
