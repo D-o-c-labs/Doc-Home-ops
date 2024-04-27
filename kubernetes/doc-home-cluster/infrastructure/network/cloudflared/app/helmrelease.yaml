@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -18,7 +18,7 @@ spec:
 
   values:
     controllers:
-      main:
+      cloudflared:
         replicas: 2
         strategy: RollingUpdate
 
@@ -26,6 +26,10 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/nginx-external: allow
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
@@ -35,7 +39,7 @@ spec:
                   app.kubernetes.io/name: cloudflared
 
         containers:
-          main:
+          app:
             image:
               repository: docker.io/cloudflare/cloudflared
               tag: 2024.4.1
@@ -95,13 +99,14 @@ spec:
                 memory: 105Mi
 
     service:
-      main:
+      app:
+        controller: cloudflared
         ports:
           http:
             port: 8080
 
     serviceMonitor:
-      main:
+      app:
         enabled: true
         endpoints:
           - port: http
