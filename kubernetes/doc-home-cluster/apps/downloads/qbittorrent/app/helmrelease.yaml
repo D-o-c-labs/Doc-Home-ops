@@ -24,6 +24,8 @@ spec:
           secret.reloader.stakater.com/reload: qbittorrent-secret
 
         pod:
+          labels:
+            ingress.home.arpa/nginx-internal: allow
           securityContext:
             fsGroup: ${APP_GID}
             fsGroupChangePolicy: "OnRootMismatch"
