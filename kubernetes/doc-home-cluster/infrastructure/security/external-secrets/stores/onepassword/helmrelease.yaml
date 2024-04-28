@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -17,7 +17,7 @@ spec:
         namespace: flux-system
   values:
     controllers:
-      main:
+      1password:
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -27,7 +27,7 @@ spec:
             runAsGroup: 999
 
         containers:
-          main:
+          app:
             image:
               repository: docker.io/1password/connect-api
               tag: 1.7.2@sha256:6aa94cf713f99c0fa58c12ffdd1b160404b4c13a7f501a73a791aa84b608c5a1
@@ -110,14 +110,11 @@ spec:
                 initialDelaySeconds: 15
 
     service:
-      main:
+      app:
+        controller: 1password
         ports:
           http:
             port: 8080
-
-    ingress:
-      main:
-        enabled: false
 
     persistence:
       shared:
