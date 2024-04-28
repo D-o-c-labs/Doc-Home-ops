@@ -96,12 +96,12 @@ spec:
               - name: OP_BUS_PEERS
                 value: localhost:11220
             probes:
-              readinessProbe:
+              readiness:
                 httpGet:
                   path: /health
                   port: 8081
                 initialDelaySeconds: 15
-              livenessProbe:
+              liveness:
                 httpGet:
                   path: /heartbeat
                   port: 8081
