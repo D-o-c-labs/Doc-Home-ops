@@ -21,4 +21,4 @@ spec:
   postBuild:
     substitute:
       APP: *appname
-      HOSTNAME: zigbee2mqtt.piscio.net
+      HOSTNAME: alertmanager.piscio.net
