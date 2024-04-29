@@ -97,17 +97,19 @@ spec:
                 value: localhost:11220
             probes:
               readiness:
-                httpGet:
-                  path: /health
-                  port: 8081
-                initialDelaySeconds: 15
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8081
+                  initialDelaySeconds: 15
               liveness:
-                httpGet:
-                  path: /heartbeat
-                  port: 8081
-                failureThreshold: 3
-                periodSeconds: 30
-                initialDelaySeconds: 15
+                spec:
+                  httpGet:
+                    path: /heartbeat
+                    port: 8081
+                  failureThreshold: 3
+                  periodSeconds: 30
+                  initialDelaySeconds: 15
 
     service:
       app:
