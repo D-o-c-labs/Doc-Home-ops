@@ -4,13 +4,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: alertmanager
-  namespace: monitoring
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -18,13 +17,13 @@ spec:
         namespace: flux-system
   values:
     controllers:
-      main:
+      alertmanager:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
 
         containers:
-          main:
+          app:
             image:
               repository: quay.io/prometheus/alertmanager
               tag: v0.27.0
@@ -39,43 +38,40 @@ spec:
                 memory: 99M
 
     service:
-      main:
+      app:
+        controller: alertmanager
         ports:
           http:
             port: 9093
 
     ingress:
-      main:
-        enabled: true
-        className: nginx
+      app:
+        className: "internal-nginx"
         hosts:
-          - host: &host alertmanager.piscio.net
+          - host: "${HOSTNAME}"
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
-              - *host
+              - "${HOSTNAME}"
 
     persistence:
       config:
-        enabled: true
-        type: secret
-        mountPath: /etc/alertmanager
-        name: alertmanager-config
+        type: configMap
+        name: alertmanager-configmap
         globalMounts:
-          - path: /etc/alertmanager/alertmanager.yml
-            subPath: alertmanager.yml
+          - path: /etc/alertmanager
+      secrets:
+        type: secret
+        name: alertmanager-secret
+        globalMounts:
+          - path: /etc/secrets
 
-      # config:
-      #   enabled: true
-      #   type: configMap
-      #   name: alertmanager-configmap
-      #   mountPath: /etc/alertmanager
-      #   readOnly: true
-
-      # envFrom:
-      #   - secretRef:
-      #       name: alertmanager-secret
+      #storage:
+      #  accessMode: ReadWriteOnce
+      #  size: 1Gi
+      #  globalMounts:
+      #    - path: /alertmanager
