@@ -119,6 +119,15 @@ spec:
         #  name: hallway-tablet-icmp
         #  url: hallway-tablet.bjw-s.casa
 
+        # ESPhome
+        - module: tcp_connect
+          name: master-bedroom-allinone-sensor
+          url: "master-bedroom-allinone-sensor.piscio.net:6053"
+        - module: tcp_connect
+          name: doorway-allinone-sensor
+          url: "doorway-allinone-sensor.piscio.net:6053"
+
+
         # Other devices
         - module: icmp
           name: zigbee-controller-icmp
