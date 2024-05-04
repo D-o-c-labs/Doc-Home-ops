@@ -45,7 +45,6 @@ spec:
             - port: "8080"
               protocol: TCP
 
-
     # flaresolverr
     - toEndpoints:
         - matchLabels:
@@ -53,4 +52,15 @@ spec:
       toPorts:
         - ports:
             - port: "8191"
+              protocol: TCP
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: radarr
+        - matchLabels:
+            app.kubernetes.io/name: sonarr
+      toPorts:
+        - ports:
+            - port: "9696"
               protocol: TCP

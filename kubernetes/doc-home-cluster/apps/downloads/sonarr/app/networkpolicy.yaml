@@ -16,6 +16,8 @@ spec:
             app.kubernetes.io/name: prowlarr
         - matchLabels:
             app.kubernetes.io/name: notifiarr
+        - matchLabels:
+            app.kubernetes.io/name: bazarr
       toPorts:
         - ports:
             - port: "8989"
@@ -40,7 +42,7 @@ spec:
               protocol: TCP
 
 
-    # sabnzbd
+    # prowlarr
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: prowlarr

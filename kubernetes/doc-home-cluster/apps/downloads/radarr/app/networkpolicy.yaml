@@ -16,6 +16,8 @@ spec:
             app.kubernetes.io/name: prowlarr
         - matchLabels:
             app.kubernetes.io/name: notifiarr
+        - matchLabels:
+            app.kubernetes.io/name: bazarr
       toPorts:
         - ports:
             - port: "7878"
