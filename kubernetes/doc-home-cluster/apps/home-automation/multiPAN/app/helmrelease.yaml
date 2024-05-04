@@ -66,12 +66,7 @@ spec:
 
     persistence:
       data:
-        enabled: true
-        accessMode: ReadWriteOnce
         existingClaim: "${VOLSYNC_CLAIM}"
-        globalMounts:
-          - path: /data
-            readOnly: false
 
     service:
       app:
