@@ -72,9 +72,9 @@ spec:
       app:
         controller: multipan
         ports:
-          otbr_http:
+          otbr-http:
             port: 8086
-          otbr_api:
+          otbr-api:
             port: 8081
           zigbee:
             enabled: true
@@ -90,7 +90,7 @@ spec:
               - path: /
                 service:
                   identifier: app
-                  port: otbr_http
+                  port: otbr-http
         tls:
           - hosts:
               - "${HOSTNAME}"
