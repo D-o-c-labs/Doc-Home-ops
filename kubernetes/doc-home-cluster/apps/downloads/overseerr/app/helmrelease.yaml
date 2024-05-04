@@ -37,7 +37,7 @@ spec:
 
             env:
               LOG_LEVEL: "info"
-              PORT: &port 80
+              PORT: &port 5055
 
             resources:
               requests:
