@@ -19,7 +19,7 @@ spec:
         - alert: FluxReconciliationFailure
           annotations:
             summary: >-
-              {{ $Labels.kind }} {{ $Labels.namespace }}/{{ $Labels.name }} reconciliation
+              {{ $labels.kind }} {{ $labels.namespace }}/{{ $labels.name }} reconciliation
               has been failing for more than 15 minutes.
           expr: |
             max(gotk_reconcile_condition{status="False",type="Ready"}) by (namespace, name, kind)
