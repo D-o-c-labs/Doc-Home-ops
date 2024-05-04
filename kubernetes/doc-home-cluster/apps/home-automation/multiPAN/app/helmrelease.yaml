@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.1.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -19,11 +19,11 @@ spec:
 
   values:
     controllers:
-      main:
+      multipan:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: b2un0/silabs-multipan-docker
               tag: 2.4.5
@@ -74,7 +74,8 @@ spec:
             readOnly: false
 
     service:
-      main:
+      app:
+        controller: multipan
         ports:
           otbr_http:
             port: 8086
@@ -85,7 +86,7 @@ spec:
             port: 9999
 
     ingress:
-      main:
+      app:
         enabled: true
         className: "internal-nginx"
         hosts:
@@ -93,9 +94,8 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: otbr_http
         tls:
           - hosts:
               - "${HOSTNAME}"
-
