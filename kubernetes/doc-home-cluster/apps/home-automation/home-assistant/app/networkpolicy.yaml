@@ -47,3 +47,14 @@ spec:
             - port: "8095"
               protocol: TCP
 
+  ingress:
+    
+    # music-assistant
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: music-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
+

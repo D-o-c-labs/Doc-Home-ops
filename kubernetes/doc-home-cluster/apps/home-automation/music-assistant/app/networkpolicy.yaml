@@ -9,11 +9,20 @@ spec:
     matchLabels:
       app.kubernetes.io/name: music-assistant
   ingress:
-    # mosquitto
+    # home-assistant
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: home-assistant
       toPorts:
         - ports:
             - port: "8095"
+              protocol: TCP
+  egress:
+    # home-assistant
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: home-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
               protocol: TCP
