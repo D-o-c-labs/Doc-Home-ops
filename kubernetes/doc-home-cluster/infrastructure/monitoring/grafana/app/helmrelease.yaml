@@ -43,6 +43,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/flux
+          - name: kubernetes
+            orgId: 1
+            folder: Kubernetes
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/kubernetes
           - name: nginx
             orgId: 1
             folder: Nginx
@@ -71,6 +79,7 @@ spec:
           datasource: Prometheus
 
         cloudflared:
+          # renovate: dashboardName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457
           revision: 6
           datasource:
@@ -78,22 +87,19 @@ spec:
               value: Prometheus
 
         external-dns:
+          # renovate: dashboardName="External-DNS"
           gnetId: 15038
           revision: 3
           datasource: Prometheus
 
-        blocky:
-          gnetId: 13768
-          revision: 3
-          datasource:
-            - name: "DS_PROMETHEUS"
-              value: Prometheus
-            - name: "VAR_BLOCKY_URL"
-              value: 'http:\\/\\/10.5.0.7:4000'
+        external-secrets:
+          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
+          datasource: Prometheus
 
-        node-exporter:
+        node-exporter-full:
+          # renovate: dashboardName="Node Exporter Full"
           gnetId: 1860
-          revision: 29
+          revision: 36
           datasource: Prometheus
 
       flux:
@@ -105,6 +111,38 @@ spec:
           datasource: Prometheus
         flux-logs:
           url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/logs.json
+          datasource: Prometheus
+
+      kubernetes:
+        k8s-system-api-server:
+          # renovate: dashboardName="Kubernetes / System / API Server"
+          gnetId: 15761
+          revision: 16
+          datasource: Prometheus
+        k8s-views-global:
+          # renovate: dashboardName="Kubernetes / Views / Global"
+          gnetId: 15757
+          revision: 37
+          datasource: Prometheus
+        k8s-views-nodes:
+          # renovate: dashboardName="Kubernetes / Views / Nodes"
+          gnetId: 15759
+          revision: 29
+          datasource: Prometheus
+        k8s-views-namespaces:
+          # renovate: dashboardName="Kubernetes / Views / Namespaces"
+          gnetId: 15758
+          revision: 34
+          datasource: Prometheus
+        k8s-views-pods:
+          # renovate: dashboardName="Kubernetes / Views / Pods"
+          gnetId: 15760
+          revision: 28
+          datasource: Prometheus
+        k8s-volumes:
+          # renovate: dashboardName="K8s / Storage / Volumes / Cluster"
+          gnetId: 11454
+          revision: 14
           datasource: Prometheus
 
       nginx:
@@ -133,64 +171,59 @@ spec:
           - name: Alertmanager
             orgId: 1
 
-    deploymentStrategy:
-      type: Recreate
+        deleteDatasources:
+          - name: Alertmanager
+            orgId: 1
+          - name: Prometheus
+            orgId: 1
+
+    env:
+      GF_ANALYTICS_CHECK_FOR_UPDATES: false
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: false
+      GF_ANALYTICS_REPORTING_ENABLED: false
+      GF_AUTH_ANONYMOUS_ENABLED: false
+      GF_AUTH_BASIC_ENABLED: false
+      GF_AUTH_GENERIC_OAUTH_ENABLED: true
+      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.piscio.net/application/o/userinfo/
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.piscio.net/application/o/authorize/
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: gVjKjOh6Avo5MdM7AvkHQ161ouSCZ9dpahH2y58N
+      GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES: false
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'Piscio Admins') && 'Admin' || 'Viewer'"
+      GF_AUTH_GENERIC_OAUTH_SCOPES: openid profile email
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.piscio.net/application/o/token/
+      GF_AUTH_OAUTH_AUTO_LOGIN: true
+      GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /tmp/dashboards/home.json
+      GF_EXPLORE_ENABLED: true
+      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+      GF_LOG_MODE: console
+      GF_NEWS_NEWS_FEED_ENABLED: false
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
+      GF_SECURITY_COOKIE_SAMESITE: grafana
+      GF_SERVER_ROOT_URL: https://grafana.piscio.net
 
     envFromSecret: grafana-secret
 
-    grafana.ini:
-      analytics:
-        check_for_updates: false
-        check_for_plugin_updates: false
-        reporting_enabled: false
-      auth:
-        oauth_auto_login: true
-        oauth_allow_insecure_email_lookup: true
-        signout_redirect_url: https://auth.piscio.net/application/o/grafana/end-session/
-      auth.basic:
-        enabled: false
-      auth.generic_oauth:
-        enabled: true
-        name: Authentik
-        icon: signin
-        scopes: openid profile email
-        empty_scopes: false
-        login_attribute_path: preferred_username
-        groups_attribute_path: groups
-        name_attribute_path: name
-        use_pkce: true
-        client_id: gVjKjOh6Avo5MdM7AvkHQ161ouSCZ9dpahH2y58N
-        client_secret: # Set by env vars
-        auth_url: https://auth.piscio.net/application/o/authorize/
-        token_url: https://auth.piscio.net/application/o/token/
-        api_url: https://auth.piscio.net/application/o/userinfo/
-        # map user groups to Grafana roles
-        role_attribute_path: |
-          contains(groups[*], 'Piscio Admins') && 'Admin' || 'Viewer'
-      dashboards:
-        default_home_dashboard_path: /tmp/dashboards/home.json
-      date_formats:
-        use_browser_locale: true
-      explore:
-        enabled: true
-      grafana_net:
-        url: https://grafana.net
-      log:
-        mode: console
-      news:
-        news_feed_enabled: false
-      panels:
-        disable_sanitize_html: true
-      paths:
-        data: /var/lib/grafana/data
-        logs: /var/log/grafana
-        plugins: /var/lib/grafana/plugins
-        provisioning: /etc/grafana/provisioning
-      security:
-        allow_embedding: true
-        cookie_samesite: grafana
-      server:
-        root_url: https://grafana.piscio.net
+    # grafana.ini:
+    #   auth.generic_oauth:
+    #     enabled: true
+    #     name: Authentik
+    #     icon: signin
+    #     scopes: openid profile email
+    #     empty_scopes: false
+    #     login_attribute_path: preferred_username
+    #     groups_attribute_path: groups
+    #     name_attribute_path: name
+    #     use_pkce: true
+    #     client_id: gVjKjOh6Avo5MdM7AvkHQ161ouSCZ9dpahH2y58N
+    #     client_secret: # Set by env vars
+    #     auth_url: https://auth.piscio.net/application/o/authorize/
+    #     token_url: https://auth.piscio.net/application/o/token/
+    #     api_url: https://auth.piscio.net/application/o/userinfo/
+    #     # map user groups to Grafana roles
+    #     role_attribute_path: |
+    #       contains(groups[*], 'Piscio Admins') && 'Admin' || 'Viewer'"
+
 
     imageRenderer:
       enabled: true
@@ -221,10 +254,14 @@ spec:
 
     resources:
       limits:
-        memory: 219M
+        memory: 512Mi
       requests:
-        cpu: 23m
-        memory: 127M
+        cpu: 50m
+        memory: 128Mi
+
+    serviceAccount:
+      create: true
+      autoMount: true
 
     serviceMonitor:
       enabled: true
@@ -232,15 +269,24 @@ spec:
     sidecar:
       dashboards:
         enabled: true
-        labelValue: ""
+        searchNamespace: ALL
         label: grafana_dashboard
         folderAnnotation: grafana_folder
-        searchNamespace: ALL
         provider:
           disableDelete: true
           foldersFromFilesStructure: true
       datasources:
         enabled: true
-        labelValue: ""
         searchNamespace: ALL
-      logLevel: INFO
+        labelValue: ""
+
+    testFramework:
+      enabled: false
+
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: grafana
