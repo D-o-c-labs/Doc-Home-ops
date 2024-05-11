@@ -25,6 +25,8 @@ spec:
       APP: *appname
       VOLSYNC_CLAIM: plex-config
       VOLSYNC_CAPACITY: 50Gi
+      APP_UID: "2000"
+      APP_GID: "2000"
 # ---
 # # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
