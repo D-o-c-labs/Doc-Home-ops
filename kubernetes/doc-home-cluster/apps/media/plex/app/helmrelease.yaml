@@ -121,10 +121,3 @@ spec:
           plex:
             app:
               - path: /transcode
-
-
-
-      media:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media/library
