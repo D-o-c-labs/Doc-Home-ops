@@ -83,8 +83,8 @@ spec:
               # ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "/dev/ttyUSB0"
               ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: 115200
               ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: "false"
-              #ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ezsp"
-              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ember"
+              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ezsp"
+              #ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ember"
               ZIGBEE2MQTT_CONFIG_SERIAL_RTSCTS: "false"
               DEBUG: "zigbee-herdsman*"
             probes:
