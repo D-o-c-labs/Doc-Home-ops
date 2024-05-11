@@ -15,6 +15,7 @@ resources:
   - fairwinds.yaml
   - grafana.yaml
   - ingress-nginx.yaml
+  - intel.yaml
   - jetstack.yaml
   - k8tz.yaml
   - kubernetes-sigs-descheduler.yaml
