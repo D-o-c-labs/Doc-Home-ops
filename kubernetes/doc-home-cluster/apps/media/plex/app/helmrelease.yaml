@@ -111,7 +111,7 @@ spec:
       nfs-nas-media:
         type: nfs
         server: piscionas.piscio.net
-        path: /volume1/Media
+        path: /volume1/Media/library
         advancedMounts:
           plex:
             app:
