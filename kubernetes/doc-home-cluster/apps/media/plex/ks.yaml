@@ -44,7 +44,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: doc-ops-kubernetes
   wait: false
   dependsOn:
     - name: volsync
@@ -73,7 +73,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: doc-ops-kubernetes
   wait: false
   dependsOn:
     - name: external-secrets-stores
@@ -98,7 +98,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-ops-kubernetes
+    name: doc-ops-kubernetes
   wait: false
   dependsOn:
     - name: external-secrets-stores
