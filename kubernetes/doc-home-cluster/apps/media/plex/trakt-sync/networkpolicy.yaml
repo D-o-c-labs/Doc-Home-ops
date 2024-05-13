@@ -3,11 +3,11 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trakt-sync
+  name: plex-trakt-sync
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: trakt-sync
+      app.kubernetes.io/name: plex-trakt-sync
   egress:
     # plex
     - toEndpoints:

@@ -16,7 +16,7 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: plex-image-cleanup
         - matchLabels:
-            app.kubernetes.io/name: trakt-sync
+            app.kubernetes.io/name: plex-trakt-sync
       toPorts:
         - ports:
             - port: "32400"
