@@ -27,6 +27,8 @@ spec:
           schedule: "30 8 * * 6"
 
         pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           affinity:
             podAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
