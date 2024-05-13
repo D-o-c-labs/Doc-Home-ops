@@ -46,8 +46,8 @@ spec:
                   secretKeyRef:
                     name: plex-trakt-sync-secret
                     key: PLEX_TOKEN
-              PLEX_USERNAME: bjw_s
-              TRAKT_USERNAME: bjw-s
+              PLEX_USERNAME: TiaNas
+              TRAKT_USERNAME: Tia_91
             probes:
               liveness:
                 enabled: false
