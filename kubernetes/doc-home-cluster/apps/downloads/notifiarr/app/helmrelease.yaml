@@ -47,7 +47,7 @@ spec:
                   secretKeyRef:
                     name: notifiarr-secret
                     key: plex_token
-              DN_PLEX_URL: https://plex.piscio.net:32400
+              DN_PLEX_URL: https://plex.media:32400
               DN_RADARR_0_API_KEY:
                 valueFrom:
                   secretKeyRef:

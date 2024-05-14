@@ -29,8 +29,10 @@ spec:
 
 
     # plex
-    - toCIDRSet:
-        - cidr: 192.168.32.201/32
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
       toPorts:
         - ports:
             - port: "32400"

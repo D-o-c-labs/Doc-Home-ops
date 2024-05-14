@@ -19,6 +19,9 @@ spec:
             app.kubernetes.io/name: plex-trakt-sync
         - matchLabels:
             app.kubernetes.io/name: tautulli
+        - matchLabels:
+            app.kubernetes.io/name: notifiarr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "32400"
