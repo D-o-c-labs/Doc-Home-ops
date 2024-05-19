@@ -150,7 +150,7 @@ spec:
         resources:
           requests:
             cpu: 257m
-            memory: 3760M
+            memory: 2048M
           limits:
             memory: 3760M
         retention: 2d

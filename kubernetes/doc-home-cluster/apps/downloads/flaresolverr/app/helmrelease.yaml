@@ -34,7 +34,7 @@ spec:
               tag: v3.3.17@sha256:f1c89363a7c4a2adb0e7b1772bbd6ca44c12e80a6e325c2d8bbe8f4f314f4cf8
 
             resources:
-              requests:
+              limits:
                 cpu: 250m
                 memory: "1Gi"
             securityContext:
