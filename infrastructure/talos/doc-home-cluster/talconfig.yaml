@@ -1,6 +1,6 @@
 clusterName: doc-home-cluster
-talosVersion: v1.3.7
-kubernetesVersion: v1.26.3
+talosVersion: v1.7.1
+kubernetesVersion: v1.30.1
 endpoint: ${clusterEndpointIP}
 domain: cluster.local
 additionalApiServerCertSans:
@@ -11,9 +11,10 @@ clusterPodNets:
 clusterSvcNets:
     - 10.96.0.0/12
 cniConfig:
-    name: custom
-    urls:
-        - ${cniConfig}
+    name: none
+    #name: custom
+    #urls:
+    #    - ${cniConfig}
 nodes:
     - hostname: kmaster1
       ipAddress: ${kmaster1_ipAddress}
@@ -44,6 +45,13 @@ nodes:
           dhcp: true
           addresses:
             - ${kworker1_ipAddress_complete}
+      schematic:
+        customization:
+          systemExtensions:
+            officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
 
     - hostname: kworker2
       disableSearchDomain: true
@@ -57,7 +65,21 @@ nodes:
           dhcp: true
           addresses:
             - ${kworker2_ipAddress_complete}
+      schematic:
+        customization:
+          systemExtensions:
+            officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
 controlPlane:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+        - siderolabs/i915-ucode
+        - siderolabs/intel-ucode
+        - siderolabs/iscsi-tools
   patches:
     - |-
       cluster:
@@ -89,7 +111,7 @@ controlPlane:
           extraHostEntries:
             - ip: ${clusterEndpointIP}
               aliases:
-                - cluster-0.bjw-s.tech
+                - kmaster1.piscio.net
         sysctls:
           fs.inotify.max_user_watches: "1048576"
           fs.inotify.max_user_instances: "8192"
@@ -97,3 +119,11 @@ controlPlane:
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
+worker:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+        - siderolabs/i915-ucode
+        - siderolabs/intel-ucode
+        - siderolabs/iscsi-tools
