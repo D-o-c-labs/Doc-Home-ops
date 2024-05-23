@@ -16,8 +16,8 @@ cniConfig:
     #urls:
     #    - ${cniConfig}
 nodes:
-    - hostname: kmaster1
-      ipAddress: ${kmaster1_ipAddress}
+    - hostname: zeus
+      ipAddress: ${zeus_ipAddress}
       controlPlane: true
       installDisk: /dev/vda
       disableSearchDomain: true
@@ -31,11 +31,11 @@ nodes:
         - interface: eth0
           dhcp: true
           addresses:
-            - ${kmaster1_ipAddress_complete}
+            - ${zeus_ipAddress_complete}
 
-    - hostname: kworker1
+    - hostname: ares
       disableSearchDomain: true
-      ipAddress: ${kworker1_ipAddress}
+      ipAddress: ${ares_ipAddress}
       controlPlane: false
       installDisk: /dev/vda
       nameservers:
@@ -44,7 +44,7 @@ nodes:
         - interface: eth0
           dhcp: true
           addresses:
-            - ${kworker1_ipAddress_complete}
+            - ${ares_ipAddress_complete}
       schematic:
         customization:
           systemExtensions:
@@ -53,9 +53,9 @@ nodes:
             - siderolabs/intel-ucode
             - siderolabs/iscsi-tools
 
-    - hostname: kworker2
+    - hostname: athena
       disableSearchDomain: true
-      ipAddress: ${kworker2_ipAddress}
+      ipAddress: ${athena_ipAddress}
       nameservers:
         - ${nameservers}
       controlPlane: false
@@ -64,7 +64,7 @@ nodes:
         - interface: eth0
           dhcp: true
           addresses:
-            - ${kworker2_ipAddress_complete}
+            - ${athena_ipAddress_complete}
       schematic:
         customization:
           systemExtensions:
@@ -111,7 +111,7 @@ controlPlane:
           extraHostEntries:
             - ip: ${clusterEndpointIP}
               aliases:
-                - kmaster1.piscio.net
+                - zeus.piscio.net
         sysctls:
           fs.inotify.max_user_watches: "1048576"
           fs.inotify.max_user_instances: "8192"

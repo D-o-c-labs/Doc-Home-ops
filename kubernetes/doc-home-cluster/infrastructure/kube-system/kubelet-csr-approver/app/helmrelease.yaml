@@ -18,5 +18,5 @@ spec:
       interval: 30m
   values:
     providerRegex: |
-      ^(kmaster1|kworker1|kworker2|zeus|ares|athena)$
+      ^(zeus|ares|athena)$
     bypassDnsResolution: true
