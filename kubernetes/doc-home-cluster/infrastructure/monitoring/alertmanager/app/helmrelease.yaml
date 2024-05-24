@@ -69,9 +69,3 @@ spec:
         name: alertmanager-secret
         globalMounts:
           - path: /etc/secrets
-
-      #storage:
-      #  accessMode: ReadWriteOnce
-      #  size: 1Gi
-      #  globalMounts:
-      #    - path: /alertmanager
