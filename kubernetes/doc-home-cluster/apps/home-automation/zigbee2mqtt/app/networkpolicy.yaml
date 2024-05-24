@@ -25,3 +25,9 @@ spec:
         - ports:
             - port: "6638"
               protocol: TCP
+    - toCIDR:
+        - 192.168.32.181/32
+      toPorts:
+        - ports:
+            - port: "6638"
+              protocol: TCP
