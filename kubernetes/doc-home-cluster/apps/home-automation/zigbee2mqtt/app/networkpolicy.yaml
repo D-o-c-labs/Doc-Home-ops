@@ -17,3 +17,11 @@ spec:
         - ports:
             - port: "1883"
               protocol: TCP
+
+    # SLZB-06M
+    - toFQDNs:
+        - matchName: zb_co.piscio.net
+      toPorts:
+        - ports:
+            - port: "6638"
+              protocol: TCP
