@@ -1,5 +1,5 @@
 clusterName: doc-home-cluster
-talosVersion: v1.7.1
+talosVersion: v1.7.2
 kubernetesVersion: v1.30.1
 endpoint: ${clusterEndpointIP}
 domain: cluster.local
@@ -45,13 +45,6 @@ nodes:
           dhcp: true
           addresses:
             - ${ares_ipAddress_complete}
-      schematic:
-        customization:
-          systemExtensions:
-            officialExtensions:
-            - siderolabs/i915-ucode
-            - siderolabs/intel-ucode
-            - siderolabs/iscsi-tools
 
     - hostname: athena
       disableSearchDomain: true
@@ -65,13 +58,7 @@ nodes:
           dhcp: true
           addresses:
             - ${athena_ipAddress_complete}
-      schematic:
-        customization:
-          systemExtensions:
-            officialExtensions:
-            - siderolabs/i915-ucode
-            - siderolabs/intel-ucode
-            - siderolabs/iscsi-tools
+
 controlPlane:
   schematic:
     customization:
@@ -116,17 +103,18 @@ controlPlane:
           fs.inotify.max_user_watches: "1048576"
           fs.inotify.max_user_instances: "8192"
 
-        features:
-          kubernetesTalosAPIAccess:
-            enabled: true
-            allowedRoles:
-              - os:admin
-            allowedKubernetesNamespaces:
-              - system-upgrade
-
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
+
+      - op: add
+        path: /machine/features/kubernetesTalosAPIAccess
+        value:
+          enabled: true
+          allowedRoles:
+            - os:admin
+          allowedKubernetesNamespaces:
+            - system-upgrade
 worker:
   schematic:
     customization:

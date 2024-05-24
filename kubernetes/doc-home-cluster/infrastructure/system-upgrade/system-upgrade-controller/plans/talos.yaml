@@ -39,11 +39,13 @@ spec:
       - --nodes=$(NODE_IP)
       - health
       - --server=false
+      - --worker-nodes=192.168.32.125,192.168.32.126
+      - --control-plane-nodes=192.168.32.120
   upgrade:
     <<: *prepare
     args:
       - --nodes=$(NODE_IP)
       - upgrade
-      - --image=factory.talos.dev/installer/665020c0ef83ef66fd7df6df98eed9a34fc4c13b0b824b3c04b633cf3794a4c5:$(SYSTEM_UPGRADE_PLAN_LATEST_VERSION)
+      - --image=factory.talos.dev/installer/2dcd442954d67662d41c61bdb92165aaf7189aff9997bd011b6968c12ce8d9c0:$(SYSTEM_UPGRADE_PLAN_LATEST_VERSION)
       - --preserve=true
       - --wait=false
