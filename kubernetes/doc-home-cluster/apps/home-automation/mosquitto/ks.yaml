@@ -26,7 +26,7 @@ spec:
     substitute:
       APP: *appname
       HOSTNAME: mqtt.piscio.net
-      APP_UID: "568"
-      APP_GID: "568"
+      APP_UID: "2000"
+      APP_GID: "2000"
       VOLSYNC_CLAIM: mosquitto-data
       VOLSYNC_CAPACITY: 1Gi
