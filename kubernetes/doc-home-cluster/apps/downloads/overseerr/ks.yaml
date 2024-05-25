@@ -24,6 +24,6 @@ spec:
     substitute:
       APP: *appname
       HOSTNAME: overseerr.piscio.net
-      APP_UID: "0"
-      APP_GID: "0"
+      APP_UID: "2000"
+      APP_GID: "2000"
       VOLSYNC_CLAIM: overseerr-config

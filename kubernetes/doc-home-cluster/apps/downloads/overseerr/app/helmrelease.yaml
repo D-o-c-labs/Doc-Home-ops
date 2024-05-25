@@ -46,6 +46,9 @@ spec:
               limits:
                 memory: 1937M
             securityContext:
+              runAsUser: "${APP_UID}"
+              runAsGroup: "${APP_GID}"
+              fsGroup: "${APP_GID}"
               allowPrivilegeEscalation: false
               capabilities:
                 drop:
