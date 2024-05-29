@@ -19,8 +19,7 @@ spec:
   wait: false
   dependsOn:
     - name: external-secrets-stores
-    - name: crunchy-postgres-operator-cluster
-    - name: crunchy-postgres-operator-secretstore
+    - name: crunchy-postgres-operator
   postBuild:
     substitute:
       APP: *appname
