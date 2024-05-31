@@ -31,10 +31,10 @@ spec:
         retentionPeriod: "2" # this is months unless a character prefix is added (1d, 1w, etc)
         extraArgs:
           dedup.minScrapeInterval: 30s
-        replicationFactor: 3
+        replicationFactor: 2
         # Storage backend
         vmstorage:
-          replicaCount: 3
+          replicaCount: 2
           # required for HA vmagents
           resources:
             requests:
