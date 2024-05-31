@@ -54,9 +54,6 @@ spec:
           paths:
             - path: /
               pathType: Prefix
-      tls:
-        - hosts:
-            - "${HOSTNAME}"
 
     prometheusRule:
       enabled: true
