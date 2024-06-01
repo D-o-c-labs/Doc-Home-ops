@@ -18,5 +18,4 @@ spec:
     name: doc-ops-kubernetes
   wait: false
   dependsOn:
-    - name: kube-prometheus-stack
     - name: external-secrets-stores

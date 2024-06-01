@@ -17,8 +17,6 @@ spec:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: false
-  dependsOn:
-    - name: kube-prometheus-stack
   postBuild:
     substitute:
       APP: *appname
