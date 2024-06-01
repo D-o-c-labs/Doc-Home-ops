@@ -47,3 +47,4 @@ spec:
       HOSTNAME: auth.piscio.net
       DB_NAME: authentik
       DB_USER: authentik
+      POSTGRES_VERSION: "15"
