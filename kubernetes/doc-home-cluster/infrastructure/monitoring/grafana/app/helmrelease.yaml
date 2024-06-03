@@ -82,7 +82,7 @@ spec:
           datasource: Prometheus
 
         opnsense:
-          gnetId: 19366
+          gnetId: 18957
           revision: 1
           datasource: Prometheus
 
