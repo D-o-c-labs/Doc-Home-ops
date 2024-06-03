@@ -14,6 +14,7 @@ resources:
 
   - ./allow-ingress-internet.yaml
   - ./allow-ingress-lan.yaml
+  - ./allow-ingress-metrics.yaml
   - ./allow-ingress-world.yaml
 
   # - ./default-allow-kubedns.yaml
