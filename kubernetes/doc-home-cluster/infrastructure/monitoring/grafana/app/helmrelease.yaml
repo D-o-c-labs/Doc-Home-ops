@@ -84,7 +84,9 @@ spec:
         opnsense:
           gnetId: 18957
           revision: 1
-          datasource: Prometheus
+          datasource:
+            - name: "DS_PROMETHEUS"
+              value: Prometheus
 
         cloudflared:
           # renovate: dashboardName="Cloudflare Tunnels (cloudflared)"
