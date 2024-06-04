@@ -6,3 +6,5 @@ metadata:
   labels:
     kustomize.toolkit.fluxcd.io/prune: disabled
     goldilocks.fairwinds.com/enabled: "true"
+  annotations:
+    k8tz.io/inject: "false"
