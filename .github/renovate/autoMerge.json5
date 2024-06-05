@@ -39,10 +39,10 @@
       ignoreTests: true,
     },
     {
-      description: "Auto merge Home Assistant minor/patch",
+      description: "Auto merge Home Assistant patch",
       automerge: true,
       automergeType: "branch",
-      matchUpdateTypes: ["digest", "minor", "patch"],
+      matchUpdateTypes: ["digest", "patch"],
       matchPackageNames: ["ghcr.io/home-assistant/home-assistant"],
       ignoreTests: true
     },
