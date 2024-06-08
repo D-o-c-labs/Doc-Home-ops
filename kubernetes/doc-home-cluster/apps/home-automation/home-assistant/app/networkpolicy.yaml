@@ -36,6 +36,16 @@ spec:
         - ports:
             - port: "8000"
               protocol: TCP
+    
+    # plex
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
 
     
     # music-assistant
