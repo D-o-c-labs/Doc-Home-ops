@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/flaresolverr/flaresolverr
-              tag: v3.3.20@sha256:cde52db1cafef28bdd27c0453b276fd4d95585d2e5f8e5b245d867b71ec21311
+              tag: v3.3.21@sha256:1a30e1ad6bb3df626bfe3b9735a6d60e208c475c89bf18be0db4d4b121a3cb0e
 
             resources:
               limits:
