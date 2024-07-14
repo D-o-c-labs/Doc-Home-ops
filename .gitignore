@@ -14,6 +14,8 @@ Thumbs.db
 # Terraform
 ## Local .terraform directories
 **/.terraform/*
+## Temporary ignore opentofu dir
+opentofu/
 
 ## .tfstate files
 *.tfstate
@@ -24,6 +26,9 @@ Thumbs.db
 
 ## terraform plan output
 *tfplan*
+
+## terraform lock
+.terraform.lock.hcl
 
 # Other files
 kubeconfig
