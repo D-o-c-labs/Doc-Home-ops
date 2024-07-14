@@ -64,19 +64,12 @@ nodes:
       networkInterfaces:
         - interface: eth0
           dhcp: true
-          vlans:
-            - vlanId: 1
-              addresses:
-                - ${athena_ipAddress_complete}
-              routes:
-                - network: 0.0.0.0/0
-                  gateway: ${lan_gw}
-            - vlanId: 40
-              addresses:
-                - ${athena_ipAddress_complete_iot}
-              routes:
-                - network: 0.0.0.0/0
-                  gateway: ${iot_gw}
+          addresses:
+            - ${athena_ipAddress_complete}
+        - interface: eth1
+          dhcp: true
+          addresses:
+            - ${athena_ipAddress_complete_iot}
 
 controlPlane:
   schematic:
