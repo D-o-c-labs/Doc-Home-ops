@@ -32,6 +32,10 @@ nodes:
           dhcp: true
           addresses:
             - ${zeus_ipAddress_complete}
+        - interface: eth1
+          dhcp: true
+          addresses:
+            - ${zeus_ipAddress_complete_iot}
 
     - hostname: ares
       disableSearchDomain: true
@@ -45,6 +49,10 @@ nodes:
           dhcp: true
           addresses:
             - ${ares_ipAddress_complete}
+        - interface: eth1
+          dhcp: true
+          addresses:
+            - ${ares_ipAddress_complete_iot}
 
     - hostname: athena
       disableSearchDomain: true
@@ -58,6 +66,10 @@ nodes:
           dhcp: true
           addresses:
             - ${athena_ipAddress_complete}
+        - interface: eth1
+          dhcp: true
+          addresses:
+            - ${athena_ipAddress_complete_iot}
 
 controlPlane:
   schematic:
