@@ -78,7 +78,7 @@ services:
       - dnsconfig:/root/dnsconfig
   mq:
     container_name: mq
-    image: eclipse-mosquitto:2.0.18-openssl@sha256:f6415b1956a2c4a913493dcc92195d248629b1b754067f2104708973cc4b1f5f
+    image: eclipse-mosquitto:2.0.18-openssl@sha256:b6c939b5adf1dc138c5991d98ef6e8e90c9a3f44de7c3ae5b7bd507a4c49a17c
     depends_on:
       - netmaker
     restart: unless-stopped
