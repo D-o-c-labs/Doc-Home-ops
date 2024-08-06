@@ -5,5 +5,5 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./tandoor/ks.yaml
-  - ./babybuddy/ks.yaml
+ # - ./tandoor/ks.yaml
+ # - ./babybuddy/ks.yaml
