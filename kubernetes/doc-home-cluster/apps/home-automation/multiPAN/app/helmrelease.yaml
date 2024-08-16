@@ -38,7 +38,7 @@ spec:
               privileged: true
             env:
               # OCPD environment variables
-              #DEVICE: "tcp://zb_co.piscio.net:6638"
+              # DEVICE: "tcp://zb_co.piscio.net:6638"
               BAUDRATE: "460800"
               CPCD_TRACE: "false"
               FLOW_CONTROL: "false"
