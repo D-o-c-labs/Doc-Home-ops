@@ -45,12 +45,27 @@ spec:
             env:
               PROMETHEUS_URL: http://vmselect-victoria-metrics.monitoring.svc.cluster.local:8481/select/0/prometheus
             probes:
-              liveness:
-                enabled: true
               readiness:
                 enabled: true
+                path: /home
+                port: 8095
+                type: HTTP
+                spec:
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+              liveness:
+                enabled: true
+                path: /home
+                port: 8095
+                type: HTTP
+                spec:
+                  initialDelaySeconds: 15
+                  periodSeconds: 10
               startup:
                 enabled: true
+                path: /home
+                port: 8095
+                type: HTTP
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
