@@ -69,6 +69,11 @@ spec:
         ports:
           http:
             port: 8095
+      api:
+        controller: music-assistant
+        ports:
+          http:
+            port: 8097
 
     ingress:
       app:
