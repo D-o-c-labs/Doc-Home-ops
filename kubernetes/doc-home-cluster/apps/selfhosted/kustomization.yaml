@@ -6,5 +6,6 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./big-agi/ks.yaml
+  - ./browserless/ks.yaml
   - ./tandoor/ks.yaml
  # - ./babybuddy/ks.yaml

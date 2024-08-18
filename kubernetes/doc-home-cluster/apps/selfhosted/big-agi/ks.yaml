@@ -17,6 +17,8 @@ spec:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: false
+  dependsOn:
+    - name: browserless
   postBuild:
     substitute:
       APP: *appname
