@@ -24,6 +24,10 @@ spec:
               { "dst": "224.0.0.251/32", "gw": "192.168.32.254" }
             ]
           }
+        },
+        {
+          "capabilities": { "mac": true },
+          "type": "tuning"
         }
       ]
     }
