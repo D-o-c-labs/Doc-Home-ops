@@ -48,7 +48,7 @@ spec:
 
             envFrom:
               - secretRef:
-                  name: big-agi-secrets
+                  name: big-agi-secret
 
     service:
       app:
