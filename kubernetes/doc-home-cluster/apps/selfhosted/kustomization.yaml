@@ -5,5 +5,6 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
- # - ./tandoor/ks.yaml
+  - ./big-agi/ks.yaml
+  - ./tandoor/ks.yaml
  # - ./babybuddy/ks.yaml

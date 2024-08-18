@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: big-agi
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.3.2
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      big-agi:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            ingress.home.arpa/nginx-external: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/enricoros/big-agi
+              tag: 1.16.7
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: 0m
+                memory: 0M
+              limits:
+                memory: 512M
+
+            envFrom:
+              - secretRef:
+                  name: big-agi-secrets
+
+    service:
+      app:
+        controller: big-agi
+        ports:
+          http:
+            port: 3000
+
+    ingress:
+      app:
+        enabled: true
+        className: "external-nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+        hosts:
+          - host: "${HOSTNAME}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - "${HOSTNAME}"
