@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/apps/selfhosted/big-agi/librechat"
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/librechat/app"
   prune: true
   sourceRef:
     kind: GitRepository
