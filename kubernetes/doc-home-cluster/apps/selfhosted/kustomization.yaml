@@ -7,5 +7,6 @@ resources:
   # Flux-Kustomizations
   - ./big-agi/ks.yaml
   - ./browserless/ks.yaml
+  - ./librechat/ks.yaml
  # - ./tandoor/ks.yaml
  # - ./babybuddy/ks.yaml
