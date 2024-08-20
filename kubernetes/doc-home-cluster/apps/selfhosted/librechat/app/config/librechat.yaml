@@ -9,10 +9,10 @@ interface:
     openNewTab: true
 endpoints:
   custom:
-     - name: "OpenRouter_2"
+    - name: "OpenRouter_2"
       # For `apiKey` and `baseURL`, you can use environment variables that you define.
       # recommended environment variables:
-      apiKey: "${OPENROUTER_KEY}" # NOT OPENROUTER_API_KEY
+      apiKey: "user_provided" # NOT OPENROUTER_API_KEY
       baseURL: "https://openrouter.ai/api/v1"
       models:
         default: ["meta-llama/llama-3-70b-instruct"]
