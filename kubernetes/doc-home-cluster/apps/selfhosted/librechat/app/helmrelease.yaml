@@ -74,3 +74,13 @@ spec:
         tls:
           - hosts:
               - "${HOSTNAME}"
+
+    persistence:
+      librechat-configfile:
+        type: configMap
+        name: librechat-configmap
+        advancedMounts:
+          mosquitto:
+            app:
+              - path: /librechat/config/librechat.yaml
+                subPath: librechat.yaml

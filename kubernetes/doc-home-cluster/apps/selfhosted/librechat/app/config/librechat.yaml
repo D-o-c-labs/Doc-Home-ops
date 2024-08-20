@@ -1,0 +1,30 @@
+version: 1.1.5
+cache: true
+interface:
+  privacyPolicy:
+    externalUrl: 'https://librechat.ai/privacy-policy'
+    openNewTab: true
+  termsOfService:
+    externalUrl: 'https://librechat.ai/tos'
+    openNewTab: true
+endpoints:
+  custom:
+    - name: 'OpenRouter'
+      apiKey: '${OPENROUTER_KEY}'
+      baseURL: 'https://openrouter.ai/api/v1'
+      models:
+        default: ['meta-llama/llama-3.1-405B-instruct']
+        fetch: true
+      titleConvo: true
+      titleModel: 'meta-llama/llama-3.1-405B-instruct'
+      dropParams: ['stop']
+      modelDisplayLabel: 'OpenRouter'
+    - name: 'Google Search'
+      apiKey: '${GOOGLE_SEARCH_API_KEY}'
+      baseURL: 'https://www.googleapis.com/customsearch/v1'
+      models:
+        default: []
+        fetch: false
+      titleConvo: false
+      titleModel: ''
+      modelDisplayLabel: 'Google Search'
