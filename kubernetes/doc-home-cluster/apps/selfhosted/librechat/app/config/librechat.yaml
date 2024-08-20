@@ -19,12 +19,3 @@ endpoints:
       titleModel: 'meta-llama/llama-3.1-405B-instruct'
       dropParams: ['stop']
       modelDisplayLabel: 'OpenRouter'
-    - name: 'Google Search'
-      apiKey: '${GOOGLE_SEARCH_API_KEY}'
-      baseURL: 'https://www.googleapis.com/customsearch/v1'
-      models:
-        default: []
-        fetch: false
-      titleConvo: false
-      titleModel: ''
-      modelDisplayLabel: 'Google Search'
