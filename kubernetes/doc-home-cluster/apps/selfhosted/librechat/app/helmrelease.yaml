@@ -80,7 +80,7 @@ spec:
         type: configMap
         name: librechat-configmap
         advancedMounts:
-          mosquitto:
+          librechat:
             app:
               - path: /librechat/config/librechat.yaml
                 subPath: librechat.yaml
