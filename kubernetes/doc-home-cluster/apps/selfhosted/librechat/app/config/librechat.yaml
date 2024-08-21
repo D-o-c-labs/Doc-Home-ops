@@ -1,5 +1,5 @@
 version: 1.1.5
-cache: false
+cache: true
 interface:
   privacyPolicy:
     externalUrl: 'https://librechat.ai/privacy-policy'
