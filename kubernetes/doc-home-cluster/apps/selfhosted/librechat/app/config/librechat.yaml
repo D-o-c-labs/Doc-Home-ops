@@ -1,5 +1,6 @@
 version: 1.1.5
 cache: true
+includedTools: ["calculator", "CodeBrew", "google"]
 interface:
   privacyPolicy:
     externalUrl: 'https://librechat.ai/privacy-policy'
@@ -22,4 +23,5 @@ endpoints:
       # Recommended: Drop the stop parameter from the request as Openrouter models use a variety of stop tokens.
       dropParams: ["stop"]
       modelDisplayLabel: "OpenRouter"
-includedTools: ["calculator", "CodeBrew", "google"]
+  assistants:
+    disableBuilder: "false"
