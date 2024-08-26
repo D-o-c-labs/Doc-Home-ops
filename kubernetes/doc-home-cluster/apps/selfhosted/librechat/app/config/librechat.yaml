@@ -13,7 +13,8 @@ endpoints:
     - name: "OpenRouter"
       # For `apiKey` and `baseURL`, you can use environment variables that you define.
       # recommended environment variables:
-      apiKey: "$${OPENROUTER_KEY}" # NOT OPENROUTER_API_KEY
+      #apiKey: "$${OPENROUTER_KEY}" # NOT OPENROUTER_API_KEY
+      apiKey: "$${OPENROUTER_API_KEY}"
       baseURL: "https://openrouter.ai/api/v1"
       models:
         default: ["openrouter/auto","meta-llama/llama-3.1-405b"]
