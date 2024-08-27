@@ -31,7 +31,7 @@ spec:
         containers:
           app:
             image:
-              repository: lobehub/lobe-chat
+              repository: lobehub/lobe-chat-database
               tag: v1.13.2
             probes:
               liveness:
