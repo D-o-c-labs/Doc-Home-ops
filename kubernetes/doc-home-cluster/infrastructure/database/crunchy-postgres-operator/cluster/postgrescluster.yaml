@@ -123,7 +123,7 @@ spec:
         - name: repo2 # WASABI
           s3: &r2
             bucket: "doc-pgo"
-            endpoint: ${CLUSTER_SECRET_CPGO_WASABI_ENDPOINT}
+            endpoint: "s3.eu-central-2.wasabisys.com"
             region: "eu-central-2"
           schedules:
             full: "0 2 * * 0" # Sunday at 02:00
