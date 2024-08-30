@@ -48,7 +48,7 @@ spec:
                 memory: 512M
 
             env:
-              APP_URL: "${HOSTNAME}"
+              APP_URL: "https://${HOSTNAME}"
 
             envFrom:
               - secretRef:
