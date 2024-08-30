@@ -16,8 +16,9 @@ spec:
         name: authentik
         namespace: flux-system
   values:
-    annotations:
-      secret.reloader.stakater.com/reload: authentik-secret,${APP}-pguser-${DB_USER},authentik-redis-secret
+    global:
+      deploymentAnnotations:
+        secret.reloader.stakater.com/reload: authentik-secret,authentik-db-secret,authentik-redis-secret
 
     authentik:
       log_level: info
@@ -33,7 +34,7 @@ spec:
 
     envFrom:
       - secretRef:
-          name: authentik-db
+          name: authentik-db-secret
 
     envValueFrom:
       AUTHENTIK_SECRET_KEY:
