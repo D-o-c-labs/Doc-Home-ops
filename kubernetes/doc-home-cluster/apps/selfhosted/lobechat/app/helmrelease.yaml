@@ -47,6 +47,9 @@ spec:
               limits:
                 memory: 512M
 
+            env:
+              APP_URL: "${HOSTNAME}"
+
             envFrom:
               - secretRef:
                   name: lobechat-secret
