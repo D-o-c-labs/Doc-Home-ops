@@ -78,27 +78,31 @@ spec:
         host: "authentik-redis.security.svc.cluster.local"
         password: ""
 
-    ingress:
-      enabled: true
-      ingressClassName: internal-nginx
-      annotations:
-        external-dns.alpha.kubernetes.io/target: "${HOSTNAME}"
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-      hosts:
-        - host: "${HOSTNAME}"
-          paths:
-            - path: /
-      tls:
-        - hosts:
-            - "${HOSTNAME}"
+    server:
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+
+      ingress:
+        enabled: true
+        ingressClassName: internal-nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+        hosts:
+          - host: "${HOSTNAME}"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - "${HOSTNAME}"
 
     postgresql:
       enabled: false
 
     prometheus:
       rules:
-        create: true
+        enabled: true
       serviceMonitor:
         create: true
 
