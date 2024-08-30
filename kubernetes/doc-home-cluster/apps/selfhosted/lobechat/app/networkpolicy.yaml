@@ -20,3 +20,13 @@ spec:
             - port: "5432"
               protocol: TCP
 
+    # Authentik
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: ingress-nginx
+            app.kubernetes.io/instance: nginx-internal
+            io.kubernetes.pod.namespace: network
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

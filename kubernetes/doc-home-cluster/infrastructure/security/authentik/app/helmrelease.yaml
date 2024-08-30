@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: authentik
-      version: 2023.10.4
+      version: 2024.6.4
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -30,6 +30,10 @@ spec:
       redis:
         host: "authentik-redis.security.svc.cluster.local"
         password: ""
+
+    envFrom:
+      - secretRef:
+          name: authentik-db
 
     envValueFrom:
       AUTHENTIK_SECRET_KEY:
@@ -52,22 +56,22 @@ spec:
         secretKeyRef:
           name: authentik-secret
           key: authentik_email_from
-      AUTHENTIK_POSTGRESQL__HOST:
-        secretKeyRef:
-          name: "${APP}-pguser-${DB_USER}"
-          key: host
-      AUTHENTIK_POSTGRESQL__NAME:
-        secretKeyRef:
-          name: "${APP}-pguser-${DB_USER}"
-          key: dbname
-      AUTHENTIK_POSTGRESQL__USER:
-        secretKeyRef:
-          name: "${APP}-pguser-${DB_USER}"
-          key: user
-      AUTHENTIK_POSTGRESQL__PASSWORD:
-        secretKeyRef:
-          name: "${APP}-pguser-${DB_USER}"
-          key: password
+      # AUTHENTIK_POSTGRESQL__HOST:
+      #   secretKeyRef:
+      #     name: "${APP}-pguser-${DB_USER}"
+      #     key: host
+      # AUTHENTIK_POSTGRESQL__NAME:
+      #   secretKeyRef:
+      #     name: "${APP}-pguser-${DB_USER}"
+      #     key: dbname
+      # AUTHENTIK_POSTGRESQL__USER:
+      #   secretKeyRef:
+      #     name: "${APP}-pguser-${DB_USER}"
+      #     key: user
+      # AUTHENTIK_POSTGRESQL__PASSWORD:
+      #   secretKeyRef:
+      #     name: "${APP}-pguser-${DB_USER}"
+      #     key: password
       AUTHENTIK_REDIS__PASSWORD:
         secretKeyRef:
           name: authentik-redis-secret
