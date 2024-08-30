@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: authentik-redis
   ingress:
-    # sonarr
+    # Authentik
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: authentik

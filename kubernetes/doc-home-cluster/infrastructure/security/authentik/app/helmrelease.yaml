@@ -25,8 +25,10 @@ spec:
             name: authentik-db-secret
         - secretRef:
             name: authentik-secret
+        - secretRef:
+            name: authentik-redis-secret
 
-      envValueFrom:
+      # envValueFrom:
         # AUTHENTIK_SECRET_KEY:
         #   secretKeyRef:
         #     name: authentik-secret
@@ -63,10 +65,10 @@ spec:
         #   secretKeyRef:
         #     name: "${APP}-pguser-${DB_USER}"
         #     key: password
-        AUTHENTIK_REDIS__PASSWORD:
-          secretKeyRef:
-            name: authentik-redis-secret
-            key: AUTHENTIK_REDIS_PASSWORD
+        # AUTHENTIK_REDIS__PASSWORD:
+        #   secretKeyRef:
+        #     name: authentik-redis-secret
+        #     key: AUTHENTIK_REDIS_PASSWORD
 
     authentik:
       log_level: info
