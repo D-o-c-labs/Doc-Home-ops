@@ -65,7 +65,7 @@ spec:
         #   secretKeyRef:
         #     name: "${APP}-pguser-${DB_USER}"
         #     key: password
-        AUTHENTIK_REDIS__PASSWORD:
+        - name: AUTHENTIK_REDIS__PASSWORD
           valueFrom:
             secretKeyRef:
               name: authentik-redis-secret
