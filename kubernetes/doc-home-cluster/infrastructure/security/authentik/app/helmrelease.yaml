@@ -90,12 +90,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
         hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
+          - "${HOSTNAME}"
 
     postgresql:
       enabled: false
