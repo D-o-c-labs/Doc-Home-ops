@@ -9,24 +9,14 @@ spec:
     matchLabels:
       app.kubernetes.io/name: lobechat
   egress:
-    # plex-addons
+
+    # Authentik
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: crunchy-postgres
-            postgres-operator.crunchydata.com/data: postgres
-            k8s:io.kubernetes.pod.namespace: database
+            app.kubernetes.io/name: ingress-nginx
+            app.kubernetes.io/instance: nginx-internal
+            io.kubernetes.pod.namespace: network
       toPorts:
         - ports:
-            - port: "5432"
+            - port: "443"
               protocol: TCP
-
-    # # Authentik
-    # - toEndpoints:
-    #     - matchLabels:
-    #         app.kubernetes.io/name: ingress-nginx
-    #         app.kubernetes.io/instance: nginx-internal
-    #         io.kubernetes.pod.namespace: network
-    #   toPorts:
-    #     - ports:
-    #         - port: "443"
-    #           protocol: TCP
