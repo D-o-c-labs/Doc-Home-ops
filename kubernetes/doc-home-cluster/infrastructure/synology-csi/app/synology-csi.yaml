@@ -40,7 +40,18 @@ spec:
             - kind: ConfigMap
               name: cluster-settings
               optional: false
-    # patches:
+    patches:
+        - patch: |-
+            kind: StatefulSet
+            apiVersion: apps/v1
+            metadata:
+                name: synology-csi-controller
+                namespace: synology-csi
+            spec:
+                spec:
+                    containers:
+                      - name: csi-plugin
+                        image: ghcr.io/zebernst/synology-csi:v1.1.3    
     #     - patch: |-
     #         apiVersion: storage.k8s.io/v1
     #         kind: StorageClass
