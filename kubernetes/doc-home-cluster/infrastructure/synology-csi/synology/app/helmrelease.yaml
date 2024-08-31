@@ -13,7 +13,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: synology-csi
+        name: synology-csi-talos
         namespace: synology-csi
 
   values:
