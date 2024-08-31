@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: synology-csi
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: synology-csi
+      version: 3.3.2
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: synology-csi
+        namespace: synology-csi
+
+  values:
+    clientInfoSecret:
+      name: "client-info-secret"
+    images:
+      attacher:
+        image: registry.k8s.io/sig-storage/csi-attacher
+        pullPolicy: IfNotPresent
+        tag: v4.2.0
+      nodeDriverRegistrar:
+        image: registry.k8s.io/sig-storage/csi-node-driver-registrar
+        pullPolicy: IfNotPresent
+        tag: v2.6.3
+      plugin:
+        image: ghcr.io/zebernst/synology-csi
+        pullPolicy: IfNotPresent
+        # Defaults to {{ $.Chart.AppVersion }} if empty or not present:
+        tag: v1.1.3
+      provisioner:
+        image: registry.k8s.io/sig-storage/csi-provisioner
+        pullPolicy: IfNotPresent
+        tag: v3.4.0
+      resizer:
+        image: registry.k8s.io/sig-storage/csi-resizer
+        pullPolicy: IfNotPresent
+        tag: v1.7.0
+      snapshotter:
+        image: registry.k8s.io/sig-storage/csi-snapshotter
+        pullPolicy: IfNotPresent
+        tag: v4.2.1
+    installCSIDriver: true
+    storageClasses:
+      synology-csi-delete:
+        disabled: false
+        isDefault: true
+        reclaimPolicy: Delete
+        allowVolumeExpansion: true
+        volumeBindingMode: Immediate
+        parameters:
+          fstype: ext4
+          dsm: piscionas.piscio.net
+          location: /volume2
+      synology-csi-retain:
+        disabled: false
+        isDefault: false
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        volumeBindingMode: Immediate
+        parameters:
+          fstype: ext4
+          dsm: piscionas.piscio.net
+          location: /volume2
+    #  synology-iscsi-storage:
+        # One of true or false (default):
+        ##disabled: false
+        # One of true or false (default):
+        ##isDefault: false
+        # One of "Retain" or "Delete" (default):
+    #    reclaimPolicy: Retain
+        # One of "WaitForFirstConsumer" or "Immediate" (default):
+        ##volumeBindingMode: Immediate
+
+        # If not present, some location will be chosen to create volumes with the filesystem type ext4.
+        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+        ##parameters:
+        ##  dsm: "1.1.1.1"
+        ##  fsType: ext4
+        ##  location: /volume1
+      # synology-iscsi-storage-delete:
+      #   reclaimPolicy: Delete
+    volumeSnapshotClasses:
+      synology-csi-delete:
+        disabled: false
+        deletionPolicy: Delete
+        parameters:
+          description: Kubernetes CSI
+          is_locked: 'false'
+      synology-csi-retain:
+        disabled: false
+        deletionPolicy: Retain
+        parameters:
+          description: Kubernetes CSI
+          is_locked: 'false'
+    #  synology-snapshotclass:
+        # One of true or false (default):
+        ##disabled: false
+        # One of "Retain" or "Delete" (default):
+    #    deletionPolicy: Delete
+        # One of true or false (default):
+        ##isDefault: false
+
+        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+        ##parameters:
+        ##  description: "Kubernetes CSI"
+        ##  is_locked: "false"
