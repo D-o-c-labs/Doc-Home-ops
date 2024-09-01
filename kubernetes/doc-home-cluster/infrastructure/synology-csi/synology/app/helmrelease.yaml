@@ -37,7 +37,7 @@ spec:
         image: ghcr.io/zebernst/synology-csi
         pullPolicy: IfNotPresent
         # Defaults to {{ $.Chart.AppVersion }} if empty or not present:
-        tag: 1.2.0
+        tag: v1.1.3
       provisioner:
         image: registry.k8s.io/sig-storage/csi-provisioner
         pullPolicy: IfNotPresent
