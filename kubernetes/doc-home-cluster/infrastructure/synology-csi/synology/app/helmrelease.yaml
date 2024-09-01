@@ -17,6 +17,13 @@ spec:
   values:
     clientInfoSecret:
       name: "client-info-secret"
+    controller:
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
     images:
       attacher:
         image: registry.k8s.io/sig-storage/csi-attacher
