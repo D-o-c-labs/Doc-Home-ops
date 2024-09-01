@@ -44,6 +44,20 @@ spec:
         pullPolicy: IfNotPresent
         tag: v4.2.1
     installCSIDriver: true
+    node:
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+    snapshotter:
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
     storageClasses:
       synology-csi-delete:
         disabled: false
