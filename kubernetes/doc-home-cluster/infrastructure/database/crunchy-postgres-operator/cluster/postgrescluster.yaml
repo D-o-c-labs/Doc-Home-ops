@@ -42,6 +42,12 @@ spec:
         resources:
           requests:
             storage: 20Gi
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: "kubernetes.io/hostname"
