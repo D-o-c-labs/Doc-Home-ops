@@ -96,12 +96,12 @@ spec:
         compress-type: "bz2"
         compress-level: "9"
         # Minio
-        repo1-block: "y"
-        repo1-bundle: "y"
-        repo1-path: /crunchy-pgo
-        repo1-retention-full: "30" # days
-        repo1-retention-full-type: "time"
-        repo1-s3-uri-style: path
+        # repo1-block: "y"
+        # repo1-bundle: "y"
+        # repo1-path: /crunchy-pgo
+        # repo1-retention-full: "30" # days
+        # repo1-retention-full-type: "time"
+        # repo1-s3-uri-style: path
         # Wasabi
         repo2-block: "y"
         repo2-bundle: "y"
@@ -110,22 +110,23 @@ spec:
         repo2-retention-full-type: time
         repo2-s3-uri-style: path
       manual:
-        repoName: repo1
+        repoName: repo2
+        # repoName: repo1
         options:
           - --type=full
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres-backup
       repos:
-        - name: repo1 # Minio
-          s3: &minio
-            bucket: "crunchy-postgres"
-            endpoint: "192.168.32.201:9777"
-            region: "eu-central-1"
-          schedules:
-            full: "0 1 * * 0" # Sunday at 01:00
-            differential: "0 1 * * 1-6" # Mon-Sat at 01:00
-            incremental: "0 2-23 * * *" # Every hour except 01:00
+        # - name: repo1 # Minio
+        #   s3: &minio
+        #     bucket: "crunchy-postgres"
+        #     endpoint: "192.168.32.201:9777"
+        #     region: "eu-central-1"
+        #   schedules:
+        #     full: "0 1 * * 0" # Sunday at 01:00
+        #     differential: "0 1 * * 1-6" # Mon-Sat at 01:00
+        #     incremental: "0 2-23 * * *" # Every hour except 01:00
         - name: repo2 # WASABI
           s3: &r2
             bucket: "doc-pgo"
