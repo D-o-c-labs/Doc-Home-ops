@@ -5,5 +5,5 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./networkpolicy.yaml
-  - ./postgrescluster.yaml
+  # - ./postgrescluster.yaml
   - ./podmonitor.yaml
