@@ -48,6 +48,7 @@
     },
     {
       description: "Auto merge Lobechat patch",
+      matchDatasources: ["docker"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest", "patch"],
