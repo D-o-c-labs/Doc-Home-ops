@@ -47,6 +47,14 @@
       ignoreTests: true
     },
     {
+      description: "Auto merge Lobechat patch",
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["digest", "patch"],
+      matchPackageNames: ["lobehub/lobe-chat-database"],
+      ignoreTests: true
+    },
+    {
       description: "Auto merge linters & prettiers",
       matchPackagePatterns: ["lint", "prettier"],
       automerge: true,
