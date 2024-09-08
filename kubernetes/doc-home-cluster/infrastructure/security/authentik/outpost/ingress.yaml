@@ -7,7 +7,7 @@ spec:
         - host: ingress-ext.piscio.net
           http:
               paths:
-                  - path: /outpost.goauthentik.io
+                  - path: /outpost.piscio.net
                     pathType: Prefix
                     backend:
                         # Or, to use an external Outpost, create an ExternalName service and reference that here.
