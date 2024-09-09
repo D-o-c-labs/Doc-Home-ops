@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
     name: authentik-outpost
 spec:
+    ingressClassName: external-nginx
     rules:
         - host: ingress-ext.piscio.net
           http:
