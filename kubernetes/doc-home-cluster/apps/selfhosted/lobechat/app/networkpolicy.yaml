@@ -14,7 +14,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: ingress-nginx
-            app.kubernetes.io/instance: nginx-internal
+            app.kubernetes.io/instance: nginx-external
             io.kubernetes.pod.namespace: network
       toPorts:
         - ports:
