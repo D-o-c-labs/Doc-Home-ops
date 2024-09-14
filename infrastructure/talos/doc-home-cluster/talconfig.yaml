@@ -76,9 +76,10 @@ controlPlane:
     customization:
       systemExtensions:
         officialExtensions:
-        - siderolabs/i915-ucode
-        - siderolabs/intel-ucode
-        - siderolabs/iscsi-tools
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/qemu-guest-agent
   patches:
     - |-
       cluster:
