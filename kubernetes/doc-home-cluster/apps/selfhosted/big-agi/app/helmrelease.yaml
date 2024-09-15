@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/enricoros/big-agi
-              tag: 1.16.7
+              tag: v1.16.8
             probes:
               liveness:
                 enabled: true
