@@ -9,4 +9,4 @@ resources:
   #- ./calibre-web/ks.yaml
   #- ./maintainerr/ks.yaml
   - ./plex/ks.yaml
-  #- ./tautulli/ks.yaml
+  - ./tautulli/ks.yaml
