@@ -90,9 +90,10 @@ spec:
             devices:
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_500GB_S4EVNX0R737384M"
       placement:
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            effect: NoSchedule
+        mon:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              effect: NoSchedule
     cephBlockPools:
       - name: ceph-blockpool
         spec:
