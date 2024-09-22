@@ -5,6 +5,6 @@ metadata:
   name: cloudflared-tunnel
 spec:
   endpoints:
-    - dnsName: ingress-ext.bjw-s.dev
+    - dnsName: ingress-ext.piscio.net
       recordType: CNAME
       targets: ["cfa85174-1b44-4d3f-b30f-daf4ca06e1a5.cfargotunnel.com"]
