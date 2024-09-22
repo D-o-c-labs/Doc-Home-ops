@@ -134,8 +134,8 @@ spec:
             endpoint: "s3.eu-central-2.wasabisys.com"
             region: "eu-central-2"
           schedules:
-            full: "0 2 * * 0" # Sunday at 02:00
-            incremental: "0 2 * * 1-6/2" # Mon-Sat at 02:00, every 2nd day
+            full: "0 3 * * 0" # Sunday at 03:00
+            incremental: "0 3 * * 1-6/2" # Mon-Sat at 03:00, every 2nd day
 
   dataSource:
     pgbackrest:
