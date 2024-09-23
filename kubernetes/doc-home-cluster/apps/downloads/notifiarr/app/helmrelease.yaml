@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: golift/notifiarr
-              tag: 0.8.1
+              tag: 0.8.2
 
 
             env:
