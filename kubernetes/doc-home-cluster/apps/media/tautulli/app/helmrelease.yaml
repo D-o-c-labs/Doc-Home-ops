@@ -25,7 +25,7 @@ spec:
           labels:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-            ingress.home.arpa/nginx-internal: allow
+            ingress.home.arpa/nginx-external: allow
           securityContext:
             runAsUser: 2000
             runAsGroup: 2000
@@ -76,7 +76,9 @@ spec:
 
     ingress:
       app:
-        className: internal-nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+        className: external-nginx
         hosts:
           - host: &hostName tautulli.piscio.net
             paths:
