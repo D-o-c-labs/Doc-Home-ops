@@ -17,6 +17,18 @@ spec:
         namespace: flux-system
 
   values:
+
+    defaultPodOptions:
+
+      priorityClassName: system-node-critical
+
+      tolerations:
+      - operator: "Exists"
+        effect: "NoExecute"
+      - operator: "Exists"
+        effect: "NoSchedule"
+    
+    
     controllers:
 
       tun-device-plugin:

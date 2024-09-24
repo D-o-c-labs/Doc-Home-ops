@@ -7,3 +7,4 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./k8tz/ks.yaml
+  - ./tun-device-plugin/ks.yaml

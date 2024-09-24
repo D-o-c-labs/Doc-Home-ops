@@ -88,6 +88,9 @@ spec:
                 add:
                   - NET_ADMIN
               allowPrivilegeEscalation: false
+            resources:
+              limits:
+                squat.ai/tun: "1"
 
           port-forward:
             image:
