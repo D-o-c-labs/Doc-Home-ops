@@ -70,10 +70,10 @@ spec:
         type: hostPath
         hostPath: /dev
         globalMounts:
-          - /dev
+          - path: /dev
 
       device-plugin:
         type: hostPath
         hostPath: /var/lib/kubelet/device-plugins
         globalMounts:
-          - /var/lib/kubelet/device-plugins
+          - path: /var/lib/kubelet/device-plugins
