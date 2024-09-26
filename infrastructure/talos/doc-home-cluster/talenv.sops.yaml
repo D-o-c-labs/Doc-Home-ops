@@ -1,17 +1,18 @@
 clusterEndpointIP: ENC[AES256_GCM,data:UlvpIuSNbmlOwafhwGx7+3OtNRRxhdo3FReU,iv:+g7A0yx2fG3pfoQJD/4tp/uHtRT8TNSb5jmsvKsDojw=,tag:hucnoVptZqSO+7gN8CDm3A==,type:str]
 cniConfig: ENC[AES256_GCM,data:zV96f8lqXBaWCuiWf/tfBEEhPqVYgxn3Qtd/MdoYdTuv,iv:Z/RpfYUO+tODyPiOXwF4IBF3QonlgtLBWgZxebxNYxY=,tag:EQbrHfnWAeI7h3KqqVgNLA==,type:str]
-nameservers: ENC[AES256_GCM,data:MIfG1apSYXPAjQ9JL/I=,iv:NBFgjgP2JgS55i+VY/HXLfWsZZvAvUAlGFuwKF3Xg4c=,tag:0wvgPwrOHGyvRfuUQJHHnA==,type:str]
+nameservers: ENC[AES256_GCM,data:CHC6dGdaUn4BoLMELUE=,iv:tGKHjq30nTpVx+ahNepeKEee1i/1eBcUioAP1XYa5yA=,tag:kkLLEtGyL5wy8w13hhzfzg==,type:str]
 zeus_ipAddress: ENC[AES256_GCM,data:l3sfSQAE4jCkeLqGN78=,iv:OVnLT74FLlPMCmiOoPnn94L6rqJHv4/V7z6/RYRcg/I=,tag:KWaBWsiYfQ/Y+SuopeOkQQ==,type:str]
 zeus_ipAddress_complete: ENC[AES256_GCM,data:DMXBWCCIOgbeMUWWM5WYaNs=,iv:/ZM9Mt/LBUPG+/EQgfIdT1rgeXtDUStkAdfQ7KbuCNA=,tag:AEQnio9/3NlvotYJ+JSpkg==,type:str]
 zeus_ipAddress_complete_iot: ENC[AES256_GCM,data:gKVXED7C1IVsjxRgCU9X4g==,iv:AlIz78fXpAqAybuSTFOI+TEEti234dcYmRowzT4OaA0=,tag:QnsZqtSSLH9YSJMdtu5/dg==,type:str]
-ares_ipAddress: ENC[AES256_GCM,data:qiA1w5XBz+MHX31vE/I=,iv:nH8VIyGiWAf00IC+oUQG4q/B5jIDGPowaiRzGX2kSjI=,tag:iyhq5Aa5O/ZKWygxyu7gDA==,type:str]
-ares_ipAddress_complete: ENC[AES256_GCM,data:Eg9znJTcuEIoPSrCtdyhPNU=,iv:EzJeL19Ge/42tLPd1SQY66CtR9r+WrXrth9V0TJLURI=,tag:trE9w9nOTzMM9FeenB6HbA==,type:str]
-ares_ipAddress_complete_iot: ENC[AES256_GCM,data:+T95gNqvFO22jhisEE2c9w==,iv:6Qn3vMLX+Cebcg1Tav+Ea1mQYsZt1jHP3XISH4ovFag=,tag:+f7OOD3g9wUNh2D1zZQr9g==,type:str]
+ares_ipAddress: ENC[AES256_GCM,data:1o3Jmt9pa1cnkAQHfEM=,iv:YheRQXn7FEfV6jLMngQiL2KZ4OL10O4zbVcbel7Xkes=,tag:Nh2AWotOQoSvVf46C5vVaA==,type:str]
+ares_ipAddress_complete: ENC[AES256_GCM,data:WPCFi2Dzb/w80NMsMDbqVcA=,iv:DlesrS5hHluFgS0kYzhNiGlIG8+Kz/Xa5MEBAArPDiY=,tag:InjkhdP4Qpj8EnDac+cpoQ==,type:str]
+ares_ipAddress_complete_iot: ENC[AES256_GCM,data:R+BfOtUhqihskINNPtmo4w==,iv:/6uFnMuIJuvk0ZrY6N3LN8gZ3kSrzSxAvbpCgzHnhvA=,tag:epeS9gqLrkYqHsaoYzOcUw==,type:str]
 athena_ipAddress: ENC[AES256_GCM,data:ZvEAco0Q+PuBr3U/ukw=,iv:+DdYA20aB9AT2+ho9c6T926YKs+qZvMO4raBUvPhckI=,tag:T8TqeeL349GBqxUdovci/w==,type:str]
 athena_ipAddress_complete: ENC[AES256_GCM,data:pTizLzbhDpOM4OjkywaGO4E=,iv:b6LHNn0ajnJxcGZjH/RMdMVyEOkSIOgNeN2Zajd7fgo=,tag:bkirjcCe6E+FyCLAK0Z3Xw==,type:str]
 athena_ipAddress_complete_iot: ENC[AES256_GCM,data:4vLqA5s1riAHW/QuW1j3ug==,iv:6Ae5II1yAhyTfvc5uND42uCWdk5bIVTm+heM2FchsEc=,tag:wITT0Rm3/o29oC/P2NAA1g==,type:str]
 lan_gw: ENC[AES256_GCM,data:RN+rLsHbiOpQ7XOtJYw=,iv:1T0DzwjfVocSkFuFotGjS38qJp1Foson9D6OFufj5CI=,tag:Q/gYM2/ozvlqVCODWWSuVQ==,type:str]
 iot_gw: ENC[AES256_GCM,data:7iVmvVkxstNUOCT5,iv:N2HtIWru7LC2Thfn2scCpQIdXnEshU+to09KCX6hoXo=,tag:kvtfr1EGarrlZFolYjztEA==,type:str]
+iot_net: ENC[AES256_GCM,data:sd0ye8aH1AeK9L81fbgb,iv:w347mhVzkvHEKnQzVi9tpSycHXVv5iXZPaTyhfGmy8k=,tag:IVxXGAAjf3cTeOSo+lJ/Ag==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -27,8 +28,8 @@ sops:
             WnNRc21Vb01QVU9NbTlBTXgrdFJwaHMKe6fkMFIoSvJlrBEYVcP8ll7VEu3XdB7z
             wqRx0O6pXoA0lpdMDgQHiWuz0t+0bzloavJJ72nFOcm5s+oz02wXqQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-07-14T12:47:27Z"
-    mac: ENC[AES256_GCM,data:0+DgPsinJ2ivRL82PiSAB2YUnnVqpJmLmxOQK70jv5WiC3EhskCwZWSz5z5V1jtTTgR2s9Dxgx07HRTzoWY4RF0YJjmuNVwF9ytJiUai7dG04NE+iu2QsVHXMvjuzFZIhaNd1d1DaIwaiGOG8WqhZOz5qlfWGmzPLyqcaMgcbq0=,iv:NOEi96m4ZoMKpa2NuWlhUfQntLviESazFTfhT1H9KJ0=,tag:CeeF8aRsJR8pGYE20OmFdA==,type:str]
+    lastmodified: "2024-09-19T20:40:42Z"
+    mac: ENC[AES256_GCM,data:Bw6zsVgmVzgusftvqn9be//l1Xis5ka3mmOZcoMhq6Y3IHV0n8jJ29BTlB3pnk6uJQltFBmEJnCNUuNd8+EJwxr5IC7/AXdMOsuxm1BpeNgIuHlhd9z4W4sCD3eF3lUehR+QwZ2Z33HfoziW0Kiv+z94+gUKTMuifSxRiQy6qcI=,iv:eO+1E84mAcehWYd1fnB+FKF5VfeD5cK/R5HdCQxLO8M=,tag:sgjhnQsn4uo+AZPfSMdIgw==,type:str]
     pgp: []
     unencrypted_suffix: _unencrypted
-    version: 3.8.1
+    version: 3.9.0

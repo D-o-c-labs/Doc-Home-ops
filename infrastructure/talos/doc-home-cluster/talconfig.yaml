@@ -1,5 +1,5 @@
 clusterName: doc-home-cluster
-talosVersion: v1.7.2
+talosVersion: v1.7.6
 kubernetesVersion: v1.30.1
 endpoint: ${clusterEndpointIP}
 domain: cluster.local
@@ -19,7 +19,7 @@ nodes:
     - hostname: zeus
       ipAddress: ${zeus_ipAddress}
       controlPlane: true
-      installDisk: /dev/vda
+      installDisk: /dev/sda
       disableSearchDomain: true
       kernelModules:
         - name: br_netfilter
@@ -28,31 +28,41 @@ nodes:
       nameservers:
         - ${nameservers}
       networkInterfaces:
-        - interface: eth0
-          dhcp: true
-          addresses:
-            - ${zeus_ipAddress_complete}
-        - interface: eth1
-          dhcp: true
-          addresses:
-            - ${zeus_ipAddress_complete_iot}
+        - deviceSelector:
+            physical: true # should select any hardware network device, if you have just one, it will be selected
+          dhcp: false
+          vlans:
+            - vlanId: 1
+              addresses:
+                - ${zeus_ipAddress_complete}
+              routes:
+                - network: 0.0.0.0/0
+                  gateway: ${lan_gw}
+            - vlanId: 40
+              addresses:
+                - ${zeus_ipAddress_complete_iot}
+              routes:
+                - network: ${iot_net}
+                  gateway: ${iot_gw}
 
     - hostname: ares
       disableSearchDomain: true
       ipAddress: ${ares_ipAddress}
       controlPlane: false
-      installDisk: /dev/vda
+      installDisk: /dev/sda
+      machineSpec:
+        secureboot: false
       nameservers:
         - ${nameservers}
       networkInterfaces:
-        - interface: eth0
-          dhcp: true
+        - deviceSelector:
+            physical: true # should select any hardware network device, if you have just one, it will be selected
+          dhcp: false
           addresses:
-            - ${ares_ipAddress_complete}
-        - interface: eth1
-          dhcp: true
-          addresses:
-            - ${ares_ipAddress_complete_iot}
+          - ${ares_ipAddress_complete}
+          routes:
+            - network: 0.0.0.0/0
+              gateway: ${lan_gw}
 
     - hostname: athena
       disableSearchDomain: true
@@ -60,26 +70,39 @@ nodes:
       nameservers:
         - ${nameservers}
       controlPlane: false
-      installDisk: /dev/vda
+      installDisk: /dev/sda
+      machineSpec:
+        secureboot: false
       networkInterfaces:
-        - interface: eth0
-          dhcp: true
-          addresses:
-            - ${athena_ipAddress_complete}
-        - interface: eth1
-          dhcp: true
-          addresses:
-            - ${athena_ipAddress_complete_iot}
+        - deviceSelector:
+            physical: true # should select any hardware network device, if you have just one, it will be selected
+          dhcp: false
+          vlans:
+            - vlanId: 1
+              addresses:
+                - ${athena_ipAddress_complete}
+              routes:
+                - network: 0.0.0.0/0
+                  gateway: ${lan_gw}
+            - vlanId: 40
+              addresses:
+                - ${athena_ipAddress_complete_iot}
+              routes:
+                - network: ${iot_net}
+                  gateway: ${iot_gw}
 
 controlPlane:
   schematic:
     customization:
+      extraKernelArgs:
+          - i915.force_probe=7d55
+          - net.ifnames=0
       systemExtensions:
         officialExtensions:
             - siderolabs/i915-ucode
             - siderolabs/intel-ucode
             - siderolabs/iscsi-tools
-            - siderolabs/qemu-guest-agent
+            - siderolabs/util-linux-tools
   patches:
     - |-
       cluster:
@@ -107,6 +130,21 @@ controlPlane:
           extraArgs:
             feature-gates: GracefulNodeShutdown=true
             rotate-server-certificates: "true"
+          extraMounts:
+            - destination: /var/lib/longhorn
+              type: bind
+              source: /var/lib/longhorn
+              options:
+                - bind
+                - rshared
+                - rw
+            - destination: /var/mnt
+              type: bind
+              source: /var/mnt
+              options:
+                - bind
+                - rshared
+                - rw
         network:
           extraHostEntries:
             - ip: ${clusterEndpointIP}
@@ -131,8 +169,32 @@ controlPlane:
 worker:
   schematic:
     customization:
+      extraKernelArgs:
+          - i915.force_probe=7d55
+          - net.ifnames=0
       systemExtensions:
         officialExtensions:
-        - siderolabs/i915-ucode
-        - siderolabs/intel-ucode
-        - siderolabs/iscsi-tools
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+  patches:
+    - |-
+      machine:
+        kubelet:
+          extraMounts:
+            - destination: /var/lib/longhorn
+              type: bind
+              source: /var/lib/longhorn
+              options:
+                - bind
+                - rshared
+                - rw
+            - destination: /var/lib/openebs
+              type: bind
+              source: /var/lib/openebs
+              options:
+                - bind
+                - rshared
+                - rw
+
