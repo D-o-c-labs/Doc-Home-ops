@@ -122,7 +122,7 @@ spec:
     write:
       replicas: 2
       persistence:
-        storageClass: synology-csi-delete
+        storageClass: openebs-hostpath
         size: 20Gi
 
     read:
@@ -131,7 +131,7 @@ spec:
     backend:
       replicas: 2
       persistence:
-        storageClass: synology-csi-delete
+        storageClass: openebs-hostpath
         size: 20Gi
 
     monitoring:

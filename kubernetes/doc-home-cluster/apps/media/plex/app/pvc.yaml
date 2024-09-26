@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 50Gi
-  storageClassName: synology-csi-delete
+  storageClassName: ceph-block
