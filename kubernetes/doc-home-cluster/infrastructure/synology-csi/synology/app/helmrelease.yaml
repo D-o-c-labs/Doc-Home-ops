@@ -68,7 +68,7 @@ spec:
     storageClasses:
       synology-csi-delete:
         disabled: false
-        isDefault: true
+        isDefault: false
         reclaimPolicy: Delete
         allowVolumeExpansion: true
         volumeBindingMode: Immediate
