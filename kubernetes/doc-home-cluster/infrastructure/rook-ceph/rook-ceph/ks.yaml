@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/apps/rook-ceph/rook-ceph/operator"
+  path: "./kubernetes/doc-home-cluster/infrastructure/rook-ceph/rook-ceph/operator"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -30,7 +30,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/apps/rook-ceph/rook-ceph/cluster"
+  path: "./kubernetes/doc-home-cluster/infrastructure/rook-ceph/rook-ceph/cluster"
   prune: true
   sourceRef:
     kind: GitRepository
