@@ -8,7 +8,7 @@ spec:
   interval: 30m
   ref:
     branch: master
-  url: https://github.com/D-o-c/Doc-Home-ops.git
+  url: ssh://git@github.com/D-o-c/Doc-Home-ops.git
   secretRef:
     name: flux-git-deploy-key
   ignore: |
