@@ -89,6 +89,11 @@ spec:
 #          - name: "athena"
 #            devices:
 #              - name: "/dev/disk/by-id/nvme-CT1000P1SSD8_202228759489"
+      placement:
+        mon:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              effect: NoSchedule
     cephBlockPools:
       - name: ceph-blockpool
         spec:
