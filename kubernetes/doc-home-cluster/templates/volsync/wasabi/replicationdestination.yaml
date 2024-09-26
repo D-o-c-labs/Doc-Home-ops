@@ -12,8 +12,8 @@ spec:
     repository: "${APP}-volsync-wasabi"
     cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:-openebs-hostpath}"
     cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:-ReadWriteOnce}"]
-    storageClassName: "${VOLSYNC_STORAGECLASS:-longhorn}"
-    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:-longhorn}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:-synology-csi-delete}"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:-synology-csi-delete}"
     moverSecurityContext:
       runAsUser: ${APP_UID:-2000}
       runAsGroup: ${APP_GID:-2000}
