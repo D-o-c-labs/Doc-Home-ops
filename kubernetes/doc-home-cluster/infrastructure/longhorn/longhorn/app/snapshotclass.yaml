@@ -3,5 +3,7 @@ kind: VolumeSnapshotClass
 apiVersion: snapshot.storage.k8s.io/v1
 metadata:
   name: longhorn
+  annotations:
+    snapshot.storageclass.kubernetes.io/is-default-class: false
 driver: driver.longhorn.io
 deletionPolicy: Delete
