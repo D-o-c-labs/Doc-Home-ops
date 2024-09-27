@@ -41,10 +41,10 @@ spec:
                 enabled: true
             resources:
               requests:
-                cpu: 0m
-                memory: 0M
+                cpu: 5m
+                memory: 128Mi
               limits:
-                memory: 256M
+                memory: 256Mi
 
     service:
       app:

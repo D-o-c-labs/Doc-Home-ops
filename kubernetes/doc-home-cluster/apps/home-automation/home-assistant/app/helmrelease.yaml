@@ -65,10 +65,10 @@ spec:
 
             resources:
               requests:
-                cpu: 126m
-                memory: 411M
+                cpu: 47m
+                memory: 2Gi
               limits:
-                memory: 4417M
+                memory: 4Gi
 
           codeserver:
             image:

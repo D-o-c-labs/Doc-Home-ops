@@ -54,10 +54,10 @@ spec:
 
             resources:
               requests:
-                cpu: 15m
-                memory: 164M
+                cpu: 20m
+                memory: 384Mi
               limits:
-                memory: 1408M
+                memory: 2Gi
 
     service:
       app:

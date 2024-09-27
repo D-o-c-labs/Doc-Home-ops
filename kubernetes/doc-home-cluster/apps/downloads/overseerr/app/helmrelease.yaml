@@ -42,9 +42,9 @@ spec:
             resources:
               requests:
                 cpu: 15m
-                memory: 226M
+                memory: 256Mi
               limits:
-                memory: 1937M
+                memory: 2Gi
             securityContext:
               runAsUser: "${APP_UID}"
               runAsGroup: "${APP_GID}"
