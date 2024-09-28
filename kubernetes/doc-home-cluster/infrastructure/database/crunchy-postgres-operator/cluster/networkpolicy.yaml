@@ -13,7 +13,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: crunchy-postgres
-            postgres-operator.crunchydata.com/data: postgres
+            postgres-operator.crunchydata.com/cluster: postgres
             k8s:io.kubernetes.pod.namespace: database
       toPorts:
         - ports:
