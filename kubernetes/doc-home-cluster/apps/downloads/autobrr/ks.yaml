@@ -23,3 +23,10 @@ spec:
     - name: crunchy-postgres-operator-cluster
     - name: crunchy-postgres-operator-secretstore
     - name: qbittorrent
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: bazarr.piscio.net
+      APP_UID: "2000"
+      APP_GID: "2000"
+      VOLSYNC_CLAIM: autobrr-config

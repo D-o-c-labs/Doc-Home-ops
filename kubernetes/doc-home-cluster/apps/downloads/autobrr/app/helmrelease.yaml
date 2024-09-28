@@ -92,5 +92,7 @@ spec:
                   port: http
 
     persistence:
+      config:
+        existingClaim: "${VOLSYNC_CLAIM}"
       tmp:
         type: emptyDir
