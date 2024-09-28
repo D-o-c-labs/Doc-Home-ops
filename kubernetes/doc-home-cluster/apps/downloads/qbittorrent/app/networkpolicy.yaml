@@ -48,13 +48,13 @@ spec:
         - port: *port
           protocol: TCP
     # autobrr
-#    - from:
-#        - podSelector:
-#            matchLabels:
-#              app.kubernetes.io/name: autobrr
-#      ports:
-#        - port: *port
-#          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: autobrr
+      ports:
+        - port: *port
+          protocol: TCP
     # cross-seed
     - from:
         - podSelector:
