@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: autobrr
   egress:
-    # radarr
+    # qbittorrent
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: qbittorrent

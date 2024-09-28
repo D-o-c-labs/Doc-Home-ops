@@ -16,6 +16,8 @@ spec:
             app.kubernetes.io/name: sonarr
         - matchLabels:
             app.kubernetes.io/name: radarr
+        - matchLabels:
+            app.kubernetes.io/name: cross-seed
       toPorts:
         - ports:
             - port: "8080"
