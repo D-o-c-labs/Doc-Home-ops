@@ -19,7 +19,8 @@ nodes:
     - hostname: zeus
       ipAddress: ${zeus_ipAddress}
       controlPlane: true
-      installDisk: /dev/sda
+      installDiskSelector:
+        size: "<= 128GB"
       disableSearchDomain: true
       kernelModules:
         - name: br_netfilter
@@ -29,27 +30,28 @@ nodes:
         - ${nameservers}
       networkInterfaces:
         - deviceSelector:
-            physical: true # should select any hardware network device, if you have just one, it will be selected
+            hardwareAddr: "DE:7C:59:6D:1B:89"
+          addresses:
+            - ${zeus_ipAddress_complete}
+          routes:
+            - network: 0.0.0.0/0
+              gateway: ${lan_gw}
           dhcp: false
-          vlans:
-            - vlanId: 1
-              addresses:
-                - ${zeus_ipAddress_complete}
-              routes:
-                - network: 0.0.0.0/0
-                  gateway: ${lan_gw}
-            - vlanId: 40
-              addresses:
-                - ${zeus_ipAddress_complete_iot}
-              routes:
-                - network: ${iot_net}
-                  gateway: ${iot_gw}
+        - deviceSelector:
+            hardwareAddr: "BC:24:11:C7:F0:04"
+          addresses:
+            - ${zeus_ipAddress_complete_iot}
+          routes:
+            - network: ${iot_net}
+              gateway: ${iot_gw}
+          dhcp: false
 
     - hostname: ares
       disableSearchDomain: true
       ipAddress: ${ares_ipAddress}
       controlPlane: false
-      installDisk: /dev/sda
+      installDiskSelector:
+        size: "<= 128GB"
       machineSpec:
         secureboot: false
       nameservers:
@@ -70,27 +72,19 @@ nodes:
       nameservers:
         - ${nameservers}
       controlPlane: false
-      installDisk: /dev/sda
+      installDiskSelector:
+        size: "<= 128GB"
       machineSpec:
         secureboot: false
       networkInterfaces:
         - deviceSelector:
-            physical: true # should select any hardware network device, if you have just one, it will be selected
+            hardwareAddr: "88:ae:dd:01:d2:b2"
+          addresses:
+            - ${athena_ipAddress_complete}
+          routes:
+            - network: 0.0.0.0/0
+              gateway: ${lan_gw}
           dhcp: false
-          vlans:
-            - vlanId: 1
-              addresses:
-                - ${athena_ipAddress_complete}
-              routes:
-                - network: 0.0.0.0/0
-                  gateway: ${lan_gw}
-            - vlanId: 40
-              addresses:
-                - ${athena_ipAddress_complete_iot}
-              routes:
-                - network: ${iot_net}
-                  gateway: ${iot_gw}
-
 controlPlane:
   schematic:
     customization:
@@ -131,13 +125,6 @@ controlPlane:
             feature-gates: GracefulNodeShutdown=true
             rotate-server-certificates: "true"
           extraMounts:
-            - destination: /var/lib/longhorn
-              type: bind
-              source: /var/lib/longhorn
-              options:
-                - bind
-                - rshared
-                - rw
             - destination: /var/mnt
               type: bind
               source: /var/mnt
@@ -183,13 +170,6 @@ worker:
       machine:
         kubelet:
           extraMounts:
-            - destination: /var/lib/longhorn
-              type: bind
-              source: /var/lib/longhorn
-              options:
-                - bind
-                - rshared
-                - rw
             - destination: /var/lib/openebs
               type: bind
               source: /var/lib/openebs
