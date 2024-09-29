@@ -20,4 +20,4 @@ spec:
   dependsOn:
     - name: external-secrets-stores
     - name: qbittorrent
-    - name: sabnzb
+    - name: sabnzbd
