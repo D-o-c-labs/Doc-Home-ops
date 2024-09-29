@@ -17,6 +17,10 @@ spec:
             app.kubernetes.io/name: crunchy-postgres-pgbouncer
             postgres-operator.crunchydata.com/cluster: postgres
             k8s:io.kubernetes.pod.namespace: database
+        - matchLabels:
+            app.kubernetes.io/name: crunchy-postgres
+            postgres-operator.crunchydata.com/cluster: postgres
+            k8s:io.kubernetes.pod.namespace: database
       toPorts:
         - ports:
             - port: "5432"
