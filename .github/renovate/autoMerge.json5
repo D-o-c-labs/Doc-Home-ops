@@ -7,7 +7,7 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest"],
-      matchPackagePattern: ["ghcr.io/onedr0p"],
+      matchPackagePrefixes: ["ghcr.io/onedr0p", "ghcr.io/bjw-s", "ghcr.io/bjw-s-labs"],
       ignoreTests: true,
     },
     {
@@ -31,14 +31,6 @@
       ignoreTests: true,
     },
     {
-      description: "Auto merge downloads namespace",
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["digest", "patch", "minor"],
-      matchPaths: ["/kubernetes/doc-home-cluster/apps/downloads/**"],
-      ignoreTests: true,
-    },
-    {
       description: "Auto merge Home Assistant patch",
       automerge: true,
       automergeType: "branch",
@@ -56,10 +48,12 @@
       ignoreTests: true
     },
     {
-      description: "Auto merge linters & prettiers",
-      matchPackagePatterns: ["lint", "prettier"],
+      description: "Auto merge KPS minors and patches",
+      matchDatasources: ["helm"],
       automerge: true,
-      ignoreTests: true
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: ["kube-prometheus-stack"],
+      ignoreTests: false,
     }
   ],
 }
