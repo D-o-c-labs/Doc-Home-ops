@@ -9,29 +9,43 @@ on:
         default: false
         required: false
         type: boolean
+      autodiscover_filter:
+        description: "Autodiscover filter"
+        default: "*"
+        required: false
       logLevel:
         description: "Log-Level"
         default: "debug"
         required: false
   schedule:
-    - cron: "0 3 * * *"
-  push:
-    branches:
-      - master
-    paths:
-      - ".github/renovate.json5"
-      - ".github/renovate/**.json"
-      - ".github/renovate/**.json5"
-      - ".github/workflows/schedule-renovate.yaml"
+    - cron: "0 * * * *"
 
 jobs:
   renovate:
     name: Renovate
-    uses: D-o-c/gh-workflows/.github/workflows/run-renovate.yaml@master
-    with:
-      configurationFile: ".github/renovate.json5"
-      dryRun: ${{ inputs.dryRun || 'false' }}
-      renovateLogLevel: ${{ inputs.logLevel || 'debug' }}
-    secrets:
-      app_id: ${{ secrets.DOC_APP_ID }}
-      app_private_key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app_id: ${{ secrets.DOC_APP_ID }}
+          app_private_key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Renovate
+        uses: renovatebot/github-action@v40.2.8
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
+          RENOVATE_DRY_RUN: ${{ inputs.dryRun == true }}
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository_owner }}/${{ inputs.autodiscover_filter || '*' }}
+          RENOVATE_PLATFORM: "github"
+          RENOVATE_PLATFORM_COMMIT: "true"
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
