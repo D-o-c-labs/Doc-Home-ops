@@ -20,7 +20,7 @@ spec:
     runnerGroup: arc-doc-labs
     runnerScaleSetName: arc-doc-labs
 
-    githubConfigUrl: https://github.com/D-o-c/Doc-Home-ops
+    githubConfigUrl: https://github.com/D-o-c-labs
 
     minRunners: 0
     maxRunners: 6
