@@ -51,6 +51,7 @@ jobs:
         paths: ${{ fromJSON(needs.changed-clusters.outputs.matrix) }}
         resources:
           - helmrelease
+          - HelmRelease
           - kustomization
       max-parallel: 4
       fail-fast: false
