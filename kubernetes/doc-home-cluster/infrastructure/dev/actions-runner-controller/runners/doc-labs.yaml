@@ -43,11 +43,11 @@ spec:
       metadata:
         labels:
           app.kubernetes.io/name: arc-doc-labs-runner
-      spec:
-        containers:
-          - name: runner
-            image: ghcr.io/onedr0p/actions-runner:2.319.1
-            command: ["/home/runner/run.sh"]
+      # spec:
+      #   containers:
+      #     - name: runner
+      #       image: ghcr.io/onedr0p/actions-runner:2.319.1
+      #       command: ["/home/runner/run.sh"]
 
   valuesFrom:
     - kind: Secret
