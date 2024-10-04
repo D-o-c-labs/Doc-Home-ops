@@ -27,7 +27,7 @@ spec:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             ingress.home.arpa/nginx-external: allow
-            # ingress.home.arpa/nginx-internal: allow
+            ingress.home.arpa/nginx-internal: allow
             egress.home.arpa/postgres-cluster: allow
           annotations:
             k8s.v1.cni.cncf.io/networks: |
