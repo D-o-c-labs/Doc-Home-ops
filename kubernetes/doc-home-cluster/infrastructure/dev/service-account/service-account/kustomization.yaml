@@ -3,9 +3,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./dev-rolebinding.yaml
   - ./helmrelease.yaml
-  - ./role.yaml
-  - ./rolebinding.yaml
+  - ./role-dev.yaml
+  - ./role-flux.yaml
+  - ./rolebinding-dev.yaml
+  - ./rolebinding-flux.yaml
 configMapGenerator:
   - name: sa-generate-kubeconfig-scripts
     files:
