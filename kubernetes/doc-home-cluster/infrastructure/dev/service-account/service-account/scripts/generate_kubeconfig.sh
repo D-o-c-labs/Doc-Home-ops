@@ -24,7 +24,7 @@ contexts:
 - context:
     cluster: doc-home-cluster
     user: flux-reconcile-sa
-  name: flux-reconcile-context
+  name: flux@doc-home-cluster
 current-context: flux-reconcile-context
 users:
 - name: flux-reconcile-sa
