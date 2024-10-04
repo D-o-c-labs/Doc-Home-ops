@@ -15,39 +15,31 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-
   values:
-
     defaultPodOptions:
-
       priorityClassName: system-node-critical
-
       tolerations:
-      - operator: "Exists"
-        effect: "NoExecute"
-      - operator: "Exists"
-        effect: "NoSchedule"
-    
-    
-    controllers:
+        - operator: "Exists"
+          effect: "NoExecute"
+        - operator: "Exists"
+          effect: "NoSchedule"
 
+    controllers:
       tun-device-plugin:
         type: daemonset
-
         containers:
           tun-device-plugin:
             image: &image
               repository: squat/generic-device-plugin
               tag: latest
             args:
-            - --device
-            - |
-              name: tun
-              groups:
-                - count: 1000
-                  paths:
-                    - path: /dev/net/tun  
-
+              - --device
+              - |
+                name: tun
+                groups:
+                  - count: 1000
+                    paths:
+                      - path: /dev/net/tun  
             resources:
               requests:
                 cpu: 50m
