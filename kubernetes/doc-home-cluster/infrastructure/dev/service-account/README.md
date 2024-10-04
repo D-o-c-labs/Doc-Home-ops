@@ -2,6 +2,7 @@
 # md-language-server: https://frontmatter.codes/docs/markdown
 ---
 # CREATE SERVICE ACCOUNT TO MANAGE AUTOMATIC RECONCILIATION
+
 Yes, it is **absolutely possible** to generate the `kubeconfig` directly within your Kubernetes cluster and store it as a Secret. This approach leverages Kubernetes' native resources and ensures that sensitive information, such as tokens and certificates, remains within the cluster's boundaries.
 
 Below is a comprehensive guide to achieving this:
@@ -510,7 +511,7 @@ kubectl apply -f generate-kubeconfig-job.yaml
 To streamline the generation and updating of the `kubeconfig`, consider implementing the following:
 
 1. **CronJob for Regular Updates:**
-   
+
    Create a `CronJob` that periodically runs the `generate-kubeconfig-job`, ensuring that the `kubeconfig` remains up-to-date, especially if tokens have expiration policies.
 
    ```yaml

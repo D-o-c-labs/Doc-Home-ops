@@ -305,7 +305,7 @@ jobs:
 
 - **Context Name:** Ensure that the `--context` parameter in the `flux` command matches the context name defined in your `kubeconfig`. In this example, it's `flux-reconcile-context@flux-cluster`.
   
-- **Security:** 
+- **Security:**
   - **Least Privilege:** The Service Account is granted only the permissions necessary to run `flux reconcile`. Avoid granting broader permissions.
   - **Protect Secrets:** Ensure that the `kubeconfig` stored in GitHub Secrets is kept secure and is only accessible to trusted workflows.
   - **Rotate Credentials:** Periodically rotate the Service Account tokens and update the GitHub Secrets accordingly to maintain security.
