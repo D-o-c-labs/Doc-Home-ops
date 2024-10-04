@@ -19,10 +19,10 @@ clusters:
 - cluster:
     certificate-authority-data: ${CA_CERT}
     server: ${API_SERVER}
-  name: flux-cluster
+  name: doc-home-cluster
 contexts:
 - context:
-    cluster: flux-cluster
+    cluster: doc-home-cluster
     user: flux-reconcile-sa
   name: flux-reconcile-context
 current-context: flux-reconcile-context
