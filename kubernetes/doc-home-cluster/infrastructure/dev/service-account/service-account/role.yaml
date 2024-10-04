@@ -3,7 +3,19 @@ kind: Role
 metadata:
   name: dev-flux-reconcile-role
 rules:
-  - apiGroups: [""]
-    resources: ["secrets"]
-    resourceNames: ["flux-kubeconfig"]
-    verbs: ["get", "create", "update", "patch"]
+  - verbs:
+      - create
+    apiGroups:
+      - ''
+    resources:
+      - secrets
+  - verbs:
+      - get
+      - update
+      - patch
+    apiGroups:
+      - ''
+    resources:
+      - secrets
+    resourceNames:
+      - flux-kubeconfig
