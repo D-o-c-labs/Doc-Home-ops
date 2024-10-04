@@ -1,3 +1,8 @@
+---
+# md-language-server: https://frontmatter.codes/docs/markdown
+---
+# CREATE SERVICE ACCOUNT TO MANAGE AUTOMATIC RECONCILIATION
+
 Yes, you can—and it's often recommended—to use a **Service Account** instead of a Kubernetes user for automating tasks like running `flux reconcile` in your GitHub pipeline. Service Accounts are designed for such automation and provide a more secure and manageable way to authenticate and authorize applications interacting with your Kubernetes cluster.
 
 **Here's how you can set this up:**
@@ -8,9 +13,11 @@ Yes, you can—and it's often recommended—to use a **Service Account** instead
 4. **Create a `kubeconfig` File Using the Service Account**
 5. **Integrate the `kubeconfig` into Your GitHub Pipeline**
 
-Let's walk through each of these steps in detail.
-
 ---
+
+## WhatDo
+
+Let's walk through each of these steps in detail.
 
 ### **1. Create a Service Account**
 
@@ -37,7 +44,7 @@ kubectl apply -f flux-reconcile-serviceaccount.yaml
 
 Next, define the permissions that this Service Account will have. This involves creating a `Role` with the necessary permissions and a `RoleBinding` to associate the Role with the Service Account.
 
-**a. Role YAML**
+#### **a. Role YAML**
 
 ```yaml
 # flux-reconcile-role.yaml
@@ -56,7 +63,7 @@ rules:
       - patch
 ```
 
-**b. RoleBinding YAML**
+#### **b. RoleBinding YAML**
 
 ```yaml
 # flux-reconcile-rolebinding.yaml
@@ -136,7 +143,7 @@ Service Account tokens are automatically created as secrets.
 
 To authenticate with Kubernetes using the Service Account, you'll need to create a `kubeconfig` file that references the Service Account's token and the cluster's CA certificate.
 
-**a. Retrieve the Cluster CA Certificate**
+#### **a. Retrieve the Cluster CA Certificate**
 
 ```bash
 # Option 1: Retrieve from the Service Account Secret
@@ -148,7 +155,7 @@ else
 fi
 ```
 
-**b. Get the Kubernetes API Server URL**
+#### **b. Get the Kubernetes API Server URL**
 
 ```bash
 CLUSTER_SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
@@ -233,13 +240,13 @@ kubectl config use-context $CONTEXT_NAME --kubeconfig=$KUBECONFIG_FILE
 
 Store the generated `kubeconfig` securely in GitHub Secrets and use it in your GitHub Actions workflow.
 
-**a. Encode the `kubeconfig` for Storage**
+#### **a. Encode the `kubeconfig` for Storage**
 
 ```bash
 BASE64_KUBECONFIG=$(cat flux-reconcile-kubeconfig.yaml | base64 | tr -d '\n')
 ```
 
-**b. Add the `kubeconfig` as a GitHub Secret**
+#### **b. Add the `kubeconfig` as a GitHub Secret**
 
 1. Navigate to your GitHub repository.
 2. Go to **Settings** > **Secrets and variables** > **Actions**.
@@ -248,7 +255,7 @@ BASE64_KUBECONFIG=$(cat flux-reconcile-kubeconfig.yaml | base64 | tr -d '\n')
 5. Paste the `BASE64_KUBECONFIG` value.
 6. Save the secret.
 
-**c. Update Your GitHub Actions Workflow**
+#### **c. Update Your GitHub Actions Workflow**
 
 Modify your GitHub Actions workflow to decode the `kubeconfig` and use it in the `flux reconcile` step.
 
@@ -300,7 +307,7 @@ jobs:
 
 - **Context Name:** Ensure that the `--context` parameter in the `flux` command matches the context name defined in your `kubeconfig`. In this example, it's `flux-reconcile-context@flux-cluster`.
   
-- **Security:** 
+- **Security:**
   - **Least Privilege:** The Service Account is granted only the permissions necessary to run `flux reconcile`. Avoid granting broader permissions.
   - **Protect Secrets:** Ensure that the `kubeconfig` stored in GitHub Secrets is kept secure and is only accessible to trusted workflows.
   - **Rotate Credentials:** Periodically rotate the Service Account tokens and update the GitHub Secrets accordingly to maintain security.
