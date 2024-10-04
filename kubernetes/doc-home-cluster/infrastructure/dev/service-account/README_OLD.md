@@ -1,3 +1,8 @@
+---
+# md-language-server: https://frontmatter.codes/docs/markdown
+---
+# CREATE SERVICE ACCOUNT TO MANAGE AUTOMATIC RECONCILIATION
+
 Yes, you can—and it's often recommended—to use a **Service Account** instead of a Kubernetes user for automating tasks like running `flux reconcile` in your GitHub pipeline. Service Accounts are designed for such automation and provide a more secure and manageable way to authenticate and authorize applications interacting with your Kubernetes cluster.
 
 **Here's how you can set this up:**
