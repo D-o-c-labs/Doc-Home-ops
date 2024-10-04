@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.4.0
+      version: 3.5.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -102,7 +102,6 @@ spec:
                 value: /data/config
               - name: VSCODE_EXTENSION_IDS
                 value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python
-
 
     service:
       app:

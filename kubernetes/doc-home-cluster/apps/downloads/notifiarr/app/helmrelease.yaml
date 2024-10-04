@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.4.0
+      version: 3.5.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -34,7 +34,6 @@ spec:
             image:
               repository: golift/notifiarr
               tag: 0.8.2
-
 
             env:
               DN_API_KEY:
