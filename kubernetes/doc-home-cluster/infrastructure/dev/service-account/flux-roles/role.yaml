@@ -5,6 +5,13 @@ metadata:
   name: flux-reconcile-role
 rules:
   - apiGroups:
+      - source.toolkit.fluxcd.io
+    resources:
+      - gitrepositories
+    verbs:
+      - get
+      - patch
+  - apiGroups:
       - kustomize.toolkit.fluxcd.io
     resources:
       - kustomizations
