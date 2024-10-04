@@ -3,6 +3,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./helmrelease.yaml
   - ./role.yaml
   - ./rolebinding.yaml
-  - ./serviceaccount.yaml
+configMapGenerator:
+  - name: sa-generate-kubeconfig-scripts
+    files:
+      - scripts/generate_kubeconfig.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled

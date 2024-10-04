@@ -1,0 +1,72 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flux-reconcile-sa
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    defaultPodOptions:
+      restartPolicy: OnFailure
+
+    controllers:
+      sa-generate-kubeconfig:
+        enabled: true
+        type: job
+
+        containers:
+          job:
+            image:
+              repository: bitnami/kubectl
+              tag: 1.31.1
+            command: ["/bin/bash", "/scripts/generate_kubeconfig.sh"]
+
+    serviceAccount:
+      create: true
+      name: "flux-reconcile-sa"
+
+    persistence:
+      scripts:
+        type: configMap
+        name: sa-generate-kubeconfig-scripts
+        defaultMode: 0775
+        advancedMounts:
+          sa-generate-kubeconfig:
+            job:
+              - path: /scripts
+      
+
+
+
+
+
+
+
+
+
+  # template:
+  #   spec:
+  #     serviceAccountName: flux-reconcile-sa
+  #     containers:
+  #       - name: generate-kubeconfig
+  #         image: bitnami/kubectl:latest  # Ensure kubectl is available
+  #         command: ["/bin/bash", "/scripts/generate_kubeconfig.sh"]
+  #         volumeMounts:
+  #           - name: script
+  #             mountPath: /scripts
+  #     restartPolicy: OnFailure
+  #     volumes:
+  #       - name: script
+  #         configMap:
+  #           name: generate-kubeconfig-script
