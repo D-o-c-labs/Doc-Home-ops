@@ -103,7 +103,6 @@ spec:
               - name: VSCODE_EXTENSION_IDS
                 value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python
 
-
     service:
       app:
         controller: home-assistant

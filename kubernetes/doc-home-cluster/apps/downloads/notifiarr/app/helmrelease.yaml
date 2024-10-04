@@ -35,7 +35,6 @@ spec:
               repository: golift/notifiarr
               tag: 0.8.2
 
-
             env:
               DN_API_KEY:
                 valueFrom:

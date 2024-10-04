@@ -31,7 +31,6 @@ spec:
               globalMounts:
                 - path: /alertmanager
 
-
         containers:
           app:
             image:

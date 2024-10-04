@@ -42,7 +42,6 @@ spec:
               repository: ghcr.io/onedr0p/bazarr
               tag: 1.4.5@sha256:a8225faa7606a96deae86676acf8d0620536fdc9178e8b42bcf753d0a4534b71
 
-
             env:
               BAZARR__INSTANCE_NAME: Bazarr
               BAZARR__PORT: &port 6767
