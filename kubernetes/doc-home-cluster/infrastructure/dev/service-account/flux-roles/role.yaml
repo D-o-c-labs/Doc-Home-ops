@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: flux-reconcile-role
-  namespace: flux-system
 rules:
   - apiGroups:
       - kustomize.toolkit.fluxcd.io

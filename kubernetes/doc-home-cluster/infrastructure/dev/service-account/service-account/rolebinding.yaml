@@ -6,6 +6,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: flux-reconcile-sa
+    namespace: dev
 roleRef:
   kind: Role
   name: dev-flux-reconcile-role
