@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: rook-ceph-cluster
-      version: v1.15.2
+      version: v1.15.3
       sourceRef:
         kind: HelmRepository
         name: rook-ceph
@@ -86,9 +86,9 @@ spec:
           - name: "ares"
             devices:
               - name: "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0"
-#          - name: "athena"
-#            devices:
-#              - name: "/dev/disk/by-id/nvme-CT1000P1SSD8_202228759489"
+          # - name: "athena"
+          #   devices:
+          #     - name: "/dev/disk/by-id/nvme-CT1000P1SSD8_202228759489"
       placement:
         all:
           tolerations:
