@@ -1,0 +1,13 @@
+# flux-reconcile-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flux-reconcile-binding
+subjects:
+  - kind: ServiceAccount
+    name: flux-reconcile-sa
+    namespace: dev
+roleRef:
+  kind: Role
+  name: flux-reconcile-role
+  apiGroup: rbac.authorization.k8s.io

@@ -3,7 +3,7 @@ set -e
 
 # Variables
 SERVICE_ACCOUNT_NAME=flux-reconcile-sa
-NAMESPACE=flux-system
+NAMESPACE=dev
 KUBECONFIG_SECRET_NAME=flux-kubeconfig
 
 # Function to create kubeconfig
@@ -19,16 +19,16 @@ clusters:
 - cluster:
     certificate-authority-data: ${CA_CERT}
     server: ${API_SERVER}
-    name: flux-cluster
+  name: flux-cluster
 contexts:
 - context:
     cluster: flux-cluster
     user: flux-reconcile-sa
-    name: flux-reconcile-context
+  name: flux-reconcile-context
 current-context: flux-reconcile-context
 users:
 - name: flux-reconcile-sa
-    user:
+  user:
     token: ${TOKEN}
 EOF
 }

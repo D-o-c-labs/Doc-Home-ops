@@ -40,33 +40,8 @@ spec:
       scripts:
         type: configMap
         name: sa-generate-kubeconfig-scripts
-        defaultMode: 0775
+        defaultMode: 0755
         advancedMounts:
           sa-generate-kubeconfig:
             job:
               - path: /scripts
-      
-
-
-
-
-
-
-
-
-
-  # template:
-  #   spec:
-  #     serviceAccountName: flux-reconcile-sa
-  #     containers:
-  #       - name: generate-kubeconfig
-  #         image: bitnami/kubectl:latest  # Ensure kubectl is available
-  #         command: ["/bin/bash", "/scripts/generate_kubeconfig.sh"]
-  #         volumeMounts:
-  #           - name: script
-  #             mountPath: /scripts
-  #     restartPolicy: OnFailure
-  #     volumes:
-  #       - name: script
-  #         configMap:
-  #           name: generate-kubeconfig-script

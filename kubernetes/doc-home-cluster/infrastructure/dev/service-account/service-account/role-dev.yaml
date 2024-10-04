@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dev-flux-reconcile-role
+  namespace: dev
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flux-kubeconfig"]
+    verbs: ["get", "create", "update", "patch"]

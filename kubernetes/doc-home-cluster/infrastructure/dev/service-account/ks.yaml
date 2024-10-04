@@ -6,7 +6,7 @@ metadata:
   name: &appname flux-reconcile-sa
   namespace: flux-system
 spec:
-  targetNamespace: flux-system
+  targetNamespace: dev
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
