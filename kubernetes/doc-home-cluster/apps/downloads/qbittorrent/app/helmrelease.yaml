@@ -21,7 +21,7 @@ spec:
       qbittorrent:
         annotations:
           configmap.reloader.stakater.com/reload: qbittorrent-scripts,qbittorrent-dnsdist
-          secret.reloader.stakater.com/reload: qbittorrent-secret,sabnzbd-secret
+          secret.reloader.stakater.com/reload: qbittorrent-secret
 
         pod:
           labels:
@@ -31,6 +31,7 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups:
               - 65542
+          terminationGracePeriodSeconds: 120
 
         containers:
           app:
@@ -46,7 +47,7 @@ spec:
               XSEED_APIKEY:
                 valueFrom:
                   secretKeyRef:
-                    name: sabnzbd-secret
+                    name: qbittorrent-secret
                     key: xseed_api_key
             probes:
               liveness:
@@ -138,6 +139,8 @@ spec:
     ingress:
       app:
         className: "internal-nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-int.bjw-s.dev
         hosts:
           - host: "${HOSTNAME}"
             paths:
@@ -157,6 +160,7 @@ spec:
           qbittorrent:
             app:
               - path: /config
+
       empty-config:
         type: emptyDir
         advancedMounts:
