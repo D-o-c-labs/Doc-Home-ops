@@ -8,9 +8,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: qbtools
   policyTypes:
-    - Ingress
     - Egress
-  ingress: []
   egress:
     # qBittorrent
     - to:
