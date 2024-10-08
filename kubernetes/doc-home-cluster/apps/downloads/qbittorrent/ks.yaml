@@ -20,7 +20,6 @@ spec:
   dependsOn:
     - name: volsync
     - name: external-secrets-stores
-    - name: sabnzbd
   postBuild:
     substitute:
       APP: *appname
@@ -45,6 +44,7 @@ spec:
       app.kubernetes.io/name: *appname
   interval: 30m
   timeout: 5m
+  suspend: true
   path: "./kubernetes/doc-home-cluster/apps/downloads/qbittorrent/tools"
   prune: true
   sourceRef:
