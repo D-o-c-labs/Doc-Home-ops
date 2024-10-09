@@ -18,6 +18,8 @@ spec:
 
   values:
     defaultPodOptions:
+      labels:
+        egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
       securityContext:
         fsGroup: 2000
         fsGroupChangePolicy: "OnRootMismatch"
@@ -40,8 +42,6 @@ spec:
           failedJobsHistory: 1
 
         pod:
-          labels:
-            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           restartPolicy: OnFailure
 
         initContainers:
