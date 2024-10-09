@@ -18,8 +18,8 @@ spec:
 
   values:
     defaultPodOptions:
-      labels:
-        egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+      # labels:
+      #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
       securityContext:
         fsGroup: 2000
         fsGroupChangePolicy: "OnRootMismatch"
@@ -43,6 +43,8 @@ spec:
 
         pod:
           restartPolicy: OnFailure
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
 
         initContainers:
           tagging: &container
@@ -115,6 +117,8 @@ spec:
           schedule: "@daily"
         pod:
           restartPolicy: OnFailure
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
         containers:
           app:
             <<: *container
@@ -130,6 +134,9 @@ spec:
               - *qbittorrent_port
 
       reannounce:
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
         containers:
           app:
             <<: *container
@@ -155,4 +162,5 @@ spec:
         advancedMounts:
           orphaned:
             app:
-              - path: /data/nas-media
+              - path: downloads
+                subPath: torrent-downloads
