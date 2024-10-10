@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: prometheus-blackbox-exporter
-      version: 9.0.0
+      version: 9.0.1
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -102,7 +102,6 @@ spec:
         interval: 1m
         scrapeTimeout: 30s
       targets:
-
         # Robot vacuums
         - module: icmp
           name: jimmy-icmp
@@ -123,7 +122,6 @@ spec:
         - module: tcp_connect
           name: doorway-allinone-sensor
           url: "doorway-allinone-sensor.piscio.net:6053"
-
 
         # Other devices
         - module: icmp
