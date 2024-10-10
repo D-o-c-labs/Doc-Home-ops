@@ -6,7 +6,7 @@ rules:
   - verbs:
       - create
     apiGroups:
-      - ''
+      - ""
     resources:
       - secrets
   - verbs:
@@ -14,7 +14,7 @@ rules:
       - update
       - patch
     apiGroups:
-      - ''
+      - ""
     resources:
       - secrets
     resourceNames:
