@@ -39,7 +39,11 @@ spec:
             image:
               repository: bitnami/kubectl
               tag: 1.31.1
-            command: ["/bin/bash", "/scripts/generate_kubeconfig.sh"]
+            command: ["/bin/bash", "-c"]
+            args:
+              - |
+                apt-get update && apt-get install -y curl jq
+                /bin/bash /scripts/generate_kubeconfig.sh
             envFrom:
               - secretRef:
                   name: dev-service-account-secret
