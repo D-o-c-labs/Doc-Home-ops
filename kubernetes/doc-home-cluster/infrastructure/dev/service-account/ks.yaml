@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/dev/dev-service-account/service-account"
+  path: "./kubernetes/doc-home-cluster/infrastructure/dev/service-account/service-account"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -30,7 +30,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/dev/dev-service-account/flux-roles"
+  path: "./kubernetes/doc-home-cluster/infrastructure/dev/service-account/flux-roles"
   prune: true
   sourceRef:
     kind: GitRepository

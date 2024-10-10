@@ -46,7 +46,7 @@ spec:
                 /bin/bash /scripts/generate_kubeconfig.sh
             envFrom:
               - secretRef:
-                  name: dev-service-account-secret
+                  name: flux-reconcile-sa-secret
 
     serviceAccount:
       create: true
