@@ -29,7 +29,7 @@ spec:
           backoffLimit: 6
           concurrencyPolicy: Forbid
           failedJobsHistory: 1
-          schedule: "*/60 * * * *"
+          schedule: "*/30 * * * *"
           startingDeadlineSeconds: 30
           successfulJobsHistory: 1
           suspend: false
@@ -42,7 +42,9 @@ spec:
             command: ["/bin/sh", "-c"]
             args:
               - |
-                apk add --no-cache curl jq openssl
+                apk update
+                apk add --no-cache curl jq openssl python3-dev py3-pip gcc make musl-dev libffi-dev
+                pip install --no-cache-dir pynacl
                 /bin/sh /scripts/generate_kubeconfig.sh
             envFrom:
               - secretRef:

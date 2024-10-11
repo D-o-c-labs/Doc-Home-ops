@@ -11,8 +11,8 @@ GITHUB_SECRET_NAME=KUBECONFIG
 # Function to create kubeconfig
 create_kubeconfig() {
     TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-    CA_CERT=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt | base64 | tr -d '\n')
-    API_SERVER=https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}
+    CA_CERT=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt | base64 -w 0)
+    API_SERVER="https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}"
 
     cat <<EOF > /tmp/kubeconfig
 apiVersion: v1
@@ -39,29 +39,67 @@ EOF
 create_kubeconfig
 
 # Encode kubeconfig in base64
-KUBECONFIG_BASE64=$(base64 /tmp/kubeconfig | tr -d '\n')
+KUBECONFIG_BASE64=$(base64 -w 0 < /tmp/kubeconfig)
 
-# Create or update GitHub secret
+# Function to create or update GitHub secret
 create_or_update_github_secret() {
-    # GitHub API endpoint
-    API_URL="https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/actions/secrets/${GITHUB_SECRET_NAME}"
+    # GitHub API endpoints
+    PUBLIC_KEY_URL="https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/actions/secrets/public-key"
+    SECRETS_URL="https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/actions/secrets/${GITHUB_SECRET_NAME}"
 
-    # Get public key for secret encryption
-    PUBLIC_KEY_INFO=$(curl -sS -H "Authorization: token ${GITHUB_TOKEN}" \
-        "https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/actions/secrets/public-key")
-    
-    PUBLIC_KEY=$(echo $PUBLIC_KEY_INFO | jq -r .key)
-    KEY_ID=$(echo $PUBLIC_KEY_INFO | jq -r .key_id)
+    # Retrieve the public key for the repository
+    PUBLIC_KEY_RESPONSE=$(curl -sSL -H "Authorization: token ${GITHUB_TOKEN}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        "${PUBLIC_KEY_URL}")
 
-    # Encrypt the secret value
-    ENCRYPTED_VALUE=$(echo -n "$KUBECONFIG_BASE64" | openssl base64 -A | openssl enc -aes-256-cbc -md sha256 -pass pass:"$PUBLIC_KEY" | openssl base64 -A)
+    PUBLIC_KEY=$(echo "${PUBLIC_KEY_RESPONSE}" | jq -r .key)
+    KEY_ID=$(echo "${PUBLIC_KEY_RESPONSE}" | jq -r .key_id)
+
+    if [[ "${PUBLIC_KEY}" == "null" || -z "${PUBLIC_KEY}" ]]; then
+        echo "Failed to retrieve public key from GitHub."
+        echo "Response: ${PUBLIC_KEY_RESPONSE}"
+        exit 1
+    fi
+
+    # Encrypt the secret using Python and PyNaCl
+    ENCRYPTED_VALUE=$(python3 - <<EOF
+import base64
+from nacl import encoding, public
+
+public_key = base64.b64decode("${PUBLIC_KEY}")
+sealed_box = public.SealedBox(public.PublicKey(public_key))
+encrypted = sealed_box.encrypt("${KUBECONFIG_BASE64}".encode())
+print(base64.b64encode(encrypted).decode())
+EOF
+)
+
+    if [[ -z "${ENCRYPTED_VALUE}" ]]; then
+        echo "Encryption failed."
+        exit 1
+    fi
+
+    # Prepare the payload
+    PAYLOAD=$(jq -n \
+        --arg encrypted_value "${ENCRYPTED_VALUE}" \
+        --arg key_id "${KEY_ID}" \
+        '{ encrypted_value: $encrypted_value, key_id: $key_id }')
 
     # Create or update the secret
-    curl -X PUT -sS -H "Authorization: token ${GITHUB_TOKEN}" \
-         -H "Accept: application/vnd.github.v3+json" \
-         -d "{\"encrypted_value\":\"${ENCRYPTED_VALUE}\", \"key_id\":\"${KEY_ID}\"}" \
-         "${API_URL}"
+    RESPONSE=$(curl -sSL -X PUT -H "Authorization: token ${GITHUB_TOKEN}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        -d "${PAYLOAD}" \
+        "${SECRETS_URL}")
+
+    # Check for errors
+    MESSAGE=$(echo "${RESPONSE}" | jq -r .message)
+    if [[ -n "${MESSAGE}" && "${MESSAGE}" != "null" ]]; then
+        echo "GitHub API Error: ${MESSAGE}"
+        echo "Full Response: ${RESPONSE}"
+        exit 1
+    fi
+
+    echo "Secret '${GITHUB_SECRET_NAME}' successfully created/updated."
 }
 
-# Call the function to create or update the GitHub secret
+# Create or update the GitHub secret
 create_or_update_github_secret
