@@ -37,13 +37,13 @@ spec:
         containers:
           job:
             image:
-              repository: bitnami/kubectl
-              tag: 1.31.1
-            command: ["/bin/bash", "-c"]
+              repository: alpine
+              tag: 3.14
+            command: ["/bin/sh", "-c"]
             args:
               - |
-                apt-get update && apt-get install -y curl jq
-                /bin/bash /scripts/generate_kubeconfig.sh
+                apk add --no-cache curl jq openssl
+                /bin/sh /scripts/generate_kubeconfig.sh
             envFrom:
               - secretRef:
                   name: flux-reconcile-sa-secret
