@@ -50,6 +50,8 @@ spec:
             envFrom:
               - secretRef:
                   name: ghostfolio-secret
+              - secretRef:
+                  name: ghostfolio-db-secret
 
     service:
       app:
