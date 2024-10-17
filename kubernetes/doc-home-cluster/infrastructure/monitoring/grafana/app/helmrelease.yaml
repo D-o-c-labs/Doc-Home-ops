@@ -181,7 +181,7 @@ spec:
         vm-vmalert:
           # renovate: dashboardName="VictoriaMetrics - vmalert"
           gnetId: 14950
-          revision: 11
+          revision: 12
           datasource:
             - name: "DS_PROMETHEUS"
               value: Prometheus
