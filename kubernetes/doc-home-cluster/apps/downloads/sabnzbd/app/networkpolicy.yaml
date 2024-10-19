@@ -22,3 +22,12 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+  egress:
+    # cross-seed
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: cross-seed
+      toPorts:
+        - ports:
+            - port: "2468"
+              protocol: TCP

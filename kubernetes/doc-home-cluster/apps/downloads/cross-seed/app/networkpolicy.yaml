@@ -53,3 +53,14 @@ spec:
         - ports:
             - port: "9696"
               protocol: TCP
+  ingress:
+    # qbittorrent
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: qbittorrent
+        - matchLabels:
+            app.kubernetes.io/name: sabnzbd
+      toPorts:
+        - ports:
+            - port: "2468"
+              protocol: TCP
