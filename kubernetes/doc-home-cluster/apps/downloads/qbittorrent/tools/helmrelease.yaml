@@ -162,5 +162,4 @@ spec:
         advancedMounts:
           orphaned:
             app:
-              - path: downloads
-                subPath: torrent-downloads
+              - path: /data/nas-media
