@@ -110,8 +110,7 @@ spec:
         server: piscionas.piscio.net
         path: /volume1/Media
         globalMounts:
-          - path: downloads
-            subPath: usenet-downloads
+          - path: /data/nas-media
       temp:
         type: emptyDir
         advancedMounts:
