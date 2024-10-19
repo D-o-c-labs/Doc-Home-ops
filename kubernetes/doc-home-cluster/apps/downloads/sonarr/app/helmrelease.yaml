@@ -90,9 +90,4 @@ spec:
         server: piscionas.piscio.net
         path: /volume1/Media
         globalMounts:
-          - path: /tv
-            subPath: library/tv
-          - path: /usenet-downloads
-            subPath: usenet-downloads
-          - path: /torrent-downloads
-            subPath: torrent-downloads
+          - path: /data/nas-media

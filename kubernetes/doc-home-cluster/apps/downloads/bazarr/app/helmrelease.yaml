@@ -107,7 +107,4 @@ spec:
         server: piscionas.piscio.net
         path: /volume1/Media
         globalMounts:
-          - path: /film
-            subPath: library/film
-          - path: /tv
-            subPath: library/tv
+          - path: /data/nas-media

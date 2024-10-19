@@ -174,11 +174,8 @@ spec:
         type: nfs
         server: piscionas.piscio.net
         path: /volume1/Media
-        advancedMounts:
-          qbittorrent:
-            app:
-              - path: downloads
-                subPath: torrent-downloads
+        globalMounts:
+          - path: /data/nas-media
 
       dnsdist:
         type: configMap
