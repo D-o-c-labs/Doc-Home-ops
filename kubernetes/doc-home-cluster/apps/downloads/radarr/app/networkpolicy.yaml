@@ -19,6 +19,8 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: bazarr
         - matchLabels:
+            app.kubernetes.io/name: autobrr
+        - matchLabels:
             app.kubernetes.io/name: cross-seed
       toPorts:
         - ports:
@@ -43,8 +45,7 @@ spec:
             - port: "8080"
               protocol: TCP
 
-
-    # sabnzbd
+    # prowlarr
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: prowlarr
