@@ -22,6 +22,8 @@ spec:
             app.kubernetes.io/name: autobrr
         - matchLabels:
             app.kubernetes.io/name: cross-seed
+        - matchLabels:
+            app.kubernetes.io/name: unpackerr
       toPorts:
         - ports:
             - port: "8989"
