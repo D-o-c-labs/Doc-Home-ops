@@ -48,6 +48,9 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
+            envFrom:
+              - secretRef:
+                  name: unpackerr-secret
             resources:
               requests:
                 cpu: 50m
