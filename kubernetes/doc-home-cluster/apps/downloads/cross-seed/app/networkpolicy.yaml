@@ -3,11 +3,11 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: autobrr
+  name: cross-seed
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: autobrr
+      app.kubernetes.io/name: cross-seed
   egress:
     # qbittorrent
     - toEndpoints:
