@@ -4,17 +4,17 @@ metadata:
   name: pgadmin
 spec:
   users:
-  - username: pgadmin@piscio.net
-    role: Administrator
-    passwordRef:
-      name: pgadmin-password-secret
-      key: admin-password
+    - username: pgadmin@piscio.net
+      role: Administrator
+      passwordRef:
+        name: pgadmin-password-secret
+        key: admin-password
   dataVolumeClaimSpec:
     accessModes:
-    - "ReadWriteOnce"
+      - "ReadWriteOnce"
     resources:
       requests:
-        storage: 1Gi
+        storage: 5Gi
   serverGroups:
-  - name: supply
-    postgresClusterSelector: {}
+    - name: supply
+      postgresClusterSelector: {}
