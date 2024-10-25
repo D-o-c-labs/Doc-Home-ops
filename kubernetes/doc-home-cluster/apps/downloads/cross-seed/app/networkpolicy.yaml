@@ -54,7 +54,7 @@ spec:
             - port: "9696"
               protocol: TCP
   ingress:
-    # qbittorrent
+    # qbittorrent & sabnzbd
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: qbittorrent
