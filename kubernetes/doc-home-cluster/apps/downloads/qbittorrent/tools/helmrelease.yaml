@@ -18,8 +18,9 @@ spec:
 
   values:
     defaultPodOptions:
-      # labels:
-      #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+      labels:
+        egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+        egress.home.arpa/internet: allow
       securityContext:
         fsGroup: 2000
         fsGroupChangePolicy: "OnRootMismatch"
@@ -43,8 +44,8 @@ spec:
 
         pod:
           restartPolicy: OnFailure
-          labels:
-            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          # labels:
+          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
 
         initContainers:
           tagging: &container
@@ -117,8 +118,8 @@ spec:
           schedule: "@daily"
         pod:
           restartPolicy: OnFailure
-          labels:
-            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          # labels:
+          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
         containers:
           app:
             <<: *container
@@ -135,8 +136,8 @@ spec:
 
       reannounce:
         pod:
-          labels:
-            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          # labels:
+          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
         containers:
           app:
             <<: *container
