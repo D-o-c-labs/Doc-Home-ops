@@ -39,7 +39,7 @@ spec:
         cronjob: &cronJobSpec
           schedule: "@hourly"
           concurrencyPolicy: Forbid
-          successfulJobsHistory: 0
+          successfulJobsHistory: 10
           failedJobsHistory: 1
 
         pod:
