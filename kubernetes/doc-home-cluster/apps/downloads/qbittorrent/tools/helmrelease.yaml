@@ -135,9 +135,9 @@ spec:
               - *qbittorrent_port
 
       reannounce:
-        pod:
-          # labels:
-          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+        # pod:
+        # labels:
+        #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
         containers:
           app:
             <<: *container
