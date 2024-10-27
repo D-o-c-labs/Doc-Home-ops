@@ -19,11 +19,11 @@ spec:
       name: "client-info-secret"
     controller:
       tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     images:
       attacher:
         image: registry.k8s.io/sig-storage/csi-attacher
@@ -53,18 +53,18 @@ spec:
     installCSIDriver: true
     node:
       tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     snapshotter:
       tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     storageClasses:
       synology-csi-delete:
         disabled: false
@@ -87,45 +87,45 @@ spec:
           dsm: piscionas.piscio.net
           location: /volume2
     #  synology-iscsi-storage:
-        # One of true or false (default):
-        ##disabled: false
-        # One of true or false (default):
-        ##isDefault: false
-        # One of "Retain" or "Delete" (default):
+    # One of true or false (default):
+    ##disabled: false
+    # One of true or false (default):
+    ##isDefault: false
+    # One of "Retain" or "Delete" (default):
     #    reclaimPolicy: Retain
-        # One of "WaitForFirstConsumer" or "Immediate" (default):
-        ##volumeBindingMode: Immediate
+    # One of "WaitForFirstConsumer" or "Immediate" (default):
+    ##volumeBindingMode: Immediate
 
-        # If not present, some location will be chosen to create volumes with the filesystem type ext4.
-        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
-        ##parameters:
-        ##  dsm: "1.1.1.1"
-        ##  fsType: ext4
-        ##  location: /volume1
-      # synology-iscsi-storage-delete:
-      #   reclaimPolicy: Delete
+    # If not present, some location will be chosen to create volumes with the filesystem type ext4.
+    # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+    ##parameters:
+    ##  dsm: "1.1.1.1"
+    ##  fsType: ext4
+    ##  location: /volume1
+    # synology-iscsi-storage-delete:
+    #   reclaimPolicy: Delete
     volumeSnapshotClasses:
       synology-csi-delete:
         disabled: false
         deletionPolicy: Delete
         parameters:
           description: Kubernetes CSI
-          is_locked: 'false'
+          is_locked: "false"
       synology-csi-retain:
         disabled: false
         deletionPolicy: Retain
         parameters:
           description: Kubernetes CSI
-          is_locked: 'false'
+          is_locked: "false"
     #  synology-snapshotclass:
-        # One of true or false (default):
-        ##disabled: false
-        # One of "Retain" or "Delete" (default):
+    # One of true or false (default):
+    ##disabled: false
+    # One of "Retain" or "Delete" (default):
     #    deletionPolicy: Delete
-        # One of true or false (default):
-        ##isDefault: false
+    # One of true or false (default):
+    ##isDefault: false
 
-        # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
-        ##parameters:
-        ##  description: "Kubernetes CSI"
-        ##  is_locked: "false"
+    # Note that these parameters cannot get updated once deployed - any subsequent changes get ignored!
+    ##parameters:
+    ##  description: "Kubernetes CSI"
+    ##  is_locked: "false"
