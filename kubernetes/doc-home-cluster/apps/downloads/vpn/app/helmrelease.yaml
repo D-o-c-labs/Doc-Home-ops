@@ -56,8 +56,12 @@ spec:
                 squat.ai/tun: "1"
 
     service:
-      app:
+      shadowsocks:
         controller: vpn
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "vpn.piscio.net"
+          io.cilium/lb-ipam-ips: "192.168.32.155"
         ports:
           shadowsocks:
             port: 8388
