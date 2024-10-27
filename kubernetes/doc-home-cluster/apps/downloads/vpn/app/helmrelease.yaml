@@ -43,7 +43,6 @@ spec:
               FIREWALL_INPUT_PORTS: 8080
               FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/12,10.244.0.0/16 # Allow access to k8s subnets
               SHADOWSOCKS: on
-              SHADOWSOCKS_LISTENING_ADDRESS: &port 8388
             envFrom:
               - secretRef:
                   name: vpn-secret
@@ -61,4 +60,4 @@ spec:
         controller: vpn
         ports:
           shadowsocks:
-            port: *port
+            port: 8388
