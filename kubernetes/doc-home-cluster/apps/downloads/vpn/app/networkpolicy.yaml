@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vpn
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vpn-downloads
+  ingress:
+    # all downloads namespace
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "8388"
+              protocol: TCP
