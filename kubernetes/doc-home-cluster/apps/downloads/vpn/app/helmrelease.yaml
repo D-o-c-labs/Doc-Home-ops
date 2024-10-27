@@ -56,7 +56,6 @@ spec:
               limits:
                 squat.ai/tun: "1"
 
-
     service:
       app:
         controller: vpn
