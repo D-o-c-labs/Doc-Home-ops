@@ -10,10 +10,7 @@ spec:
       app.kubernetes.io/name: vpn
   ingress:
     # all downloads namespace
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: downloads
-      toPorts:
+    - toPorts:
         - ports:
             - port: "8388"
               protocol: TCP
