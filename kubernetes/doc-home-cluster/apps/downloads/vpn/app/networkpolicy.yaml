@@ -7,7 +7,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: vpn-downloads
+      app.kubernetes.io/name: vpn
   ingress:
     # all downloads namespace
     - fromEndpoints:
