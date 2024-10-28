@@ -36,6 +36,15 @@ spec:
             - port: "8080"
               protocol: TCP
 
+    # vpn
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vpn
+      toPorts:
+        - ports:
+            - port: "8388"
+              protocol: TCP
+
     # sabnzbd
     - toEndpoints:
         - matchLabels:
