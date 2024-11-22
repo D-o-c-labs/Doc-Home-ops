@@ -24,6 +24,11 @@ spec:
       reloadStrategy: annotations
 
       deployment:
+        image:
+          name: ghcr.io/stakater/reloader
+          base: stakater/reloader
+          tag: v1.2.0
+          pullPolicy: IfNotPresent
         resources:
           requests:
             cpu: 5m
