@@ -25,6 +25,7 @@ resources:
   - kubernetes-sigs-nfd.yaml
   - kyverno.yaml
   - longhorn.yaml
+  - mongodb.yaml
   - openebs.yaml
   - piraeus.yaml
   - postfinance.yaml

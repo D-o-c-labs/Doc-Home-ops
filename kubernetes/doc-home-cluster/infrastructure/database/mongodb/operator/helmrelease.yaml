@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mongodb
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: community-operator
+      version: 0.11.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: mongodb
+        namespace: flux-system
+  values:
+    operator:
+      version: 0.11.0
+      watchNamespace: "selfhosted"
+
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 2000
