@@ -16,7 +16,6 @@ spec:
         name: mongodb
         namespace: flux-system
   values:
-
     operator:
       version: 0.11.0
       watchNamespace: "selfhosted"
