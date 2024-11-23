@@ -1,0 +1,43 @@
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb-cluster
+  namespace: database
+spec:
+  members: 3
+  type: ReplicaSet
+  version: "6.0.5"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: librechat
+      db: librechat
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: librechat-user-password-secret
+      roles:
+        - name: clusterAdmin
+          db: librechat
+        - name: userAdminAnyDatabase
+          db: librechat
+      scramCredentialsSecretName: librechat-scram-credentials-secret
+  additionalMongodConfig:
+    storage.wiredTiger.engineConfig.journalCompressor: zlib
+  statefulSet:
+    spec:
+      volumeClaimTemplates:
+        - metadata:
+            name: mongodb-data
+          spec:
+            resources:
+              storageClassName: ceph-filesystem
+              requests:
+                storage: 10Gi
+        - metadata:
+            name: mongodb-logs
+          spec:
+            storageClassName: ceph-block
+            resources:
+              requests:
+                storage: 2Gi
