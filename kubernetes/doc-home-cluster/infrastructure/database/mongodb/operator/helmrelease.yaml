@@ -18,7 +18,6 @@ spec:
   values:
     operator:
       version: 0.11.0
-      watchNamespace: "selfhosted"
 
     podSecurityContext:
       runAsNonRoot: true
