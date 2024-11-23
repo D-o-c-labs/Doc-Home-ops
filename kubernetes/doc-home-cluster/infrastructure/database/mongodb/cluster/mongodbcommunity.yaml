@@ -24,22 +24,22 @@ spec:
       scramCredentialsSecretName: librechat-scram-credentials-secret
   additionalMongodConfig:
     storage.wiredTiger.engineConfig.journalCompressor: zlib
-  statefulSet:
-    spec:
-      volumeClaimTemplates:
-        - metadata:
-            name: mongodb-data
-          spec:
-            accessModes: ["ReadWriteOnce"]
-            resources:
-              storageClassName: ceph-filesystem
-              requests:
-                storage: 10Gi
-        - metadata:
-            name: mongodb-logs
-          spec:
-            accessModes: ["ReadWriteOnce"]
-            storageClassName: ceph-block
-            resources:
-              requests:
-                storage: 2Gi
+  # statefulSet:
+  #   spec:
+  #     volumeClaimTemplates:
+  #       - metadata:
+  #           name: mongodb-data
+  #         spec:
+  #           accessModes: ["ReadWriteOnce"]
+  #           resources:
+  #             storageClassName: ceph-filesystem
+  #             requests:
+  #               storage: 10Gi
+  #       - metadata:
+  #           name: mongodb-logs
+  #         spec:
+  #           accessModes: ["ReadWriteOnce"]
+  #           storageClassName: ceph-block
+  #           resources:
+  #             requests:
+  #               storage: 2Gi
