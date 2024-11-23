@@ -30,7 +30,7 @@ spec:
         - metadata:
             name: mongodb-data
           spec:
-            accessModes: ["ReadWriteMany"]
+            accessModes: ["ReadWriteOnce"]
             resources:
               storageClassName: ceph-filesystem
               requests:
@@ -38,7 +38,7 @@ spec:
         - metadata:
             name: mongodb-logs
           spec:
-            accessModes: ["ReadWriteMany"]
+            accessModes: ["ReadWriteOnce"]
             storageClassName: ceph-block
             resources:
               requests:
