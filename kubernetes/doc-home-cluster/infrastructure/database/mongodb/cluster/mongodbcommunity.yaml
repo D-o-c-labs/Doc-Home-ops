@@ -5,7 +5,7 @@ metadata:
   name: mongodb-cluster
   namespace: database
 spec:
-  members: 3
+  members: 2
   type: ReplicaSet
   version: "6.0.5"
   security:
