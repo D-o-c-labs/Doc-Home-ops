@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: mongodb
+  name: mongodb-operator
 spec:
   interval: 30m
   chart:
@@ -18,6 +18,7 @@ spec:
   values:
     operator:
       version: 0.11.0
+      watchNamespace: '*'
 
     podSecurityContext:
       runAsNonRoot: true
