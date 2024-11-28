@@ -86,6 +86,11 @@ spec:
         - lobechat
       password:
         type: AlphaNumeric
+    - name: librechat
+      databases:
+        - librechat
+      password:
+        type: AlphaNumeric
     - name: tandoor
       databases:
         - tandoor
