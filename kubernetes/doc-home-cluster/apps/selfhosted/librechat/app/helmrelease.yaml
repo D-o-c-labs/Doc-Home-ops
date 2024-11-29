@@ -27,29 +27,123 @@ spec:
             egress.home.arpa/internet: allow
             ingress.home.arpa/nginx-external: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+          nodeSelector:
+            intel.feature.node.kubernetes.io/avx: "true"
 
         containers:
           app:
             image:
-              repository: ghcr.io/danny-avila/librechat
-              tag: v0.7.5
+              repository: ghcr.io/danny-avila/librechat-dev
+              # tag: v0.7.5
+              tag: latest@sha256:c02e11059d103ea4f891347aa7cba1c9de5ef9d5ef39b518e5284b1ad62bd7fc
             probes:
-              liveness:
-                enabled: false
-              readiness:
-                enabled: false
-              startup:
-                enabled: false
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 3080
+                  initialDelaySeconds: 90
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup: *probes
             resources:
               requests:
                 cpu: 0m
                 memory: 0M
               limits:
+                cpu: 100m
                 memory: 512M
 
             envFrom:
               - secretRef:
                   name: librechat-secret
+
+          mongodb:
+            image:
+              repository: mongo
+              tag: 8.0.3
+            args:
+              - --noauth
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: 0m
+                memory: 0M
+              limits:
+                cpu: 100m
+                memory: 512M
+
+          meilisearch:
+            image:
+              repository: getmeili/meilisearch
+              tag: v1.7.3
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: 0m
+                memory: 0M
+              limits:
+                cpu: 100m
+                memory: 128M
+            env:
+              MEILI_NO_ANALYTICS: true
+              MEILI_MASTER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: librechat-secret
+                    key: MEILI_MASTER_KEY
+
+          rag-api:
+            image:
+              repository: ghcr.io/danny-avila/librechat-rag-api-dev
+              tag: latest@sha256:0ea1e326412e9d044462617ffff7f4175b88f107c52453da75e2884187368fc1
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: 0m
+                memory: 0M
+              limits:
+                cpu: 100m
+                memory: 128M
+            env:
+              RAG_PORT: 8000
+              VECTOR_DB_TYPE: pgvector
+              RAG_OPENAI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: librechat-secret
+                    key: OPENAI_API_KEY
+              JWT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: librechat-secret
+                    key: JWT_SECRET
+            envFrom:
+              - secretRef:
+                  name: librechat-db-secret
 
     service:
       app:
@@ -82,5 +176,17 @@ spec:
         advancedMounts:
           librechat:
             app:
-              - path: /librechat/config/librechat.yaml
+              - path: /config/librechat.yaml
                 subPath: librechat.yaml
+      mongodb-data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          librechat:
+            mongodb:
+              - path: /data/db
+      meilisearch-data:
+        type: emptyDir
+        advancedMounts:
+          librechat:
+            meilisearch:
+              - path: /meili_data
