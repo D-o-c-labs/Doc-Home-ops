@@ -9,7 +9,6 @@ spec:
         intel.feature.node.kubernetes.io/avx: "true"
       matchFeatures:
         - feature: cpu.cpuid
-          matchName: {op: InRegexp, value: ["^AVX"]}
-
+          matchName: { op: InRegexp, value: ["^AVX"] }
 
       name: intel.avx
