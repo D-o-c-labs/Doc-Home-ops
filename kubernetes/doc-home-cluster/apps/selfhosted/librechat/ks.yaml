@@ -21,3 +21,4 @@ spec:
     substitute:
       APP: *appname
       HOSTNAME: librechat.piscio.net
+      VOLSYNC_CLAIM: librechat-mongodb-data
