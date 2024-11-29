@@ -34,9 +34,9 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/danny-avila/librechat-dev
-              # tag: v0.7.5
-              tag: latest@sha256:c02e11059d103ea4f891347aa7cba1c9de5ef9d5ef39b518e5284b1ad62bd7fc
+              repository: ghcr.io/danny-avila/librechat
+              tag: v0.7.5
+              # tag: latest@sha256:c02e11059d103ea4f891347aa7cba1c9de5ef9d5ef39b518e5284b1ad62bd7fc
             probes:
               liveness: &probes
                 enabled: true
