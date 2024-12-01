@@ -87,7 +87,7 @@ spec:
           meilisearch:
             image:
               repository: getmeili/meilisearch
-              tag: v1.7.3
+              tag: v1.11.3
             probes:
               liveness:
                 enabled: true
