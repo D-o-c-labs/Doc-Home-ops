@@ -1,5 +1,5 @@
 ---
-version: 1.1.5
+version: 1.1.7
 cache: true
 includedTools:
   [
@@ -93,3 +93,5 @@ fileConfig:
         - "application/pdf"
   serverFileSizeLimit: 1000
   avatarSizeLimit: 2
+registration:
+  socialLogins: ["openid"]
