@@ -50,7 +50,7 @@ spec:
             resources:
               requests:
                 cpu: 5m
-                memory: 512M
+                memory: 256M
               limits:
                 memory: 2048M
 
@@ -72,10 +72,10 @@ spec:
 
             resources:
               requests:
-                cpu: 5m
-                memory: 1374M
+                cpu: 0m
+                memory: 0M
               limits:
-                memory: 2048M
+                memory: 1024M
 
             env:
               - name: PUID
