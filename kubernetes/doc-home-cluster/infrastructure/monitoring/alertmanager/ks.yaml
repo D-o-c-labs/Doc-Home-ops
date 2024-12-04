@@ -20,7 +20,6 @@ spec:
   wait: true
   dependsOn:
     - name: external-secrets-stores
-    - name: synology-csi
   postBuild:
     substitute:
       APP: *appname
