@@ -34,22 +34,27 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/danny-avila/librechat-dev
-              # tag: v0.7.5
-              tag: latest@sha256:5af9ee2c441893f20d6b43572dc9ac11d5832bb5bfc19c58f511100a526e69fd
+              repository: ghcr.io/danny-avila/librechat
+              tag: v0.7.5
+              # tag: latest@sha256:5af9ee2c441893f20d6b43572dc9ac11d5832bb5bfc19c58f511100a526e69fd
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /health
                     port: 3080
-                  initialDelaySeconds: 90
-                  periodSeconds: 10
-                  timeoutSeconds: 1
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                  timeoutSeconds: 5
                   failureThreshold: 3
-              readiness: *probes
+              readiness:
+                <<: *probes
+                spec:
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  failureThreshold: 30
               startup: *probes
             resources:
               requests:
@@ -89,12 +94,28 @@ spec:
               repository: getmeili/meilisearch
               tag: v1.11.3
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 7700
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               readiness:
-                enabled: true
+                <<: *probes
+                spec:
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
               startup:
-                enabled: true
+                <<: *probes
+                spec:
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 0m
@@ -115,12 +136,28 @@ spec:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev
               tag: latest@sha256:b67c0fd85ca3276e0da3deb59fcc39ed41edf4c1921e5fd57351768eadb778a2
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 5000
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               readiness:
-                enabled: true
+                <<: *probes
+                spec:
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
               startup:
-                enabled: true
+                <<: *probes
+                spec:
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 0m
