@@ -38,7 +38,7 @@ spec:
           job:
             image:
               repository: alpine
-              tag: 3.14
+              tag: 3.21
             command: ["/bin/sh", "-c"]
             args:
               - |
