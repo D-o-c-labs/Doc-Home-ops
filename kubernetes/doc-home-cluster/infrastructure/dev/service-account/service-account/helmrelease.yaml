@@ -43,8 +43,7 @@ spec:
             args:
               - |
                 apk update
-                apk add --no-cache curl jq openssl python3-dev py3-pip gcc make musl-dev libffi-dev
-                pip install --no-cache-dir pynacl
+                apk add --no-cache curl jq openssl python3-dev py3-pip gcc make musl-dev libffi-dev py3-pynacl
                 /bin/sh /scripts/generate_kubeconfig.sh
             envFrom:
               - secretRef:
