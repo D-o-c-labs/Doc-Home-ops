@@ -10,5 +10,5 @@ resources:
   - ./ghostfolio/ks.yaml
   - ./librechat/ks.yaml
   - ./lobechat/ks.yaml
-  # - ./tandoor/ks.yaml
+  - ./tandoor/ks.yaml
   # - ./babybuddy/ks.yaml
