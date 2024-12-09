@@ -23,9 +23,5 @@ spec:
   postBuild:
     substitute:
       APP: *appname
-      APP_UID: "2000"
-      APP_GID: "2000"
-      DB_NAME: tandoor
-      DB_USER: tandoor
       HOSTNAME: tandoor.piscio.net
       VOLSYNC_CLAIM: tandoor-data
