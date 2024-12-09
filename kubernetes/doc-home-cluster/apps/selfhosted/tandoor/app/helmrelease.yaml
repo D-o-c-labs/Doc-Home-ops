@@ -24,9 +24,9 @@ spec:
 
         pod:
           securityContext:
-            runAsUser: ${APP_UID}
-            runAsGroup: ${APP_GID}
-            fsGroup: ${APP_GID}
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
             runAsNonRoot: true
             fsGroupChangePolicy: "OnRootMismatch"
 
@@ -36,31 +36,6 @@ spec:
               repository: ghcr.io/tandoorrecipes/recipes
               tag: 1.5.24
             env:
-              POSTGRES_HOST:
-                valueFrom:
-                  secretKeyRef:
-                    name: "${APP}-pguser-${DB_USER}"
-                    key: host
-              POSTGRES_PORT:
-                valueFrom:
-                  secretKeyRef:
-                    name: "${APP}-pguser-${DB_USER}"
-                    key: port
-              POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: "${APP}-pguser-${DB_USER}"
-                    key: user
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: "${APP}-pguser-${DB_USER}"
-                    key: password
-              POSTGRES_DB:
-                valueFrom:
-                  secretKeyRef:
-                    name: "${APP}-pguser-${DB_USER}"
-                    key: dbname
               DB_ENGINE: django.db.backends.postgresql
               COMMENT_PREF_DEFAULT: 0
               DEBUG: 1
@@ -70,6 +45,9 @@ spec:
               MAX_OWNED_SPACES_PREF_DEFAULT: 0
               SHOPPING_MIN_AUTOSYNC_INTERVAL: 5
               TANDOOR_PORT: &tandoorPort 8000
+            envFrom:
+              - secretRef:
+                  name: tandoor-db-secret
             probes:
               liveness: &probes
                 enabled: true
