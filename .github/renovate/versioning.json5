@@ -22,6 +22,12 @@
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/mendhak/http-https-echo"],
       versioning: "regex:^(?<major>\\d+)$",
+    },
+    {
+      description: "Custom versioning for LibreChat with RC support",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/danny-avila/librechat"],
+      versioning: "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-rc(?<rc>\\d+))?$"
     }
   ],
 }
