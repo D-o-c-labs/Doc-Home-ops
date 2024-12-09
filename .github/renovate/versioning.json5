@@ -22,6 +22,12 @@
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/mendhak/http-https-echo"],
       versioning: "regex:^(?<major>\\d+)$",
+    },
+    {
+      "description": "Enable pre-releases for LibreChat",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/danny-avila/librechat"],
+      "ignoreUnstable": false
     }
   ],
 }
