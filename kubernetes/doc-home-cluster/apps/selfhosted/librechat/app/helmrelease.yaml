@@ -50,10 +50,15 @@ spec:
                   timeoutSeconds: 5
                   failureThreshold: 3
               readiness:
-                <<: *probes
+                enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /health
+                    port: 3080
                   initialDelaySeconds: 0
                   periodSeconds: 10
+                  timeoutSeconds: 5
                   failureThreshold: 30
               startup: *probes
             resources:
@@ -106,15 +111,26 @@ spec:
                   timeoutSeconds: 5
                   failureThreshold: 3
               readiness:
-                <<: *probes
+                enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /health
+                    port: 7700
                   initialDelaySeconds: 10
                   periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               startup:
-                <<: *probes
+                enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /health
+                    port: 7700
                   initialDelaySeconds: 0
                   periodSeconds: 10
+                  timeoutSeconds: 5
                   failureThreshold: 30
             resources:
               requests:
@@ -136,7 +152,7 @@ spec:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev
               tag: latest@sha256:b67c0fd85ca3276e0da3deb59fcc39ed41edf4c1921e5fd57351768eadb778a2
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
@@ -148,15 +164,26 @@ spec:
                   timeoutSeconds: 5
                   failureThreshold: 3
               readiness:
-                <<: *probes
+                enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /health
+                    port: 5000
                   initialDelaySeconds: 10
                   periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               startup:
-                <<: *probes
+                enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /health
+                    port: 5000
                   initialDelaySeconds: 0
                   periodSeconds: 10
+                  timeoutSeconds: 5
                   failureThreshold: 30
             resources:
               requests:
