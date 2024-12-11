@@ -27,7 +27,7 @@ spec:
 
     env:
       - name: SONAR_TELEMETRY_ENABLE
-        value: false
+        value: "false"
 
     ingress:
       enabled: true
