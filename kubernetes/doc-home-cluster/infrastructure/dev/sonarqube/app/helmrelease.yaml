@@ -25,6 +25,10 @@ spec:
     setAdminPassword:
       passwordSecretName: "sonarqube-admin-secret"
 
+    env:
+      - name: SONAR_TELEMETRY_ENABLE
+        value: false
+
     ingress:
       enabled: true
       hosts:
