@@ -28,6 +28,18 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/danny-avila/librechat"],
       "ignoreUnstable": false
+    },
+    {
+      "description": "Authentik helm chart",
+      "matchPackagePatterns": ["^authentik$"],
+      "matchDatasources": ["helm"],
+      "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$"
+    },
+    {
+      "description": "Authentik image",
+      "matchPackageNames": ["ghcr.io/goauthentik/server"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$"
     }
   ],
 }
