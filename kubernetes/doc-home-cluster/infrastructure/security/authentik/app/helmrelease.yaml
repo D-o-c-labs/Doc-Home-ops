@@ -20,51 +20,17 @@ spec:
       deploymentAnnotations:
         secret.reloader.stakater.com/reload: authentik-secret,authentik-db-secret,authentik-redis-secret
 
+      image:
+        repository: ghcr.io/goauthentik/server
+        tag: 2024.10.4
+
       envFrom:
         - secretRef:
             name: authentik-db-secret
         - secretRef:
             name: authentik-secret
-        # - secretRef:
-        #     name: authentik-redis-secret
 
       env:
-        # AUTHENTIK_SECRET_KEY:
-        #   secretKeyRef:
-        #     name: authentik-secret
-        #     key: authentik_secret_key
-        # AUTHENTIK_EMAIL__HOST:
-        #   secretKeyRef:
-        #     name: authentik-secret
-        #     key: authentik_email_host
-        # AUTHENTIK_EMAIL__USERNAME:
-        #   secretKeyRef:
-        #     name: authentik-secret
-        #     key: authentik_email_username
-        # AUTHENTIK_EMAIL__PASSWORD:
-        #   secretKeyRef:
-        #     name: authentik-secret
-        #     key: authentik_email_password
-        # AUTHENTIK_EMAIL__FROM:
-        #   secretKeyRef:
-        #     name: authentik-secret
-        #     key: authentik_email_from
-        # AUTHENTIK_POSTGRESQL__HOST:
-        #   secretKeyRef:
-        #     name: "${APP}-pguser-${DB_USER}"
-        #     key: host
-        # AUTHENTIK_POSTGRESQL__NAME:
-        #   secretKeyRef:
-        #     name: "${APP}-pguser-${DB_USER}"
-        #     key: dbname
-        # AUTHENTIK_POSTGRESQL__USER:
-        #   secretKeyRef:
-        #     name: "${APP}-pguser-${DB_USER}"
-        #     key: user
-        # AUTHENTIK_POSTGRESQL__PASSWORD:
-        #   secretKeyRef:
-        #     name: "${APP}-pguser-${DB_USER}"
-        #     key: password
         - name: AUTHENTIK_REDIS__PASSWORD
           valueFrom:
             secretKeyRef:
