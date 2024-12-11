@@ -101,6 +101,11 @@ spec:
         - ghostfolio
       password:
         type: AlphaNumeric
+    - name: sonarqube
+      databases:
+        - sonarqube
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

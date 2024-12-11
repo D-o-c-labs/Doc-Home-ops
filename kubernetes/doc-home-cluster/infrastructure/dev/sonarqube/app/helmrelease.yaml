@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SonarSource/helm-chart-sonarqube/refs/heads/master/charts/sonarqube/values.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sonarqube
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: sonarqube
+      version: 10.8.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: sonarqube
+        namespace: flux-system
+
+  values:
+    edition: "community"
+    image:
+      repository: sonarqube
+      tag: community
+    replicaCount: 1
+    setAdminPassword:
+      passwordSecretName: "sonarqube-admin-secret"
+
+    ingress:
+      enabled: true
+      hosts:
+        - name: "sonarqube.piscio.net"
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+      ingressClassName: "external-nginx"
+
+    podLabels:
+      egress.home.arpa/internet: allow
+      ingress.home.arpa/nginx-external: allow
+      egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+      egress.home.arpa/postgres-cluster: allow
+
+    prometheusExporter:
+      enabled: true
+
+    prometheusMonitoring:
+      # Generate a Prometheus Pod Monitor (https://github.com/coreos/prometheus-operator)
+      #
+      podMonitor:
+        # Create PodMonitor Resource for Prometheus scraping
+        enabled: true
+
+    persistence:
+      enabled: true
+      existingClaim: sonarqube-config
+
+    postgresql:
+      persistence:
+        storageClass: ceph-filesystem
+
+    # jdbcOverwrite:
+    #   enabled: true
+    #   jdbcSecretName: sonarqube-db-secret
+    #   jdbcSecretPasswordKey: SONAR_JDBC_PASSWORD
+    # extraConfig:
+    #   secrets: ["sonarqube-db-secret"]
