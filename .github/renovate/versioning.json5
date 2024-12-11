@@ -1,45 +1,67 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   packageRules: [
     {
-      description: "Loose versioning for non-semver packages",
-      matchDatasources: ["docker"],
-      matchPackageNames: [
-        "ghcr.io/cross-seed/cross-seed",
-        "ghcr.io/onedr0p/plex",
-        "ghcr.io/xirixiz/dsmr-reader-docker",
+      description: 'Loose versioning for non-semver packages',
+      matchDatasources: [
+        'docker',
       ],
-      versioning: "loose",
+      matchPackageNames: [
+        'ghcr.io/cross-seed/cross-seed',
+        'ghcr.io/onedr0p/plex',
+        'ghcr.io/xirixiz/dsmr-reader-docker',
+      ],
+      versioning: 'loose',
     },
     {
-      description: "PEP440 versioning for radicale",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["tomsquest/docker-radicale"],
-      versioning: "pep440",
+      description: 'PEP440 versioning for radicale',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        'tomsquest/docker-radicale',
+      ],
+      versioning: 'pep440',
     },
     {
-      description: "Custom versioning for http-https-echo",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["ghcr.io/mendhak/http-https-echo"],
-      versioning: "regex:^(?<major>\\d+)$",
+      description: 'Custom versioning for http-https-echo',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        'ghcr.io/mendhak/http-https-echo',
+      ],
+      versioning: 'regex:^(?<major>\\d+)$',
     },
     {
-      "description": "Enable pre-releases for LibreChat",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/danny-avila/librechat"],
-      "ignoreUnstable": false
+      description: 'Enable pre-releases for LibreChat',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        'ghcr.io/danny-avila/librechat',
+      ],
+      ignoreUnstable: false,
     },
     {
-      "description": "Authentik helm chart",
-      "matchPackagePatterns": ["^authentik$"],
-      "matchDatasources": ["helm"],
-      "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$"
+      description: 'Authentik helm chart',
+      matchPackagePatterns: [
+        '^authentik$',
+      ],
+      matchDatasources: [
+        'helm',
+      ],
+      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
     },
     {
-      "description": "Authentik image",
-      "matchPackageNames": ["ghcr.io/goauthentik/server"],
-      "matchDatasources": ["docker"],
-      "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$"
-    }
-  ]
+      description: 'Authentik image',
+      matchPackageNames: [
+        'ghcr.io/goauthentik/server',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
+      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
+    },
+  ],
 }
