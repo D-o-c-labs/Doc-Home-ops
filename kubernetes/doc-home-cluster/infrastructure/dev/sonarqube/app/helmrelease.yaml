@@ -54,12 +54,13 @@ spec:
       existingClaim: sonarqube-config
 
     postgresql:
+      enabled: false
       persistence:
         storageClass: ceph-filesystem
 
-    # jdbcOverwrite:
-    #   enabled: true
-    #   jdbcSecretName: sonarqube-db-secret
-    #   jdbcSecretPasswordKey: SONAR_JDBC_PASSWORD
-    # extraConfig:
-    #   secrets: ["sonarqube-db-secret"]
+    jdbcOverwrite:
+      enabled: true
+      jdbcSecretName: sonarqube-db-secret
+      jdbcSecretPasswordKey: SONAR_JDBC_PASSWORD
+    extraConfig:
+      secrets: ["sonarqube-db-secret"]
