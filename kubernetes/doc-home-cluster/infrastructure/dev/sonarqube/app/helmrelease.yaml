@@ -20,7 +20,7 @@ spec:
     edition: "community"
     image:
       repository: sonarqube
-      tag: community
+      tag: lts-community
     replicaCount: 1
     setAdminPassword:
       passwordSecretName: "sonarqube-admin-secret"
