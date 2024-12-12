@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/SonarSource/helm-chart-sonarqube/refs/heads/master/charts/sonarqube/values.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -8,63 +8,107 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: sonarqube
-      version: 10.8.0
+      chart: app-template
+      version: 3.5.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: sonarqube
+        name: bjw-s
         namespace: flux-system
 
   values:
-    edition: "community"
-    image:
-      repository: sonarqube
-      tag: lts-community
-    replicaCount: 1
-    setAdminPassword:
-      passwordSecretName: "sonarqube-admin-secret"
+    controllers:
+      sonarqube:
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    env:
-      - name: SONAR_TELEMETRY_ENABLE
-        value: "false"
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            ingress.home.arpa/nginx-external: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+
+        containers:
+          app:
+            image:
+              repository: sonarqube
+              tag: lts-community
+
+            env:
+              SONAR_TELEMETRY_ENABLE: "false"
+
+            envFrom:
+              - secretRef:
+                  name: sonarqube-db-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 9000
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+                  failureThreshold: 6
+                  # Note that timeoutSeconds was not respected before Kubernetes 1.20 for exec probes
+                  timeoutSeconds: 1
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 9000
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+                  failureThreshold: 6
+                  # Note that timeoutSeconds was not respected before Kubernetes 1.20 for exec probes
+                  timeoutSeconds: 1
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  failureThreshold: 24
+                  # Note that timeoutSeconds was not respected before Kubernetes 1.20 for exec probes
+                  timeoutSeconds: 1
+
+            resources:
+              limits:
+                cpu: 800m
+                memory: 6144M
+                ephemeral-storage: 51200M
+              requests:
+                cpu: 400m
+                memory: 2048M
+                ephemeral-storage: 1536M
+
+    service:
+      app:
+        controller: sonarqube
+        ports:
+          http:
+            port: 9000
 
     ingress:
-      enabled: true
-      hosts:
-        - name: "sonarqube.piscio.net"
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-      ingressClassName: "external-nginx"
-
-    podLabels:
-      egress.home.arpa/internet: allow
-      ingress.home.arpa/nginx-external: allow
-      egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-      egress.home.arpa/postgres-cluster: allow
-
-    prometheusExporter:
-      enabled: false
-
-    prometheusMonitoring:
-      # Generate a Prometheus Pod Monitor (https://github.com/coreos/prometheus-operator)
-      #
-      podMonitor:
-        # Create PodMonitor Resource for Prometheus scraping
-        enabled: false
-
-    persistence:
-      enabled: true
-      existingClaim: sonarqube-config
-
-    postgresql:
-      enabled: false
-      persistence:
-        storageClass: ceph-filesystem
-
-    jdbcOverwrite:
-      enabled: true
-      jdbcSecretName: sonarqube-db-secret
-      jdbcSecretPasswordKey: SONAR_JDBC_PASSWORD
-    extraConfig:
-      secrets: ["sonarqube-db-secret"]
+      app:
+        className: "external-nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+        hosts:
+          - host: "sonarqube.piscio.net"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - "sonarqube.piscio.net"
