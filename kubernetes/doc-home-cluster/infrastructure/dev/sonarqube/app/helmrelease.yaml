@@ -44,14 +44,14 @@ spec:
       egress.home.arpa/postgres-cluster: allow
 
     prometheusExporter:
-      enabled: true
+      enabled: false
 
     prometheusMonitoring:
       # Generate a Prometheus Pod Monitor (https://github.com/coreos/prometheus-operator)
       #
       podMonitor:
         # Create PodMonitor Resource for Prometheus scraping
-        enabled: true
+        enabled: false
 
     persistence:
       enabled: true
