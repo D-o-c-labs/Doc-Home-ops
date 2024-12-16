@@ -21,22 +21,7 @@ spec:
     crds: CreateReplace
   values:
     controller:
-      ## IMAGE ADDED TO FIX https://github.com/vmware-tanzu/velero/issues/7433
-      # image:
-      #   repository: registry.k8s.io/sig-storage/snapshot-controller
-      #   pullPolicy: IfNotPresent
-      #   tag: "v6.3.4"
-
       serviceMonitor:
         create: true
     webhook:
-      enabled: true
-      ## IMAGE ADDED TO FIX https://github.com/vmware-tanzu/velero/issues/7433
-      # image:
-      #   repository: registry.k8s.io/sig-storage/snapshot-validation-webhook
-      #   pullPolicy: IfNotPresent
-      #   tag: "v6.3.4"
-      tls:
-        certManagerIssuerRef:
-          name: snapshot-controller-webhook-ca
-          kind: Issuer
+      enabled: false
