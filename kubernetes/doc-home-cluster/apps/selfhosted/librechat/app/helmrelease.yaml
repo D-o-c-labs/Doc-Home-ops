@@ -150,7 +150,7 @@ spec:
           rag-api:
             image:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev
-              tag: latest@sha256:b67c0fd85ca3276e0da3deb59fcc39ed41edf4c1921e5fd57351768eadb778a2
+              tag: latest@sha256:d8b9bd30cea0f7890376732bb3eb6883c6f689a23cd04ec717b6ff2648485777
             probes:
               liveness:
                 enabled: true
