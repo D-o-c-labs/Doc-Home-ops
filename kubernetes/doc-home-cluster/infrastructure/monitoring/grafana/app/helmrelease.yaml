@@ -298,7 +298,9 @@ spec:
 
     ingress:
       enabled: true
-      ingressClassName: internal-nginx
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+      ingressClassName: external-nginx
       hosts:
         - &host grafana.piscio.net
       tls:
