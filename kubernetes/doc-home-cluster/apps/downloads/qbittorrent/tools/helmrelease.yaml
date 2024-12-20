@@ -43,9 +43,7 @@ spec:
           failedJobsHistory: 1
 
         pod:
-          restartPolicy: OnFailure
-          # labels:
-          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          restartPolicy: Never
 
         initContainers:
           tagging: &container
@@ -87,6 +85,8 @@ spec:
               - manual
               - --exclude-category
               - cross-seed
+              - --exclude-tag
+              - added:24h
               - --include-tag
               - expired
               - --server
@@ -117,9 +117,7 @@ spec:
           <<: *cronJobSpec
           schedule: "@daily"
         pod:
-          restartPolicy: OnFailure
-          # labels:
-          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          restartPolicy: Never
         containers:
           app:
             <<: *container
@@ -135,14 +133,12 @@ spec:
               - *qbittorrent_port
 
       reannounce:
-        # pod:
-        # labels:
-        #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
         containers:
           app:
             <<: *container
             args:
               - reannounce
+              - --process-seeding
               - --server
               - *qbittorrent_host
               - --port
@@ -160,7 +156,6 @@ spec:
         type: nfs
         server: piscionas.piscio.net
         path: /volume1/Media
-        advancedMounts:
-          orphaned:
-            app:
-              - path: /data/nas-media
+        globalMounts:
+          - path: /data/nas-media/downloads/qbittorrent
+            subPath: downloads/qbittorrent
