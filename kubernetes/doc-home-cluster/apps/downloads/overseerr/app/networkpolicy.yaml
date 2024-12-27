@@ -36,3 +36,13 @@ spec:
         - ports:
             - port: "32400"
               protocol: TCP
+
+    # tautulli
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tautulli
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "8181"
+              protocol: TCP

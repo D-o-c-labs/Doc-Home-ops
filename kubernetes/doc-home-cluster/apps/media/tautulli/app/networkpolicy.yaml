@@ -17,3 +17,13 @@ spec:
         - ports:
             - port: "32400"
               protocol: TCP
+  ingress:
+    # plex
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: overseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "8181"
+              protocol: TCP
