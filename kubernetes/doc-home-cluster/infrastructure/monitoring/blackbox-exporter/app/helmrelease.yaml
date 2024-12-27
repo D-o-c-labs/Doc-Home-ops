@@ -49,6 +49,8 @@ spec:
     ingress:
       enabled: true
       className: internal-nginx
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
       hosts:
         - host: "${HOSTNAME}"
           paths:
