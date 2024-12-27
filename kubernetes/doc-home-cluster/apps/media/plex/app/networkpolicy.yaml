@@ -23,10 +23,12 @@ spec:
             app.kubernetes.io/name: notifiarr
             k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
+            app.kubernetes.io/name: overseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
             app.kubernetes.io/name: home-assistant
             k8s:io.kubernetes.pod.namespace: home-automation
       toPorts:
         - ports:
             - port: "32400"
               protocol: TCP
-
