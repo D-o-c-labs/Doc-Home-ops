@@ -9,4 +9,3 @@ resources:
   - ./actions-runner-controller/ks.yaml
   - ./gh-safe-settings/ks.yaml
   - ./service-account/ks.yaml
-  - ./sonarqube/ks.yaml
