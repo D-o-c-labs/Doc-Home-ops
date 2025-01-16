@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghostfolio/ghostfolio
-              tag: 2.133.1
+              tag: 2.134.0
             probes:
               liveness:
                 enabled: true
