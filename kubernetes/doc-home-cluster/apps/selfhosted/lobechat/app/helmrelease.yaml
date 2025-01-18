@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: lobehub/lobe-chat-database
-              tag: v1.47.3
+              tag: v1.47.4
             probes:
               liveness:
                 enabled: false
