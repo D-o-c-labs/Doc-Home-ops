@@ -57,6 +57,7 @@ spec:
           mongo:
             port: 27017
 
+    persistence:
       mongodb-data:
         existingClaim: "${VOLSYNC_CLAIM}"
         advancedMounts:
