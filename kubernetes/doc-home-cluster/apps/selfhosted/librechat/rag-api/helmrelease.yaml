@@ -18,30 +18,29 @@ spec:
 
   values:
     controllers:
-      librechat:
+      rag-api:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
           labels:
             egress.home.arpa/internet: allow
-            ingress.home.arpa/nginx-external: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
 
         containers:
           app:
             image:
-              repository: ghcr.io/danny-avila/librechat-dev
-              # tag: v0.7.6
-              tag: latest@sha256:2b6572194fd9e08b786e2171e5296eff9160c1622a8c14dd2718f2017ab4a528
+              repository: ghcr.io/danny-avila/librechat-rag-api-dev
+              tag: latest@sha256:bc81c3d6cb86326a14da916ca25313917795931f139b5ca3f83ed5f4804fb2e9
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /health
-                    port: 3080
+                    port: 8000
                   initialDelaySeconds: 15
                   periodSeconds: 20
                   timeoutSeconds: 5
@@ -52,54 +51,41 @@ spec:
                 spec:
                   httpGet:
                     path: /health
-                    port: 3080
+                    port: 8000
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8000
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 30
-              startup: *probes
             resources:
               requests:
-                cpu: 10m
+                cpu: 0m
                 memory: 128Mi
               limits:
                 cpu: 100m
-                memory: 512Mi
-
+                memory: 3072Mi
+            env:
+              RAG_PORT: 8000
+              VECTOR_DB_TYPE: pgvector
             envFrom:
               - secretRef:
-                  name: librechat-secret
+                  name: librechat-db-secret
+              - secretRef:
+                  name: librechat-rag-api-secret
 
     service:
       app:
-        controller: librechat
+        controller: rag-api
         ports:
-          http:
-            port: 3080
-
-    ingress:
-      app:
-        enabled: true
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-
-    persistence:
-      librechat-configfile:
-        type: configMap
-        name: librechat-configmap
-        advancedMounts:
-          librechat:
-            app:
-              - path: /config/librechat.yaml
-                subPath: librechat.yaml
+          rag:
+            port: 8000

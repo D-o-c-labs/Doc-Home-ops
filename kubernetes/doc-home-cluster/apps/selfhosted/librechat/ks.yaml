@@ -17,8 +17,80 @@ spec:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: false
+  dependsOn:
+    - name: external-secrets-stores
+    - name: librechat-meilisearch
+    - name: librechat-mongodb
+    - name: librechat-rag-api
   postBuild:
     substitute:
       APP: *appname
       HOSTNAME: librechat.piscio.net
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname librechat-meilisearch
+  namespace: flux-system
+spec:
+  targetNamespace: selfhosted
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/librechat/meilisearch"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: external-secrets-stores
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname librechat-mongodb
+  namespace: flux-system
+spec:
+  targetNamespace: selfhosted
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/librechat/mongodb"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: volsync
+    - name: external-secrets-stores
+  postBuild:
+    substitute:
       VOLSYNC_CLAIM: librechat-mongodb-data
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname librechat-rag-api
+  namespace: flux-system
+spec:
+  targetNamespace: selfhosted
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/librechat/rag-api"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: external-secrets-stores
+    - name: crunchy-postgres-operator-cluster
