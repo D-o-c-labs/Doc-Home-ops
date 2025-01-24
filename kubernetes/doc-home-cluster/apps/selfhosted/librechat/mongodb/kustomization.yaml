@@ -6,9 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ../../../../templates/volsync
-configMapGenerator:
-  - name: librechat-configmap
-    files:
-      - config/librechat.yaml
-generatorOptions:
-  disableNameSuffixHash: true
