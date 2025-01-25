@@ -26,6 +26,7 @@ spec:
           labels:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/lan: allow
             ingress.home.arpa/nginx-external: allow
             ingress.home.arpa/nginx-internal: allow
             ingress.home.arpa/lan: allow
