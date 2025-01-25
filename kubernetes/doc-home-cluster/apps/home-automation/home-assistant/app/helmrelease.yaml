@@ -113,6 +113,7 @@ spec:
         ports:
           http:
             port: 8123
+
       # app:
       #   controller: home-assistant
       #   ports:
