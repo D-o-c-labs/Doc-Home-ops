@@ -129,9 +129,9 @@ spec:
 
     ingress:
       app:
-        className: "external-nginx"
+        className: "internal-nginx"
         annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
         hosts:
           - host: "${HOSTNAME}"
             paths:
