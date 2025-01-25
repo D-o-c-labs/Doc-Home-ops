@@ -113,18 +113,11 @@ spec:
         ports:
           http:
             port: 8123
-
-      # app:
-      #   controller: home-assistant
-      #   ports:
-      #     http:
-      #       port: 8123
       codeserver:
         controller: home-assistant
         ports:
           codeserver:
             port: 8443
-
     ingress:
       app:
         className: "external-nginx"
