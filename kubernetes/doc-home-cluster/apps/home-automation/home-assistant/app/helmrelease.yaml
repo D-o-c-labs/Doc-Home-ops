@@ -28,14 +28,15 @@ spec:
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             ingress.home.arpa/nginx-external: allow
             ingress.home.arpa/nginx-internal: allow
+            ingress.home.arpa/lan: allow
             egress.home.arpa/postgres-cluster: allow
-          annotations:
-            k8s.v1.cni.cncf.io/networks: |
-              [{
-                "name":"multus-iot",
-                "namespace": "network",
-                "ips": ["192.168.32.151/24"]
-              }]
+          # annotations:
+          #   k8s.v1.cni.cncf.io/networks: |
+          #     [{
+          #       "name":"multus-iot",
+          #       "namespace": "network",
+          #       "ips": ["192.168.32.151/24"]
+          #     }]
 
         containers:
           app:
@@ -113,11 +114,18 @@ spec:
         ports:
           http:
             port: 8123
+
+      # app:
+      #   controller: home-assistant
+      #   ports:
+      #     http:
+      #       port: 8123
       codeserver:
         controller: home-assistant
         ports:
           codeserver:
             port: 8443
+
     ingress:
       app:
         className: "external-nginx"
