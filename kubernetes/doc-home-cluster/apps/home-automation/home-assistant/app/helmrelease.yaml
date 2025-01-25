@@ -112,7 +112,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           http:
-            port: 8443
+            port: 8123
       # app:
       #   controller: home-assistant
       #   ports:
