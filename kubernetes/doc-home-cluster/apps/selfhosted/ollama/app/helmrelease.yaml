@@ -29,6 +29,7 @@ spec:
             egress.home.arpa/internet: allow
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
+            intel.feature.node.kubernetes.io/avx: "true"
 
         containers:
           app:
