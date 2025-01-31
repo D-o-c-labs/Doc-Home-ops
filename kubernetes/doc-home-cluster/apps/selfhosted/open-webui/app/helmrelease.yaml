@@ -36,9 +36,9 @@ spec:
 
             envFrom:
               - secretRef:
-                  name: open-webui-secrets
+                  name: open-webui-secret
               - secretRef:
-                  name: opwn-webui-db-secret
+                  name: open-webui-db-secret
 
             probes:
               liveness:
