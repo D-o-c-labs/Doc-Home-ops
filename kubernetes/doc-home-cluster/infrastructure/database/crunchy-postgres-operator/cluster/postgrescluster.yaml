@@ -101,9 +101,9 @@ spec:
         - ghostfolio
       password:
         type: AlphaNumeric
-    - name: sonarqube
+    - name: open-webui
       databases:
-        - sonarqube
+        - open-webui
       password:
         type: AlphaNumeric
 

@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: browserless
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: browserless
+  ingress:
+    # big-agi
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: big-agi
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP

@@ -3,18 +3,19 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: big-agi
+  name: ollama
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: big-agi
-  egress:
-    # plex-addons
-    - toEndpoints:
+      app.kubernetes.io/name: ollama
+  ingress:
+    - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: browserless
+            app.kubernetes.io/name: open-webui
+        - matchLabels:
+            app.kubernetes.io/name: home-assistant
+            k8s:io.kubernetes.pod.namespace: home-automation
       toPorts:
         - ports:
-            - port: "3000"
+            - port: "11434"
               protocol: TCP
-
