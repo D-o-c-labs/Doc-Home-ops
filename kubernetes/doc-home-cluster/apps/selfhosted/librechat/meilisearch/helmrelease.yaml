@@ -33,11 +33,11 @@ spec:
               tag: v1.12.7
             probes:
               liveness:
-                enabled: true
+                enabled: false
               readiness:
-                enabled: true
+                enabled: false
               startup:
-                enabled: true
+                enabled: false
             resources:
               requests:
                 cpu: 0m
