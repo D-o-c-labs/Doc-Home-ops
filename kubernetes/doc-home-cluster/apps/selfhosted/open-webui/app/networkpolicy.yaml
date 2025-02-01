@@ -16,11 +16,14 @@ spec:
         - ports:
             - port: "11434"
               protocol: TCP
+
+    # Authentik
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: authentik
-            k8s:io.kubernetes.pod.namespace: security
+            app.kubernetes.io/name: ingress-nginx
+            app.kubernetes.io/instance: nginx-external
+            io.kubernetes.pod.namespace: network
       toPorts:
         - ports:
-            - port: "9000"
+            - port: "443"
               protocol: TCP
