@@ -35,3 +35,12 @@ spec:
         - ports:
             - port: "8000"
               protocol: TCP
+
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: authentik
+            k8s:io.kubernetes.pod.namespace: security
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP
