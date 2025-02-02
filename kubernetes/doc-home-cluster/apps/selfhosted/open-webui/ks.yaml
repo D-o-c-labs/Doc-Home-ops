@@ -19,7 +19,7 @@ spec:
   wait: false
   dependsOn:
     - name: external-secrets-stores
-    - name: ollama
+    # - name: ollama
     - name: volsync
   postBuild:
     substitute:
