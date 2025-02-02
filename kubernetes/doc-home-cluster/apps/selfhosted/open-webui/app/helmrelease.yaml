@@ -49,11 +49,11 @@ spec:
                 enabled: true
             resources:
               requests:
-                cpu: "500m"
-                memory: "500Mi"
-              limits:
                 cpu: "1000m"
                 memory: "1Gi"
+              limits:
+                cpu: "3000m"
+                memory: "3Gi"
 
     service:
       app:
