@@ -78,6 +78,28 @@ spec:
         tls:
           - hosts:
               - "${HOSTNAME}"
+      file-upload:
+        enabled: true
+        className: "external-nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+        hosts:
+          - host: "${HOSTNAME}"
+            paths:
+              - path: /api/v1/files
+                service:
+                  identifier: app
+                  port: http
+              - path: /api/v1/knowledge
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - "${HOSTNAME}"
 
     persistence:
       conf:
