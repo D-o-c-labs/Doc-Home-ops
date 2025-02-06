@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/open-webui/open-webui
-              tag: 0.5.9
+              tag: 0.5.10
 
             envFrom:
               - secretRef:
