@@ -106,7 +106,7 @@ spec:
                 value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python
 
     service:
-      app-lb:
+      # app-lb:
         # controller: home-assistant
         # type: LoadBalancer
         # annotations:
