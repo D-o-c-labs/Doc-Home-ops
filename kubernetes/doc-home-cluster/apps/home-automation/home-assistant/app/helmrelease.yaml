@@ -106,7 +106,7 @@ spec:
                 value: keesschollaart.vscode-home-assistant|ms-toolsai.jupyter|ms-python.python
 
     service:
-      app:
+      app-lb:
         controller: home-assistant
         type: LoadBalancer
         annotations:
@@ -115,12 +115,11 @@ spec:
         ports:
           http:
             port: 8123
-
-      # app:
-      #   controller: home-assistant
-      #   ports:
-      #     http:
-      #       port: 8123
+      app:
+        controller: home-assistant
+        ports:
+          http:
+            port: 8123
       codeserver:
         controller: home-assistant
         ports:
