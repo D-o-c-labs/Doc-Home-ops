@@ -11,3 +11,4 @@ resources:
   - ./open-webui/ks.yaml
   - ./paperless/ks.yaml
   - ./tandoor/ks.yaml
+  - ./tika/ks.yaml

@@ -27,3 +27,12 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+
+    # Tika
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tika
+      toPorts:
+        - ports:
+            - port: "9998"
+              protocol: TCP
