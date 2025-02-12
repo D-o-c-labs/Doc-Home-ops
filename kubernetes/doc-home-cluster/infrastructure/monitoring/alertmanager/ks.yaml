@@ -1,26 +1,22 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname alertmanager
-  namespace: flux-system
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   targetNamespace: monitoring
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  interval: 10m
+  interval: 30m
+  timeout: 5m
   path: "./kubernetes/doc-home-cluster/infrastructure/monitoring/alertmanager/app"
   prune: true
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
-  wait: true
+  wait: false
   dependsOn:
-    - name: external-secrets-stores
-  postBuild:
-    substitute:
-      APP: *appname
-      HOSTNAME: alertmanager.piscio.net
+    - name: onepassword-store
+      namespace: external-secrets
