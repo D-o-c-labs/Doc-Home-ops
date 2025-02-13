@@ -1,0 +1,99 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: n8n
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      n8n:
+        annotations:
+          secret.reloader.stakater.com/reload: auto
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+            ingress.home.arpa/nginx-external: allow
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+
+        containers:
+          app:
+            image:
+              repository: n8nio/n8n
+              tag: 1.77.3
+            env:
+              VUE_APP_URL_BASE_API: "${HOSTNAME}"
+              WEBHOOK_URL: "${HOSTNAME}"
+              N8N_METRICS: "true"
+              NODE_ENV: "production"
+            envFrom:
+              - secretRef:
+                  name: n8n-db-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                cpu: 100m
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: n8n
+        ports:
+          http:
+            port: 5678
+
+    ingress:
+      app:
+        className: external-nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+        hosts:
+          - host: "${HOSTNAME}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          n8n:
+            app:
+              - path: /home/node/.n8n
+                readOnly: false

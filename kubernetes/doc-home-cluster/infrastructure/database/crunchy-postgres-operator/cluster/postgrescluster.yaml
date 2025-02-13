@@ -106,6 +106,11 @@ spec:
         - open-webui
       password:
         type: AlphaNumeric
+    - name: n8n
+      databases:
+        - n8n
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
