@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: open-webui-pipelines
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      open-webui-pipelines:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/internet: allow
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/open-webui/pipelines
+              tag: latest@sha256:854ab2028fa06e0491260a8d013776fedb484b5611b182ee3a6a456752121e35
+
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: "10m"
+                memory: "128Mi"
+              limits:
+                cpu: "250m"
+                memory: "512Mi"
+
+    service:
+      app:
+        controller: open-webui-pipelines
+        ports:
+          http:
+            port: 9099
+
+    persistence:
+      conf:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          open-webui-pipelines:
+            app:
+              - path: /app/pipelines

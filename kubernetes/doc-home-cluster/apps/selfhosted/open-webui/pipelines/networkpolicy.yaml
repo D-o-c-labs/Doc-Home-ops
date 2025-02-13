@@ -3,26 +3,23 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: n8n
+  name: open-webui-pipelines
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: n8n
-  ingress:
-    # open-webui
-    - fromEndpoints:
+      app.kubernetes.io/name: open-webui-pipelines
+  egress:
+    - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: open-webui-pipelines
+            app.kubernetes.io/name: n8n
       toPorts:
         - ports:
             - port: "5678"
               protocol: TCP
-
-  egress:
-    # open-webui
-    - toEndpoints:
+  ingress:
+    - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: open-webui-pipelines
+            app.kubernetes.io/name: open-webui
       toPorts:
         - ports:
             - port: "9099"
