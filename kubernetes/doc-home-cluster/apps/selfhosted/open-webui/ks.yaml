@@ -29,3 +29,30 @@ spec:
       VOLSYNC_CLAIM: open-webui-data
       VOLSYNC_CAPACITY: 30Gi
       VOLSYNC_CACHE_CAPACITY: 30Gi
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname open-webui-pipelines
+  namespace: flux-system
+spec:
+  targetNamespace: selfhosted
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/open-webui/pipelines"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: volsync
+  postBuild:
+    substitute:
+      APP: *appname
+      VOLSYNC_CLAIM: open-webui-pipelines-data
+      VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_CACHE_CAPACITY: 1Gi
