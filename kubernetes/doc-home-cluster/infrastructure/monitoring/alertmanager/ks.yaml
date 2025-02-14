@@ -19,5 +19,5 @@ spec:
     name: doc-ops-kubernetes
   wait: false
   dependsOn:
-    - name: onepassword-store
+    - name: external-secrets-stores
       namespace: external-secrets
