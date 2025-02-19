@@ -33,9 +33,6 @@ spec:
               repository: ghcr.io/open-webui/pipelines
               tag: latest@sha256:d3ec4160f97f76402d61c994067b825d4765676f93c3a45cae4cdd8da528253c
 
-            env:
-              PIPELINES_REQUIREMENTS_PATH: /tmp/pipelines_requirements/deepresearch_requirements.txt
-
             probes:
               liveness:
                 enabled: true
@@ -65,12 +62,3 @@ spec:
           open-webui-pipelines:
             app:
               - path: /app/pipelines
-
-      pipelines-requirements:
-        type: configMap
-        name: openwebui-pipelines-requirements-configmap
-        advancedMounts:
-          open-webui-pipelines:
-            app:
-              - path: /tmp/pipelines_requirements/deepresearch_requirements.txt
-                subPath: deepresearch_requirements.txt
