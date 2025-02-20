@@ -5,3 +5,9 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ../../../../templates/volsync
+configMapGenerator:
+  - name: openwebui-pipelines-requirements-configmap
+    files:
+      - config/deepresearch_requirements.txt
+generatorOptions:
+  disableNameSuffixHash: true
