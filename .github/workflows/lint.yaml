@@ -17,10 +17,19 @@ jobs:
     name: actionlint
     runs-on: ubuntu-latest
     steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.DOC_APP_ID }}
+          private-key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: "${{ steps.app-token.outputs.token }}"
 
       - name: Get changed files
         id: changed-files
@@ -41,10 +50,19 @@ jobs:
     name: yamllint
     runs-on: ubuntu-latest
     steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.DOC_APP_ID }}
+          private-key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: "${{ steps.app-token.outputs.token }}"
 
       - name: Get changed files
         id: changed-files
@@ -67,10 +85,19 @@ jobs:
     name: markdownlint
     runs-on: ubuntu-latest
     steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.DOC_APP_ID }}
+          private-key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: "${{ steps.app-token.outputs.token }}"
 
       - name: Get changed files
         id: changed-files
@@ -90,10 +117,19 @@ jobs:
     name: prettier
     runs-on: ubuntu-latest
     steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.DOC_APP_ID }}
+          private-key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: "${{ steps.app-token.outputs.token }}"
 
       - name: Get changed files
         id: changed-files
