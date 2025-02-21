@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: n8nio/n8n
-              tag: 1.80.1
+              tag: 1.80.2
             env:
               VUE_APP_URL_BASE_API: "${HOSTNAME}"
               WEBHOOK_URL: "${HOSTNAME}"
