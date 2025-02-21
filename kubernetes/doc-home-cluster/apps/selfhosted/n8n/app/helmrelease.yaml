@@ -38,8 +38,8 @@ spec:
               repository: n8nio/n8n
               tag: 1.80.2
             env:
-              VUE_APP_URL_BASE_API: "${HOSTNAME}"
-              WEBHOOK_URL: "${HOSTNAME}"
+              VUE_APP_URL_BASE_API: "https://${HOSTNAME}"
+              WEBHOOK_URL: "https://${HOSTNAME}"
               N8N_METRICS: "true"
               NODE_ENV: "production"
             envFrom:
