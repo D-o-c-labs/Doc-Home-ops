@@ -111,6 +111,11 @@ spec:
         - n8n
       password:
         type: AlphaNumeric
+    - name: n8n-knowledge
+      databases:
+        - n8n-knowledge
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
