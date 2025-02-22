@@ -9,5 +9,15 @@ configMapGenerator:
   - name: openwebui-pipelines-requirements-configmap
     files:
       - config/deepresearch_requirements.txt
+  - name: openwebui-pipelines-scripts-configmap
+    files:
+      - scripts/cookies.py
+      - scripts/gaia_scorer.py
+      - scripts/mdconvert.py
+      - scripts/reformulator.py
+      - scripts/run_agents.py
+      - scripts/text_inspector_tool.py
+      - scripts/text_web_browser.py
+      - scripts/visual_qa.py
 generatorOptions:
   disableNameSuffixHash: true

@@ -84,3 +84,11 @@ spec:
             app:
               - path: /tmp/pipelines_requirements/deepresearch_requirements.txt
                 subPath: deepresearch_requirements.txt
+
+      pipelines-scripts:
+        type: configMap
+        name: openwebui-pipelines-scripts-configmap
+        advancedMounts:
+          open-webui-pipelines:
+            app:
+              - path: /app/scripts/
