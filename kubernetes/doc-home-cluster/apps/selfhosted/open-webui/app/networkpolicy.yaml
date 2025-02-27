@@ -45,3 +45,12 @@ spec:
         - ports:
             - port: "9099"
               protocol: TCP
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: n8n
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
