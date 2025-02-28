@@ -4,7 +4,7 @@ version: "3.4"
 services:
   netmaker:
     container_name: netmaker
-    image: gravitl/netmaker:v0.30.0-ee@sha256:ee8a01bede80e4e51307013d828768a3145513f9293b12d286a723b87836836f
+    image: gravitl/netmaker:v0.30.0-ee@sha256:d54b4745740fdd48b773a48c5fb7b94809dee3168ff1e2185e17cddc8bc4945b
     cap_add:
       - NET_ADMIN
       - NET_RAW
