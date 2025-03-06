@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: getmeili/meilisearch
-              tag: v1.13.2
+              tag: v1.13.3
             probes:
               liveness:
                 enabled: false
