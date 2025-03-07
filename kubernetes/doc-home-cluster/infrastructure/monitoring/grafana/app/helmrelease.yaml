@@ -267,6 +267,12 @@ spec:
           - name: Loki
             orgId: 1
 
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: "${APP_UID}"
+      runAsGroup: "${APP_GID}"
+      fsGroup: "${APP_GID}"
+
     env:
       GF_ANALYTICS_CHECK_FOR_UPDATES: false
       GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: false
@@ -284,7 +290,6 @@ spec:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /tmp/dashboards/home.json
       GF_EXPLORE_ENABLED: true
-      GF_INSTALL_PLUGINS: grafana-strava-datasource
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards,externalServiceAccounts
       GF_PLUGINS_ENABLE_ALPHA: true
       GF_LOG_MODE: console
@@ -304,13 +309,14 @@ spec:
         external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
       ingressClassName: external-nginx
       hosts:
-        - &host grafana.piscio.net
+        - &host "${HOSTNAME}"
       tls:
         - hosts:
             - *host
 
     persistence:
-      enabled: false
+      enabled: true
+      existingClaim: "${VOLSYNC_CLAIM}"
 
     plugins:
       - grafana-clock-panel
@@ -320,6 +326,7 @@ spec:
       - pr0ps-trackmap-panel
       - vonage-status-panel
       - blackmirror1-singlestat-math-panel
+      - grafana-strava-datasource
 
     rbac:
       pspEnabled: false

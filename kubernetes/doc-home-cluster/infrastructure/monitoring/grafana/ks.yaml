@@ -19,3 +19,10 @@ spec:
   wait: false
   dependsOn:
     - name: external-secrets-stores
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: grafana.piscio.net
+      APP_UID: "472"
+      APP_GID: "472"
+      VOLSYNC_CLAIM: grafana-config
