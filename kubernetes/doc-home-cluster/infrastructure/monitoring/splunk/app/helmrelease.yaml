@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: splunk
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.2
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      splunk:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/internet: allow
+            ingress.home.arpa/nginx-external: allow
+
+        containers:
+          app:
+            image:
+              repository: splunk/splunk
+              tag: 9.4
+
+            env:
+              SPLUNK_START_ARGS: --accept-license
+            envFrom:
+              - secretRef:
+                  name: splunk-secret
+
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 8000
+                  initialDelaySeconds: 120
+                  periodSeconds: 10
+                  failureThreshold: 40
+                  timeoutSeconds: 5
+            resources:
+              requests:
+                cpu: "1000m"
+                memory: "2Gi"
+              limits:
+                cpu: "2000m"
+                memory: "6Gi"
+
+    service:
+      app:
+        controller: splunk
+        ports:
+          http:
+            port: 8000
+
+    ingress:
+      app:
+        enabled: true
+        className: "external-nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+        hosts:
+          - host: "${HOSTNAME}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - "${HOSTNAME}"
+
+    persistence:
+      splunk-var:
+        existingClaim: splunk-var
+        advancedMounts:
+          splunk:
+            app:
+              - path: /opt/splunk/var
+
+      splunk-etc:
+        existingClaim: splunk-etc
+        advancedMounts:
+          splunk:
+            app:
+              - path: /opt/splunk/etc
