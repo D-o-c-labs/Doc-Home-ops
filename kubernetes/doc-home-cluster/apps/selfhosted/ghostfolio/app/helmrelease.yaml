@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.1
+      version: 3.7.2
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghostfolio/ghostfolio
-              tag: 2.143.0
+              tag: 2.144.0
             probes:
               liveness:
                 enabled: true

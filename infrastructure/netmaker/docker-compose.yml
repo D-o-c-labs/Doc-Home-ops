@@ -48,7 +48,7 @@ services:
       - "51821-51830:51821-51830/udp"
   netmaker-ui:
     container_name: netmaker-ui
-    image: gravitl/netmaker-ui:v0.30.0@sha256:0a462ce299aacca37581fc81cffe0a701c55c6f04e9e762590c5b0f6be4d16ab
+    image: gravitl/netmaker-ui:v0.30.0@sha256:873e7030cd8a1edb0c8b45ec13aafaa6803e31875130a6fffba82febf4534922
     depends_on:
       - netmaker
     links:
@@ -78,7 +78,7 @@ services:
       - dnsconfig:/root/dnsconfig
   mq:
     container_name: mq
-    image: eclipse-mosquitto:2.0.20-openssl@sha256:21421af7b32bf9ce508e9090c8eb13bb81f410ca778dc205506180a6f862d0eb
+    image: eclipse-mosquitto:2.0.21-openssl@sha256:94f5a3d7deafa59fa3440d227ddad558f59d293c612138de841eec61bfa4d353
     depends_on:
       - netmaker
     restart: unless-stopped
