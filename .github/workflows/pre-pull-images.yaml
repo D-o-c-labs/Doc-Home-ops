@@ -58,7 +58,7 @@ jobs:
           args: >-
             get cluster
             --all-namespaces
-            --path /github/workspace/kubernetes/doc-home-cluster/flux
+            --path /github/workspace/kubernetes/doc-home-cluster/flux/config
             --enable-images
             --only-images
             --output json
