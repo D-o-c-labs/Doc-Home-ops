@@ -38,7 +38,7 @@ jobs:
       - name: Run flux-local test
         uses: docker://ghcr.io/allenporter/flux-local:v7.3.0@sha256:81870d4e24a3691e0ef9a258505100b194e550e1f8ffeb5e696fdbaab1913429
         with:
-          args: test --enable-helm --all-namespaces --path /github/workspace/kubernetes/doc-home-cluster/flux -v
+          args: test --enable-helm --all-namespaces --path /github/workspace/kubernetes/doc-home-cluster/flux/config -v
 
   diff:
     if: ${{ needs.filter-changes.outputs.changed-files != '[]' }}
@@ -68,13 +68,13 @@ jobs:
           path: default
 
       - name: Run flux-local diff
-        uses: docker://ghcr.io/allenporter/flux-local:v7.3.0
+        uses: docker://ghcr.io/allenporter/flux-local:v7.3.0@sha256:81870d4e24a3691e0ef9a258505100b194e550e1f8ffeb5e696fdbaab1913429
         with:
           args: >-
             diff ${{ matrix.resources }}
             --unified 6
-            --path /github/workspace/pull/kubernetes/doc-home-cluster/flux
-            --path-orig /github/workspace/default/kubernetes/doc-home-cluster/flux
+            --path /github/workspace/pull/kubernetes/doc-home-cluster/flux/config
+            --path-orig /github/workspace/default/kubernetes/doc-home-cluster/flux/config
             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
             --limit-bytes 10000
             --all-namespaces
