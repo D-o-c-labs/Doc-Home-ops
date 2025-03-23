@@ -4,64 +4,64 @@
     {
       description: 'Loose versioning for non-semver packages',
       matchDatasources: [
-        'docker'
+        'docker',
       ],
       matchPackageNames: [
         'ghcr.io/cross-seed/cross-seed',
         'ghcr.io/home-operations/plex',
-        'ghcr.io/xirixiz/dsmr-reader-docker'
+        'ghcr.io/xirixiz/dsmr-reader-docker',
       ],
-      versioning: 'loose'
+      versioning: 'loose',
     },
     {
       description: 'PEP440 versioning for radicale',
       matchDatasources: [
-        'docker'
+        'docker',
       ],
       matchPackageNames: [
-        'tomsquest/docker-radicale'
+        'tomsquest/docker-radicale',
       ],
-      versioning: 'pep440'
+      versioning: 'pep440',
     },
     {
       description: 'Custom versioning for http-https-echo',
       matchDatasources: [
-        'docker'
+        'docker',
       ],
       matchPackageNames: [
-        'ghcr.io/mendhak/http-https-echo'
+        'ghcr.io/mendhak/http-https-echo',
       ],
-      versioning: 'regex:^(?<major>\\d+)$'
+      versioning: 'regex:^(?<major>\\d+)$',
     },
     {
       description: 'Enable pre-releases for LibreChat',
       matchDatasources: [
-        'docker'
+        'docker',
       ],
       matchPackageNames: [
-        'ghcr.io/danny-avila/librechat'
+        'ghcr.io/danny-avila/librechat',
       ],
-      ignoreUnstable: false
+      ignoreUnstable: false,
     },
     {
       description: 'Authentik helm chart',
       matchPackagePatterns: [
-        '^authentik$'
+        '^authentik$',
       ],
       matchDatasources: [
-        'helm'
+        'helm',
       ],
-      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$'
+      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
     },
     {
       description: 'Authentik image',
       matchPackageNames: [
-        'ghcr.io/goauthentik/server'
+        'ghcr.io/goauthentik/server',
       ],
       matchDatasources: [
-        'docker'
+        'docker',
       ],
-      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$'
-    }
-  ]
+      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
+    },
+  ],
 }
