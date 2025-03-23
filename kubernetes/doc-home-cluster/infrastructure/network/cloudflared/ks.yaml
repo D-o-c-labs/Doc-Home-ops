@@ -18,6 +18,6 @@ spec:
     name: doc-ops-kubernetes
   wait: false
   dependsOn:
-    - name: onepassword-store
+    - name: external-secrets-stores
     - name: externaldns-cloudflare
     - name: nginx-external
