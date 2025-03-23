@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &appname externaldns-shared
+  name: &appname externaldns-cloudflare
   namespace: flux-system
 spec:
   targetNamespace: network
@@ -11,34 +11,14 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/shared"
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: doc-ops-kubernetes
-  wait: true
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &appname externaldns-external
-  namespace: flux-system
-spec:
-  targetNamespace: network
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *appname
-  interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/external"
+  path: "./kubernetes/doc-home-cluster/infrastructure/network/external-dns/cloudflare"
   prune: true
   sourceRef:
     kind: GitRepository
     name: doc-ops-kubernetes
   wait: true
   dependsOn:
-    - name: externaldns-shared
-    - name: external-secrets-stores
+    - name: onepassword-store
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
