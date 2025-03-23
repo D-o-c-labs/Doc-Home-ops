@@ -8,7 +8,7 @@
       ],
       matchPackageNames: [
         'ghcr.io/cross-seed/cross-seed',
-        'ghcr.io/onedr0p/plex',
+        'ghcr.io/home-operations/plex',
         'ghcr.io/xirixiz/dsmr-reader-docker',
       ],
       versioning: 'loose',
