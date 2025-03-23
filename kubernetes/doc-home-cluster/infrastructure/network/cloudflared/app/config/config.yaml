@@ -1,11 +1,10 @@
 ---
+originRequest:
+  originServerName: ingress-ext.piscio.net
+
 ingress:
   - hostname: "piscio.net"
-    service: https://nginx-external-controller.network.svc.cluster.local:443
-    originRequest:
-      originServerName: ingress-ext.piscio.net
+    service: &svc https://nginx-external-controller.network.svc.cluster.local:443
   - hostname: "*.piscio.net"
-    service: https://nginx-external-controller.network.svc.cluster.local:443
-    originRequest:
-      originServerName: ingress-ext.piscio.net
+    service: *svc
   - service: http_status:404

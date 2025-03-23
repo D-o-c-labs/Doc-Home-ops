@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: externaldns-external
+  name: externaldns-cloudflare
 spec:
   interval: 30m
   chart:
@@ -15,9 +15,12 @@ spec:
         name: kubernetes-sigs-external-dns
         namespace: flux-system
       interval: 30m
-
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   values:
-    fullnameOverride: &name externaldns-external
+    fullnameOverride: &name externaldns-cloudflare
 
     domainFilters:
       - piscio.net
@@ -26,17 +29,19 @@ spec:
       - name: CF_API_TOKEN
         valueFrom:
           secretKeyRef:
-            name: externaldns-external-secrets
+            name: externaldns-cloudflare-secrets
             key: cloudflare_api_token
 
     extraArgs:
+      - --cloudflare-dns-records-per-page=1000
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
       - --cloudflare-proxied
       - --ingress-class=external-nginx
+      - --gateway-label-filter=gateway==external
 
     podAnnotations:
-      secret.reloader.stakater.com/reload: externaldns-external-secrets
+      secret.reloader.stakater.com/reload: externaldns-cloudflare-secrets
 
     policy: sync
     provider: cloudflare
@@ -52,9 +57,12 @@ spec:
       enabled: true
 
     sources:
+      - gateway-httproute
       - ingress
       - crd
 
+    triggerLoopOnEvent: true
+    txtOwnerId: main
     txtPrefix: "k8s."
 
   postRenderers:
