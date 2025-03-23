@@ -14,6 +14,7 @@ resources:
   - ./loki/ks.yaml
   - ./node-exporter/ks.yaml
   - ./prometheus-operator/ks.yaml
+  - ./splunk/ks.yaml
   # - ./silence-operator/ks.yaml
   # - ./vector/ks.yaml
   # - ./victoria-metrics/ks.yaml
