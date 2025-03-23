@@ -2,27 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "Auto merge container digests",
-      matchDatasources: ["docker"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["digest"],
-      matchPackagePrefixes: ["ghcr.io/onedr0p", "ghcr.io/bjw-s", "ghcr.io/bjw-s-labs"],
-      ignoreTests: true,
-    },
-    {
       description: "Auto merge containers",
       matchDatasources: ["docker"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest", "minor", "patch"],
       matchPackageNames: [
-        "ghcr.io/onedr0p/prowlarr-nightly",
-        "ghcr.io/onedr0p/sonarr-develop",
-        "ghcr.io/onedr0p/radarr-develop",
+        "ghcr.io/home-operations/prowlarr",
+        "ghcr.io/home-operations/sonarr",
+        "ghcr.io/home-operations/radarr",
+        "ghcr.io/home-operations/bazarr",
         "ghcr.io/flaresolverr/flaresolverr",
         "ghcr.io/sct/overseerr",
-        "ghcr.io/onedr0p/bazarr",
         "lscr.io/linuxserver/code-server",
         "ghcr.io/esphome/esphome",
         "gravitl/netmaker",
@@ -36,15 +27,6 @@
       automergeType: "branch",
       matchUpdateTypes: ["digest", "patch"],
       matchPackageNames: ["ghcr.io/home-assistant/home-assistant"],
-      ignoreTests: true
-    },
-    {
-      description: "Auto merge Lobechat patch",
-      matchDatasources: ["docker"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["digest", "patch"],
-      matchPackageNames: ["lobehub/lobe-chat-database"],
       ignoreTests: true
     },
     {
