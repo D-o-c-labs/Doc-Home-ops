@@ -37,5 +37,5 @@
       matchPackageNames: ["kube-prometheus-stack"],
       ignoreTests: false,
     }
-  ],
+  ]
 }

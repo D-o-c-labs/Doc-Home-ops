@@ -63,5 +63,5 @@
       ],
       versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
     },
-  ],
+  ]
 }
