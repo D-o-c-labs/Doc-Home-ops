@@ -19,7 +19,7 @@
         "gravitl/netmaker",
         "gravitl/netmaker-ui",
         "cloudflare/cloudflared"],
-      ignoreTests: true,
+      ignoreTests: true
     },
     {
       description: "Auto merge Home Assistant patch",
@@ -35,7 +35,7 @@
       automerge: true,
       matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: ["kube-prometheus-stack"],
-      ignoreTests: false,
+      ignoreTests: false
     }
   ]
 }
