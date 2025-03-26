@@ -21,6 +21,11 @@ spec:
     controller:
       replicaCount: 2
 
+      image:
+        image: ingress-nginx/controller
+        tag: "v1.12.1"
+        digest: sha256:d2fbc4ec70d8aa2050dd91a91506e998765e86c96f32cffb56c503c9c34eed5b
+
       updateStrategy:
         type: RollingUpdate
 
