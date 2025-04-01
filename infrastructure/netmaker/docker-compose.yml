@@ -69,7 +69,7 @@ services:
       - "443:443"
   coredns:
     container_name: coredns
-    image: coredns/coredns@sha256:40384aa1f5ea6bfdc77997d243aec73da05f27aed0c5e9d65bfa98933c519d97
+    image: coredns/coredns@sha256:e8c262566636e6bc340ece6473b0eed193cad045384401529721ddbe6463d31c
     command: -conf /root/dnsconfig/Corefile
     depends_on:
       - netmaker
