@@ -41,3 +41,6 @@ infrastructure/talos/**/clusterconfig
 
 
 .vscode/settings.json
+
+# Aider
+.aider*
