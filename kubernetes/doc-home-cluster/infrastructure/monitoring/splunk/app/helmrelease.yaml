@@ -36,7 +36,6 @@ spec:
 
             env:
               SPLUNK_START_ARGS: --accept-license
-              SPLUNK_ENABLE_KVSTORE: true
             envFrom:
               - secretRef:
                   name: splunk-secret
@@ -71,6 +70,15 @@ spec:
         ports:
           http:
             port: 8000
+      api:
+        controller: splunk
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.32.157"
+        externalTrafficPolicy: Local
+        ports:
+          api:
+            port: 8089
 
     ingress:
       app:
