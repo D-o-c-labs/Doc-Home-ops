@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/open-webui/pipelines
-              tag: latest@sha256:e50c461dbd81eed695d1f0af702c61fdf36673170273515854ee061751b9e355
+              tag: latest@sha256:8894e72f3752480bfae70d6d012fc9b7642e89516f1892a80460c22a3432bd6d
 
             env:
               PIPELINES_REQUIREMENTS_PATH: /tmp/pipelines_requirements/deepresearch_requirements.txt
