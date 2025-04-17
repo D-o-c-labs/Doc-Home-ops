@@ -1,5 +1,5 @@
 site_name: My Documentation
-theme: readthedocs
+theme: terminal
 nav:
   - Home: index.md
   - About: about.md
