@@ -1,0 +1,5 @@
+site_name: My Documentation
+theme: readthedocs
+nav:
+  - Home: index.md
+  - About: about.md
