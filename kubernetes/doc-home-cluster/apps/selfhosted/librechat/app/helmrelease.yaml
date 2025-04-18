@@ -96,8 +96,8 @@ spec:
 
     persistence:
       librechat-configfile:
-        type: configMap
-        name: librechat-configmap
+        type: secret
+        name: librechat-config
         advancedMounts:
           librechat:
             app:

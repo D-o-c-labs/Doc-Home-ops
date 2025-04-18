@@ -5,9 +5,3 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
-configMapGenerator:
-  - name: librechat-configmap
-    files:
-      - config/librechat.yaml
-generatorOptions:
-  disableNameSuffixHash: true
