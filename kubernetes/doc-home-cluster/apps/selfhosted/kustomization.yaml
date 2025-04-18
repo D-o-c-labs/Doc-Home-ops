@@ -6,7 +6,7 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./ghostfolio/ks.yaml
-  # - ./librechat/ks.yaml
+  - ./librechat/ks.yaml
   - ./n8n/ks.yaml
   # - ./ollama/ks.yaml
   - ./open-webui/ks.yaml
