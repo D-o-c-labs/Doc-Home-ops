@@ -35,29 +35,39 @@ spec:
               # tag: v0.7.6
               tag: latest@sha256:71f4135a646e0318a5f0b7079a4d253ba2673c64bac67caef883c4035e2f9888
             probes:
-              liveness: &probes
+              liveness: &probes # Keep anchor for liveness probe definition
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /health
                     port: 3080
-                  initialDelaySeconds: 15
+                  initialDelaySeconds: 15 # Liveness probe starts 15s after startup probe succeeds
                   periodSeconds: 20
                   timeoutSeconds: 5
                   failureThreshold: 3
-              readiness:
+              readiness: # Readiness probe remains unchanged
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /health
                     port: 3080
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 0 # Starts checking immediately once container network is up
                   periodSeconds: 10
                   timeoutSeconds: 5
-                  failureThreshold: 30
-              startup: *probes
+                  failureThreshold: 30 # Allow more failures for readiness during startup potentially
+              startup: # Explicitly define startup probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 3080
+                  initialDelaySeconds: 60 # Wait 90 seconds before the first check
+                  periodSeconds: 25 # Check every 25 seconds after the initial delay
+                  timeoutSeconds: 5
+                  failureThreshold: 3 # Fail after 3 consecutive failures (total wait time ~90 + 3*25 = 165s)
             resources:
               requests:
                 cpu: 10m
