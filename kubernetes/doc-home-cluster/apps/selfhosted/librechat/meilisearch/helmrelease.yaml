@@ -40,11 +40,9 @@ spec:
                 enabled: false
             resources:
               requests:
-                cpu: 0m
-                memory: 64Mi
+                cpu: 10m
               limits:
-                cpu: 50m
-                memory: 128M
+                memory: 4G
             env:
               MEILI_NO_ANALYTICS: true
               MEILI_MASTER_KEY:
