@@ -26,10 +26,10 @@ spec:
           secret.reloader.stakater.com/reload: qbittorrent-secret
 
         pod:
-          labels:
-            egress.home.arpa/internet: allow
-            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-            ingress.home.arpa/nginx-internal: allow
+          # labels:
+          #   egress.home.arpa/internet: allow
+          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          #   ingress.home.arpa/nginx-internal: allow
           securityContext:
             fsGroup: ${APP_GID}
             fsGroupChangePolicy: "OnRootMismatch"
