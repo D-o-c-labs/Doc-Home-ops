@@ -47,7 +47,6 @@ spec:
               - /etc/coredns/Corefile
             restartPolicy: Always
 
-
           gluetun:
             dependsOn:
               - coredns
@@ -85,7 +84,6 @@ spec:
                 add:
                   - NET_ADMIN
               allowPrivilegeEscalation: false
-
 
         containers:
           app:
