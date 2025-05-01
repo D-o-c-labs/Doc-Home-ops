@@ -106,15 +106,6 @@ spec:
     ### Prometheus instance values
     ###
     prometheus:
-      ingress:
-        enabled: true
-        ingressClassName: internal-nginx
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - prometheus.piscio.net
-        pathType: Prefix
-
       prometheusSpec:
         alertingEndpoints:
           - namespace: monitoring
@@ -149,3 +140,13 @@ spec:
                 requests:
                   storage: 55Gi
         walCompression: true
+
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - ${HOSTNAME}
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https

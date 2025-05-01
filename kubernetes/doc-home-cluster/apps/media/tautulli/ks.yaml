@@ -24,6 +24,7 @@ spec:
   postBuild:
     substitute:
       APP: *appname
+      HOSTNAME: tautulli.piscio.net
       VOLSYNC_CLAIM: tautulli-config
       APP_UID: "2000"
       APP_GID: "2000"

@@ -23,6 +23,7 @@ spec:
   postBuild:
     substitute:
       APP: *appname
+      HOSTNAME: plex.piscio.net
       VOLSYNC_CLAIM: plex-config
       VOLSYNC_CAPACITY: 50Gi
       APP_UID: "2000"

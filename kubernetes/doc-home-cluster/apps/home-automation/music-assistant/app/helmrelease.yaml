@@ -68,28 +68,12 @@ spec:
         controller: music-assistant
         ports:
           http:
-            port: 8095
+            port: &port 8095
       api:
         controller: music-assistant
         ports:
           http:
             port: 8097
-
-    ingress:
-      app:
-        className: "internal-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
 
     persistence:
       data:
@@ -98,3 +82,16 @@ spec:
           music-assistant:
             app:
               - path: /data
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: music-assistant
+                port: *port

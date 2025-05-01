@@ -66,22 +66,6 @@ spec:
           http:
             port: *port
 
-    ingress:
-      app:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        className: "external-nginx"
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-
     persistence:
       config:
         existingClaim: "${VOLSYNC_CLAIM}"
@@ -91,3 +75,16 @@ spec:
         path: /volume1/Media
         globalMounts:
           - path: /data/nas-media
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: radarr
+                port: *port

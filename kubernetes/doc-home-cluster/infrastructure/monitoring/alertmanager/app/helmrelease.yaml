@@ -64,20 +64,7 @@ spec:
         controller: alertmanager
         ports:
           http:
-            port: 9093
-
-    ingress:
-      app:
-        className: "internal-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - host: alertmanager.piscio.net
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+            port: &port 9093
 
     persistence:
       config:
@@ -90,3 +77,16 @@ spec:
         name: alertmanager-secret
         globalMounts:
           - path: /etc/secrets
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: alertmanager
+                port: *port

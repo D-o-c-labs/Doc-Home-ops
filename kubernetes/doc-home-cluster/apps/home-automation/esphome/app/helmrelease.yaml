@@ -91,40 +91,12 @@ spec:
         controller: esphome
         ports:
           http:
-            port: 6052
+            port: &port-esphome 6052
       codeserver:
         controller: esphome
         ports:
           codeserver:
-            port: 8443
-
-    ingress:
-      app:
-        className: "internal-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-      codeserver:
-        className: "internal-nginx"
-        hosts:
-          - host: &host "code-esphome.piscio.net"
-            paths:
-              - path: /
-                service:
-                  identifier: codeserver
-                  port: codeserver
-        tls:
-          - hosts:
-              - *host
+            port: &port-code 8443
 
     persistence:
       config:
@@ -166,3 +138,27 @@ spec:
         globalMounts:
           - path: /root/.ssh/id_ed25519
             subPath: id_ed25519
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: esphome
+                port: *port-esphome
+      code:
+        hostnames:
+          - code-esphome.piscio.net
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: esphome
+                port: *port-code

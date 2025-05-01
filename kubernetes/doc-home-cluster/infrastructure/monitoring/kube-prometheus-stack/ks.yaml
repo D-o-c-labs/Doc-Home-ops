@@ -19,3 +19,7 @@ spec:
   dependsOn:
     - name: alertmanager
     - name: rook-ceph-cluster
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: alertmanager.piscio.net

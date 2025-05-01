@@ -78,21 +78,21 @@ spec:
           http:
             port: *port
 
-    ingress:
-      app:
-        className: internal-nginx
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - host: autobrr.piscio.net
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-
     persistence:
       config:
         existingClaim: "${VOLSYNC_CLAIM}"
       tmp:
         type: emptyDir
+
+    route:
+      app:
+        hostnames:
+          - autobrr.piscio.net
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: autobrr
+                port: *port

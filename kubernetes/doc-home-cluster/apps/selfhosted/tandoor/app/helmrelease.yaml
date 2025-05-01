@@ -93,23 +93,7 @@ spec:
         controller: tandoor
         ports:
           http:
-            port: 8080
-
-    ingress:
-      app:
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
+            port: &port 8080
 
     persistence:
       files:
@@ -144,3 +128,16 @@ spec:
                 subPath: app-tmp
               - path: /opt/recipes/cookbook/static/django_js_reverse
                 subPath: django_js_reverse
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: tandoor
+                port: *port

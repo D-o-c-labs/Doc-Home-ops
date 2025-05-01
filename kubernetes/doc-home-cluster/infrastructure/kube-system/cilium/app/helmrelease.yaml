@@ -12,7 +12,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: cilium
-        namespace: flux-system
       version: 1.17.3
   interval: 30m
 
@@ -22,45 +21,28 @@ spec:
 
   values:
     hubble:
-      serviceMonitor:
-        enabled: true
-
-      dashboards:
-        enabled: true
-        annotations:
-          grafana_folder: Cilium
-
+      enabled: true
+      metrics:
+        enabled:
+          - dns:query
+          - drop
+          - tcp
+          - flow
+          - port-distribution
+          - icmp
+          - http
+        serviceMonitor:
+          enabled: true
+        dashboards:
+          enabled: true
       relay:
+        enabled: true
+        rollOutPods: true
         prometheus:
           serviceMonitor:
             enabled: true
-
       ui:
-        ingress:
-          enabled: true
-          className: "internal-nginx"
-          annotations:
-            external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-          hosts:
-            - cilium.piscio.net
-
+        enabled: true
+        rollOutPods: true
     operator:
-      prometheus:
-        enabled: true
-        serviceMonitor:
-          enabled: true
-      dashboards:
-        enabled: true
-        annotations:
-          grafana_folder: Cilium
-
-    prometheus:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-        trustCRDsExist: true
-
-    dashboards:
-      enabled: true
-      annotations:
-        grafana_folder: Cilium
+      tolerations: []

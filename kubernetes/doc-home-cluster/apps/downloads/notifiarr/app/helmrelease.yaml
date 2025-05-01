@@ -75,26 +75,22 @@ spec:
                 drop:
                   - ALL
 
-    ingress:
-      app:
-        enabled: true
-        className: "internal-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-
     service:
       app:
         controller: notifiarr
         ports:
           http:
-            port: 5454
+            port: &port 5454
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: notifiarr
+                port: *port

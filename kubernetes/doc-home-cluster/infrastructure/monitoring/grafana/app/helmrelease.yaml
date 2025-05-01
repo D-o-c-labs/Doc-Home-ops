@@ -304,17 +304,6 @@ spec:
     imageRenderer:
       enabled: true
 
-    ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-      ingressClassName: external-nginx
-      hosts:
-        - &host "${HOSTNAME}"
-      tls:
-        - hosts:
-            - *host
-
     persistence:
       enabled: true
       existingClaim: "${VOLSYNC_CLAIM}"
@@ -337,6 +326,16 @@ spec:
       requests:
         cpu: 50m
         memory: 128Mi
+
+    route:
+      main:
+        enabled: true
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
 
     serviceAccount:
       create: true
