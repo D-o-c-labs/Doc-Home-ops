@@ -72,7 +72,6 @@ spec:
               namespace: kube-system
               sectionName: https
 
-
     postgresql:
       enabled: false
 
