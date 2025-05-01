@@ -112,7 +112,7 @@ spec:
     route:
       app:
         hostnames:
-          - ${HOSTNAME}
+          - plex.piscio.net
         parentRefs:
           - name: external
             namespace: kube-system
