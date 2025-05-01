@@ -101,23 +101,12 @@ spec:
         controller: paperless
         ports:
           http:
-            port: 8000
+            port: &port 8000
       redis:
         controller: redis
         ports:
           http:
             port: 6379
-
-    ingress:
-      app:
-        className: "internal-nginx"
-        hosts:
-          - host: paperless.piscio.net
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
 
     persistence:
       data:
@@ -134,3 +123,16 @@ spec:
           paperless:
             app:
               - path: /data/nas
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: paperless
+                port: *port

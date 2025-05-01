@@ -61,46 +61,31 @@ spec:
         controller: open-webui
         ports:
           http:
-            port: 8080
+            port: &port 8080
 
-    ingress:
-      app:
-        enabled: true
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-      file-upload:
-        enabled: true
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-          nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-          nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /api/v1/files
-                service:
-                  identifier: app
-                  port: http
-              - path: /api/v1/knowledge
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
+    # ingress:
+    #   file-upload:
+    #     enabled: true
+    #     className: "external-nginx"
+    #     annotations:
+    #       external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
+    #       nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    #       nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    #       nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+    #     hosts:
+    #       - host: "${HOSTNAME}"
+    #         paths:
+    #           - path: /api/v1/files
+    #             service:
+    #               identifier: app
+    #               port: http
+    #           - path: /api/v1/knowledge
+    #             service:
+    #               identifier: app
+    #               port: http
+    #     tls:
+    #       - hosts:
+    #           - "${HOSTNAME}"
 
     persistence:
       conf:
@@ -109,3 +94,16 @@ spec:
           open-webui:
             app:
               - path: /app/backend/data
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: open-webui
+                port: *port

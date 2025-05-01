@@ -53,6 +53,7 @@ spec:
   postBuild:
     substitute:
       APP: *appname
+      HOSTNAME: plex.piscio.net
       APP_UID: "1000"
       APP_GID: "1000"
       VOLSYNC_CLAIM: plex-trakt-sync-config

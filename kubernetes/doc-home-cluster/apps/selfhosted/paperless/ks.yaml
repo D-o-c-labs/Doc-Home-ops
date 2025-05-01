@@ -25,6 +25,7 @@ spec:
   postBuild:
     substitute:
       APP: *appname
+      HOSTNAME: paperless.piscio.net
       APP_UID: "1000"
       APP_GID: "65542"
       VOLSYNC_CLAIM: paperless-data

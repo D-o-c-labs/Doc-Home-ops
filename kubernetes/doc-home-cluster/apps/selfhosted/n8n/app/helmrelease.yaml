@@ -74,20 +74,7 @@ spec:
         controller: n8n
         ports:
           http:
-            port: 5678
-
-    ingress:
-      app:
-        className: external-nginx
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+            port: &port 5678
 
     persistence:
       config:
@@ -97,3 +84,16 @@ spec:
             app:
               - path: /home/node/.n8n
                 readOnly: false
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: n8n
+                port: *port

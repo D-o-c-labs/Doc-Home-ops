@@ -18,14 +18,14 @@ spec:
     monitoring:
       enabled: true
       createPrometheusRules: true
-    ingress:
-      dashboard:
-        ingressClassName: "internal-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        host:
-          name: rook-main.piscio.net
-          path: "/"
+    # ingress:
+    #   dashboard:
+    #     ingressClassName: "internal-nginx"
+    #     annotations:
+    #       external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
+    #     host:
+    #       name: rook-main.piscio.net
+    #       path: "/"
     toolbox:
       enabled: false
     configOverride: |

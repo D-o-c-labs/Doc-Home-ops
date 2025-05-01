@@ -161,22 +161,6 @@ spec:
           http:
             port: *port
 
-    ingress:
-      app:
-        className: "internal-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-int.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-
     persistence:
       config:
         enabled: true
@@ -227,3 +211,16 @@ spec:
           qbittorrent:
             app:
               - path: /config/scripts
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: qbittorrent
+                port: *port

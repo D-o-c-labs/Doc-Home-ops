@@ -20,3 +20,7 @@ spec:
   wait: false
   dependsOn:
     - name: external-secrets-stores
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: alertmanager.piscio.net

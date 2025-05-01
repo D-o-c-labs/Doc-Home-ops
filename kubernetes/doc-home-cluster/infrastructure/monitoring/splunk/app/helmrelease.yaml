@@ -69,7 +69,7 @@ spec:
         controller: splunk
         ports:
           http:
-            port: 8000
+            port: &port 8000
       api:
         controller: splunk
         type: LoadBalancer
@@ -79,23 +79,6 @@ spec:
         ports:
           api:
             port: 8089
-
-    ingress:
-      app:
-        enabled: true
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
 
     persistence:
       splunk-var:
@@ -111,3 +94,16 @@ spec:
           splunk:
             app:
               - path: /opt/splunk/etc
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: splunk
+                port: *port

@@ -119,40 +119,12 @@ spec:
         controller: home-assistant
         ports:
           http:
-            port: 8123
+            port: &port-homeassistant 8123
       codeserver:
         controller: home-assistant
         ports:
           codeserver:
-            port: 8443
-
-    ingress:
-      app:
-        className: "external-nginx"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: ingress-ext.piscio.net
-        hosts:
-          - host: "${HOSTNAME}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - "${HOSTNAME}"
-      codeserver:
-        className: "internal-nginx"
-        hosts:
-          - host: &host "code-homeassistant.piscio.net"
-            paths:
-              - path: /
-                service:
-                  identifier: codeserver
-                  port: codeserver
-        tls:
-          - hosts:
-              - *host
+            port: &port-code 8443
 
     persistence:
       config:
@@ -176,3 +148,27 @@ spec:
             codeserver:
               - path: /usr/local/share/jupyter/kernels/pyscript
                 readOnly: false
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: home-assistant
+                port: *port-homeassistant
+      code:
+        hostnames:
+          - code-home-assistant.piscio.net
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: home-assistant
+                port: *port-code
