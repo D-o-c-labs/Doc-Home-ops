@@ -3,45 +3,39 @@ autoDirectNodeRoutes: true
 bandwidthManager:
   bbr: true
   enabled: true
+bgpControlPlane:
+  enabled: true
 bpf:
+  datapathMode: netkit
   masquerade: true
-  tproxy: true
+  preallocateMaps: true
+bpfClockProbe: true
 cgroup:
   autoMount:
     enabled: false
   hostRoot: /sys/fs/cgroup
 cluster:
-  name: doc-home-cluster
   id: 1
+  name: doc-home-cluster
 cni:
   exclusive: false
+dashboards:
+  enabled: true
+  annotations:
+    grafana_folder: Cilium
 devices: eth0+
 enableRuntimeDeviceDetection: true
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
-hubble:
   enabled: true
-  metrics:
-    enabled:
-      - dns:query;ignoreAAAA
-      - drop
-      - tcp
-      - flow
-      - port-distribution
-      - icmp
-      - http
-  relay:
-    enabled: true
-    rollOutPods: true
-  serviceMonitor:
-    enabled: false
-  ui:
-    enabled: true
-    ingress:
-      enabled: false
-    rollOutPods: true
+  rollOutPods: true
+gatewayAPI:
+  enabled: true
+  enableAlpn: true
+  xffNumTrustedHops: 1
+hubble:
+  enabled: false
 ipam:
   mode: "kubernetes"
 ipv4NativeRoutingCIDR: 10.244.0.0/16
@@ -50,13 +44,27 @@ k8sServicePort: 6443
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: true
+  enabled: false
 loadBalancer:
   algorithm: maglev
   mode: dsr
 localRedirectPolicy: true
 operator:
+  dashboards:
+    enabled: true
+    annotations:
+      grafana_folder: Cilium
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  replicas: 2
   rollOutPods: true
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
@@ -69,6 +77,8 @@ securityContext:
       - IPC_LOCK
       - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
