@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: home-assistant
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: home-assistant
+  egress:
+    # mosquitto
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: mosquitto
+      toPorts:
+        - ports:
+            - port: "1883"
+              protocol: TCP
+
+    # postgres
+    - toEndpoints:
+        - matchLabels:
+            postgres-operator.crunchydata.com/cluster: home-assistant
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+
+    # babybuddy
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: babybuddy
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+
+    # plex
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+
+
+    # music-assistant
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: music-assistant
+      toPorts:
+        - ports:
+            - port: "8095"
+              protocol: TCP
+
+  ingress:
+
+    # music-assistant
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: music-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP

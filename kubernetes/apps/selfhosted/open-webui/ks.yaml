@@ -1,0 +1,70 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname open-webui
+  namespace: &namespace selfhosted
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/open-webui/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: crunchy-postgres-operator-cluster
+      namespace: databases
+    - name: volsync
+      namespace: system
+    - name: tika
+      namespace: selfhosted
+  components:
+    - ../../../../components/volsync
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: openwebui.piscio.net
+      VOLSYNC_CLAIM: open-webui-data
+      VOLSYNC_CAPACITY: 30Gi
+      VOLSYNC_CACHE_CAPACITY: 30Gi
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname open-webui-pipelines
+  namespace: &namespace selfhosted
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: open-webui
+      app.kubernetes.io/component: pipelines
+  interval: 10m
+  path: "./kubernetes/doc-home-cluster/apps/selfhosted/open-webui/pipelines"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: doc-ops-kubernetes
+  wait: false
+  dependsOn:
+    - name: volsync
+      namespace: system
+  components:
+    - ../../../../components/volsync
+  postBuild:
+    substitute:
+      APP: *appname
+      VOLSYNC_CLAIM: open-webui-pipelines-data
+      VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_CACHE_CAPACITY: 1Gi

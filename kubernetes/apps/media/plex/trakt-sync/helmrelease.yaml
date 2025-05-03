@@ -1,0 +1,74 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: plex-trakt-sync
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 30m
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: plex
+      namespace: media
+  values:
+    controllers:
+      plex-trakt-sync:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/taxel/plextraktsync
+              tag: 0.34.8
+            args:
+              - watch
+            env:
+              PLEX_BASEURL: http://plex.media.svc.cluster.local:32400
+              PLEX_LOCALURL: http://plex.media.svc.cluster.local:32400
+              PLEX_USERNAME: TiaNas
+              TRAKT_USERNAME: Tia_91
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 5m
+                memory: 101M
+              limits:
+                memory: 101M
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: plex-trakt-sync-config
+        advancedMounts:
+          plex-trakt-sync:
+            app:
+              - path: /app/config
+      config-yaml:
+        type: configMap
+        name: plex-tract-sync
+        globalMounts:
+          - path: /app/config/config.yml
+            subPath: config.yml
+            readOnly: true

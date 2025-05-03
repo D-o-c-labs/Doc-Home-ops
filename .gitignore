@@ -2,7 +2,6 @@
 ignore/
 logs/
 testing/
-future/
 
 # Trash
 .DS_Store
@@ -14,33 +13,17 @@ Thumbs.db
 # Terraform
 ## Local .terraform directories
 **/.terraform/*
-## Temporary ignore opentofu dir
-opentofu/
 
 ## .tfstate files
 *.tfstate
 *.tfstate.*
 
-## .tfvars files
-*.tfvars
-
 ## terraform plan output
 *tfplan*
 
-## terraform lock
-.terraform.lock.hcl
-
 # Other files
 kubeconfig
-
-# Talos clusterconfigs
-infrastructure/talos/**/clusterconfig
-
-# 1Password Credential
-1password-credentials.json
-
-
-.vscode/settings.json
+talosconfig
 
 # Aider
 .aider*

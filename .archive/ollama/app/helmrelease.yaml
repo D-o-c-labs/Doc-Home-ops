@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ollama
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      ollama:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/internet: allow
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
+            intel.feature.node.kubernetes.io/avx: "true"
+
+        containers:
+          app:
+            image:
+              repository: ollama/ollama
+              tag: 0.6.6@sha256:d42df3fe2285ca1f9f3b6f90dce394d73d7dd024a63104f9a5056ce1da4db1be
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            resources:
+              requests:
+                cpu: "500m"
+                gpu.intel.com/i915: 1
+                memory: "2Gi"
+              limits:
+                cpu: "4000m"
+                memory: "4Gi"
+                gpu.intel.com/i915: 1
+
+    service:
+      app:
+        controller: ollama
+        ports:
+          ollama:
+            port: 11434
+
+    persistence:
+      conf:
+        existingClaim: ollama-data
+        advancedMounts:
+          ollama:
+            app:
+              - path: /root/.ollama
