@@ -17,7 +17,7 @@ tasks:
         vars:
           INSECURE: "true"
       - until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 5; done
-      - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name "home-ops" "${KUBECONFIG}"
+      - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name "doc-home-ops" "${KUBECONFIG}"
 
   apps:
     desc: Bootstrap Apps
@@ -34,7 +34,7 @@ tasks:
     env:
       NODE_COUNT:
         sh: talosctl config info --output json | jq --raw-output '.nodes | length'
-      ROOK_DISK: nvme-Samsung_SSD_990_PRO_1TB
+      ROOK_DISK: scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
     cmds:
       - until kubectl wait nodes --for=condition=Ready=False --all --timeout=10m; do sleep 5; done
       - op run --env-file {{.K8S_DIR}}/bootstrap/bootstrap.env --no-masking -- minijinja-cli "{{.K8S_DIR}}/bootstrap/templates/resources.yaml.j2" | kubectl apply --server-side --filename -

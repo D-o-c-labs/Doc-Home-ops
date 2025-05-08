@@ -67,15 +67,15 @@ releases:
     needs:
       - kube-system/coredns
 
-  - name: wipe-rook
-    namespace: kube-system
-    atomic: true
-    chart: oci://ghcr.io/bjw-s/helm/app-template
-    version: 3.7.3
-    values:
-      - ./templates/wipe-rook.yaml.gotmpl
-    needs:
-      - kube-system/coredns
+  # - name: wipe-rook
+  #   namespace: kube-system
+  #   atomic: true
+  #   chart: oci://ghcr.io/bjw-s/helm/app-template
+  #   version: 3.7.3
+  #   values:
+  #     - ./templates/wipe-rook.yaml.gotmpl
+  #   needs:
+  #     - kube-system/coredns
 
   - name: flux-operator
     namespace: flux-system
@@ -85,7 +85,8 @@ releases:
     values:
       - '{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/flux-system/flux-operator/app/values.yaml'
     needs:
-      - kube-system/wipe-rook
+      # - kube-system/wipe-rook
+      - kube-system/coredns
 
   - name: flux-instance
     namespace: flux-system

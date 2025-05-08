@@ -23,7 +23,7 @@ dashboards:
   enabled: true
   annotations:
     grafana_folder: Cilium
-devices: eth0+
+devices: bond+
 enableRuntimeDeviceDetection: true
 endpointRoutes:
   enabled: true

@@ -32,7 +32,7 @@ tasks:
         vars:
           FILENAME: "{{.ITEM}}"
           HOSTNAME: |-
-            {{ trimPrefix (printf "home-ops-") (base .ITEM) | trimSuffix ".yaml" }}
+            {{ trimPrefix (printf "doc-home-ops-") (base .ITEM) | trimSuffix ".yaml" }}
           DRY_RUN: "{{ .DRY_RUN }}"
           INSECURE: "{{ .INSECURE }}"
 
@@ -47,7 +47,7 @@ tasks:
         - NODE
     vars:
       FILE:
-        sh: ls {{.K8S_DIR}}/talos/clusterconfig/home-ops-{{.NODE}}*.yaml
+        sh: ls {{.K8S_DIR}}/talos/clusterconfig/doc-home-ops-{{.NODE}}*.yaml
     cmds:
       - task: _apply-machineconfig
         vars:
@@ -66,7 +66,7 @@ tasks:
         - NODE
     vars:
       FILE:
-        sh: ls {{.K8S_DIR}}/talos/clusterconfig/home-ops-{{.NODE}}*.yaml
+        sh: ls {{.K8S_DIR}}/talos/clusterconfig/doc-home-ops-{{.NODE}}*.yaml
       TALOS_IMAGE:
         sh: yq '.machine.install.image' < "{{.FILE}}"
     cmds:

@@ -5,7 +5,7 @@ clusterName: &clusterName doc-home-ops
 endpoint: https://k8s.piscio.net:6443
 
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
-talosVersion: v1.9.5
+talosVersion: v1.10.1
 # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
 kubernetesVersion: v1.32.4
 
@@ -27,19 +27,20 @@ nodes:
     # nodeLabels:
     #   intel.feature.node.kubernetes.io/gpu: "true"
     installDiskSelector:
-      size: "<= 256GB"
+      size: "<= 300GB"
     networkInterfaces:
       - interface: bond0
         bond:
           mode: active-backup
           deviceSelectors:
-            - hardwareAddr: DE:7C:59:6D:1B:89
+            # - hardwareAddr: DE:7C:59:6D:1B:89
+            - physical: true
         dhcp: true
         vip:
           ip: *talosControlplaneVip
         vlans:
-          - &vlan1
-            vlanId: 1
+          - &vlan40
+            vlanId: 40
             mtu: 1500
             dhcp: false
             dhcpOptions:
@@ -48,40 +49,42 @@ nodes:
   - hostname: ares.piscio.net
     ipAddress: 192.168.32.122
     controlPlane: true
-    nodeLabels:
-      intel.feature.node.kubernetes.io/gpu: "true"
+    # nodeLabels:
+    #   intel.feature.node.kubernetes.io/gpu: "true"
     installDiskSelector:
-      size: "<= 256GB"
+      size: "<= 300GB"
     networkInterfaces:
       - interface: bond0
         bond:
           mode: active-backup
           deviceSelectors:
-            - hardwareAddr: DE:7C:59:6D:1B:89
+            # - hardwareAddr: BC:24:11:4E:F4:7E
+            - physical: true
         dhcp: true
         vip:
           ip: *talosControlplaneVip
         vlans:
-          - *vlan1
+          - *vlan40
 
   - hostname: athena.piscio.net
     ipAddress: 192.168.32.123
     controlPlane: true
-    nodeLabels:
-      intel.feature.node.kubernetes.io/gpu: "true"
+    # nodeLabels:
+    #   intel.feature.node.kubernetes.io/gpu: "true"
     installDiskSelector:
-      size: "<= 256GB"
+      model: Samsung SSD 970 EVO Plus 500GB
     networkInterfaces:
       - interface: bond0
         bond:
           mode: active-backup
           deviceSelectors:
-            - hardwareAddr: DE:7C:59:6D:1B:89
+            # - hardwareAddr: 88:AE:DD:01:D2:B2
+            - physical: true
         dhcp: true
         vip:
           ip: *talosControlplaneVip
         vlans:
-          - *vlan1
+          - *vlan40
 
 controlPlane:
   nodeLabels:
@@ -91,6 +94,7 @@ controlPlane:
   schematic:
     customization:
       extraKernelArgs:
+        - -selinux   # Prevent bootloop on 1.10.x
         - apparmor=0 # Less security, more speed
         - init_on_alloc=0 # Less security, more speed
         - init_on_free=0 # Less security, more speed
