@@ -17,7 +17,6 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
   - ./unpackerr/ks.yaml
-  - ./vpn/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
