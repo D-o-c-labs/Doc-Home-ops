@@ -6,13 +6,15 @@ metadata:
   name: crunchy-postgres-operator
 spec:
   interval: 30m
-  chartRef:
-    kind: OCIRepository
-    name: crunchydata
-    namespace: databases
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
+  chart:
+    spec:
+      chart: pgo
+      version: 5.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: crunchydata
+        namespace: flux-system
+      interval: 5m
   install:
     crds: CreateReplace
   upgrade:
