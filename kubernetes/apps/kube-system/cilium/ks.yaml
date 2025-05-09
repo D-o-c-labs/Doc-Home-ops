@@ -55,7 +55,7 @@ spec:
       app.kubernetes.io/name: cilium
       app.kubernetes.io/component: netpols
   interval: 10m
-  path: "./kubernetes/doc-home-cluster/infrastructure/kube-system/cilium/netpols"
+  path: "./kubernetes/apps/kube-system/cilium/netpols"
   prune: true
   sourceRef:
     kind: GitRepository
