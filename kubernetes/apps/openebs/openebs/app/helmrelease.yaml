@@ -27,7 +27,7 @@ spec:
         enabled: true
         name: openebs-hostpath
         isDefaultClass: false
-        basePath: /var/lib/openebs/local
+        basePath: *hostPath
 
     openebs-crds:
       csi:
