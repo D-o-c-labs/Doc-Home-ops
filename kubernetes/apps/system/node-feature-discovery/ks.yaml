@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  path: "./kubernetes/apps/system/node-features-discovery/app"
+  path: "./kubernetes/apps/system/node-feature-discovery/app"
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -31,7 +31,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  path: "./kubernetes/apps/system/node-features-discovery/rules"
+  path: "./kubernetes/apps/system/node-feature-discovery/rules"
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -42,3 +42,4 @@ spec:
   wait: false
   dependsOn:
     - name: node-feature-discovery
+      namespace: system

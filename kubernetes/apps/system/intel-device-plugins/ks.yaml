@@ -40,3 +40,6 @@ spec:
   timeout: 5m
   prune: true
   wait: false
+  dependsOn:
+    - name: node-feature-discovery
+      namespace: system
