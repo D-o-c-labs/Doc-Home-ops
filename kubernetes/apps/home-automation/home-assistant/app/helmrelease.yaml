@@ -106,7 +106,7 @@ spec:
             port: &httpPort 8123
             primary: true
           code-server:
-            port: &codePort
+            port: &codePort 12321
 
     persistence:
       config:

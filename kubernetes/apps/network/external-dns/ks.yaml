@@ -27,7 +27,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &appname externaldns-unifi
+  name: &appname externaldns-internal
   namespace: &namespace network
 spec:
   targetNamespace: *namespace
@@ -36,7 +36,7 @@ spec:
       app.kubernetes.io/name: *appname
   interval: 30m
   timeout: 5m
-  path: "./kubernetes/apps/network/external-dns/unifi"
+  path: "./kubernetes/apps/network/external-dns/internal"
   prune: true
   sourceRef:
     kind: GitRepository

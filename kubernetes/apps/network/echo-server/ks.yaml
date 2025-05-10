@@ -19,3 +19,7 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: false
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: echo-server.piscio.net
