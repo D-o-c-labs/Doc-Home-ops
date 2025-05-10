@@ -33,7 +33,7 @@ spec:
       APP: *appname
       HOSTNAME: homeassistant.piscio.net
       APP_UID: "65534"
-      APP_GID: "65534"
+      APP_GID: "65533"
       VOLSYNC_CLAIM: home-assistant-config
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_CACHE_CAPACITY: 10Gi
