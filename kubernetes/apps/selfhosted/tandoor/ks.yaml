@@ -21,7 +21,7 @@ spec:
   wait: false
   dependsOn:
     - name: crunchy-postgres-operator
-      namespace: databases
+      namespace: database
     - name: volsync
       namespace: system
   components:
