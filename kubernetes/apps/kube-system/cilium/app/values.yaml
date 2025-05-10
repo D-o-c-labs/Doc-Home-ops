@@ -35,7 +35,7 @@ gatewayAPI:
   enableAlpn: true
   xffNumTrustedHops: 1
   gatewayClass:
-    create: true
+    create: "true"
 hubble:
   enabled: false
 ipam:
