@@ -47,7 +47,7 @@ spec:
             args:
               - tunnel
               - --config
-              - /etc/cloudflared/config/config.yaml
+              - /etc/cloudflared/config.yaml
               - run
               - "$(TUNNEL_ID)"
             env:
