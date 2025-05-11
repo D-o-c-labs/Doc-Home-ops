@@ -25,7 +25,7 @@ spec:
           labels:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-            ingress.home.arpa/gateway-external: allow
+            ingress.home.arpa/gateway-route: allow
 
           securityContext:
             runAsUser: ${APP_UID}

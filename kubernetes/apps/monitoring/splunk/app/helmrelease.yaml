@@ -23,7 +23,7 @@ spec:
           labels:
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             egress.home.arpa/internet: allow
-            ingress.home.arpa/gateway-external: allow
+            ingress.home.arpa/gateway-route: allow
 
         containers:
           app:

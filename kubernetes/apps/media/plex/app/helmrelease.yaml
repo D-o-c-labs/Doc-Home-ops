@@ -24,7 +24,7 @@ spec:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             ingress.home.arpa/lan: allow
-            ingress.home.arpa/gateway-external: allow
+            ingress.home.arpa/gateway-route: allow
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
