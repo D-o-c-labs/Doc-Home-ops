@@ -9,11 +9,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: home-assistant
   egress:
-    # mosquitto
-    - toEndpoints:
-        - matchLabels:
-            apps.emqx.io/instance: emqx
-            apps.emqx.io/db-role: core
+    # Emqx
+    - toServices:
+        - k8sService:
+            serviceName: emqx-listeners
+            namespace: database
       toPorts:
         - ports:
             - port: "1883"
@@ -48,7 +48,6 @@ spec:
             - port: "32400"
               protocol: TCP
 
-
     # music-assistant
     - toEndpoints:
         - matchLabels:
@@ -59,7 +58,6 @@ spec:
               protocol: TCP
 
   ingress:
-
     # music-assistant
     - fromEndpoints:
         - matchLabels:

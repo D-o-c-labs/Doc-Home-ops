@@ -9,11 +9,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: zigbee2mqtt
   egress:
-    # mosquitto
-    - toEndpoints:
-        - matchLabels:
-            apps.emqx.io/instance: emqx
-            apps.emqx.io/db-role: core
+    # Emqx
+    - toServices:
+        - k8sService:
+            serviceName: emqx-listeners
+            namespace: database
       toPorts:
         - ports:
             - port: "1883"
