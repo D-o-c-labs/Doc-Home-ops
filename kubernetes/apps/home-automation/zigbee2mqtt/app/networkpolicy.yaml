@@ -12,7 +12,8 @@ spec:
     # mosquitto
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: mosquitto
+            apps.emqx.io/instance: emqx
+            apps.emqx.io/db-role: core
       toPorts:
         - ports:
             - port: "1883"
