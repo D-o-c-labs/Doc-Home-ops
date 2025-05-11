@@ -10,10 +10,10 @@ spec:
       app.kubernetes.io/name: zigbee2mqtt
   egress:
     # Emqx
-    - toServices:
-        - k8sService:
-            serviceName: emqx-listeners
-            namespace: database
+    - toEndpoints:
+        - matchLabels:
+            apps.emqx.io/instance: emqx
+            apps.emqx.io/db-role: core
       toPorts:
         - ports:
             - port: "1883"
