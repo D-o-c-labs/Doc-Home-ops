@@ -27,8 +27,7 @@ spec:
         pod:
           labels:
             egress.home.arpa/internet: allow
-            # egress.home.arpa/world: allow
-            ingress.home.arpa/nginx-external: allow
+            ingress.home.arpa/gateway-external: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
 
         containers:

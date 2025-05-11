@@ -20,7 +20,7 @@ spec:
         pod:
           labels:
             egress.home.arpa/internet: allow
-            ingress.home.arpa/nginx-internal: allow
+            ingress.home.arpa/gateway-external: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
 
         containers:
@@ -81,7 +81,7 @@ spec:
         hostnames:
           - ${HOSTNAME}
         parentRefs:
-          - name: internal
+          - name: external
             namespace: kube-system
             sectionName: https
         rules:

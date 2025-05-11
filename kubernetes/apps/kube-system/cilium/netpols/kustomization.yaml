@@ -4,6 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./allow-egress-apiserver.yaml
+  - ./allow-egress-domus-vlan.yaml
   - ./allow-egress-internet.yaml
   # FIXME: Remove when cluster-wide default is in place
   - ./allow-egress-kubedns.yaml
@@ -11,6 +12,7 @@ resources:
   - ./allow-egress-synology.yaml
   - ./allow-egress-world.yaml
 
+  - ./allow-ingress-gateway.yaml
   - ./allow-ingress-internet.yaml
   - ./allow-ingress-lan.yaml
   - ./allow-ingress-metrics.yaml

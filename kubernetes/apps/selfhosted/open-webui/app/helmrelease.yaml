@@ -24,7 +24,7 @@ spec:
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             egress.home.arpa/postgres-cluster: allow
             egress.home.arpa/internet: allow
-            ingress.home.arpa/nginx-external: allow
+            ingress.home.arpa/gateway-external: allow
 
         containers:
           app:
