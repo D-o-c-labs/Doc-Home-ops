@@ -75,7 +75,7 @@ spec:
 
     persistence:
       config:
-        type: emptyDir
+        existingClaim: cross-seed
       config-file:
         type: secret
         name: cross-seed-secret
@@ -83,10 +83,6 @@ spec:
           - path: /config/config.js
             subPath: config.js
             readOnly: true
-      qbittorrent:
-        existingClaim: qbittorrent-config
-        globalMounts:
-          - path: /qbittorrent
       media:
         type: nfs
         server: piscionas.piscio.net

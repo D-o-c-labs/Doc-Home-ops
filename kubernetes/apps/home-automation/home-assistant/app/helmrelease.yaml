@@ -150,7 +150,7 @@ spec:
                 port: *httpPort
       code-server:
         hostnames:
-          - code-home-assistant.piscio.net
+          - code-homeassistant.piscio.net
         parentRefs:
           - name: internal
             namespace: kube-system
