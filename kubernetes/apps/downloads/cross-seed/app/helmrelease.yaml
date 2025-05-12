@@ -82,7 +82,7 @@ spec:
       media:
         type: nfs
         server: piscionas.piscio.net
-        path: /mnt/tank/Media
+        path: /volume1/Media
         advancedMounts:
           cross-seed:
             app:
