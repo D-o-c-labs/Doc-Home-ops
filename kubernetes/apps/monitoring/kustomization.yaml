@@ -13,7 +13,7 @@ resources:
   - ./loki/ks.yaml
   - ./node-exporter/ks.yaml
   - ./prometheus-operator/ks.yaml
-  - ./splunk/ks.yaml
+  # - ./splunk/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
