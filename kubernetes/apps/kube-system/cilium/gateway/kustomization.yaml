@@ -6,3 +6,4 @@ resources:
   - ./certificate.yaml
   - ./gateway-external.yaml
   - ./gateway-internal.yaml
+  - ./httproute.yaml
