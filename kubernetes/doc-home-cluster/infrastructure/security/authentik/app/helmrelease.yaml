@@ -22,7 +22,7 @@ spec:
 
       image:
         repository: ghcr.io/goauthentik/server
-        tag: 2025.2.4
+        tag: 2025.4.1
 
       envFrom:
         - secretRef:
