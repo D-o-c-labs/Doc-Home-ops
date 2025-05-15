@@ -1,0 +1,10 @@
+---
+originRequest:
+  originServerName: ingress-ext.piscio.net
+
+ingress:
+  - hostname: "piscio.net"
+    service: &svc https://cilium-gateway-external.kube-system.svc.cluster.local
+  - hostname: "*.piscio.net"
+    service: *svc
+  - service: http_status:404

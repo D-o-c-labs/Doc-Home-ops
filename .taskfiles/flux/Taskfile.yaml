@@ -27,7 +27,7 @@ tasks:
   "*-ks-all":
     desc: Suspend or resume all Flux Kustomizations
     vars:
-      STATE: '{{index .MATCH 0}}'
+      STATE: "{{index .MATCH 0}}"
       NAMESPACES:
         sh: kubectl get ns --no-headers -o custom-columns='NAME:.metadata.name'
     preconditions:
@@ -36,4 +36,4 @@ tasks:
     cmds:
       - for:
           var: NAMESPACES
-        cmd: flux {{.STATE}} ks -n "{{.ITEM}}" --all
+        cmd: flux {{.STATE}} ks -n "{{.ITEM}}" --all || true

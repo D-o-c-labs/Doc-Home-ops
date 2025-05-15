@@ -1,0 +1,119 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname librechat
+  namespace: &namespace selfhosted
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/librechat/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: librechat-meilisearch
+      namespace: selfhosted
+    - name: librechat-mongodb
+      namespace: selfhosted
+    - name: librechat-rag-api
+      namespace: selfhosted
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: librechat.piscio.net
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: librechat-meilisearch
+  namespace: &namespace selfhosted
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: librechat
+      app.kubernetes.io/component: meilisearch
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/librechat/meilisearch"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname librechat-mongodb
+  namespace: &namespace selfhosted
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: librechat
+      app.kubernetes.io/component: mongodb
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/librechat/mongodb"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: volsync
+      namespace: system
+  components:
+    - ../../../../components/volsync
+  postBuild:
+    substitute:
+      APP: *appname
+      VOLSYNC_CLAIM: librechat-mongodb-data
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: librechat-rag-api
+  namespace: &namespace selfhosted
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: librechat
+      app.kubernetes.io/component: rag-api
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/librechat/rag-api"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: crunchy-postgres-operator-cluster
+      namespace: database

@@ -1,0 +1,264 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
+clusterName: &clusterName doc-home-ops
+
+endpoint: https://k8s.piscio.net:6443
+
+# renovate: depName=ghcr.io/siderolabs/installer datasource=docker
+talosVersion: v1.10.1
+# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
+kubernetesVersion: v1.32.4
+
+additionalApiServerCertSans: &sans
+  - k8s.piscio.net
+  - &talosControlplaneVip 192.168.32.120
+  - 127.0.0.1 # KubePrism
+  - doc-home-cluster.kube.piscio.net
+  - doc-home-cluster.piscio.net
+additionalMachineCertSans: *sans
+
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: zeus.piscio.net
+    ipAddress: 192.168.32.121
+    controlPlane: true
+    # nodeLabels:
+    #   intel.feature.node.kubernetes.io/gpu: "true"
+    installDiskSelector:
+      size: "<= 300GB"
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            # - hardwareAddr: DE:7C:59:6D:1B:89
+            - physical: true
+        dhcp: true
+        vip:
+          ip: *talosControlplaneVip
+        vlans:
+          - &vlan40
+            vlanId: 40
+            mtu: 1500
+            dhcp: false
+            dhcpOptions:
+              routeMetric: 4096
+
+  - hostname: ares.piscio.net
+    ipAddress: 192.168.32.122
+    controlPlane: true
+    # nodeLabels:
+    #   intel.feature.node.kubernetes.io/gpu: "true"
+    installDiskSelector:
+      size: "<= 300GB"
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            # - hardwareAddr: BC:24:11:4E:F4:7E
+            - physical: true
+        dhcp: true
+        vip:
+          ip: *talosControlplaneVip
+        vlans:
+          - *vlan40
+
+  - hostname: athena.piscio.net
+    ipAddress: 192.168.32.123
+    controlPlane: true
+    # nodeLabels:
+    #   intel.feature.node.kubernetes.io/gpu: "true"
+    installDiskSelector:
+      model: Samsung SSD 970 EVO Plus 500GB
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            # - hardwareAddr: 88:AE:DD:01:D2:B2
+            - physical: true
+        dhcp: true
+        vip:
+          ip: *talosControlplaneVip
+        vlans:
+          - *vlan40
+
+controlPlane:
+  nodeLabels:
+    topology.kubernetes.io/region: *clusterName
+    topology.kubernetes.io/zone: m
+
+  schematic:
+    customization:
+      extraKernelArgs:
+        - -selinux # Prevent bootloop on 1.10.x
+        - apparmor=0 # Less security, more speed
+        - init_on_alloc=0 # Less security, more speed
+        - init_on_free=0 # Less security, more speed
+        - intel_iommu=on # PCI Passthrough
+        - iommu=pt # PCI Passthrough
+        - mitigations=off # Less security, more speed
+        - security=none # Less security, more speed
+        - net.ifnames=1 # Enable predictable NIC naming
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/gasket-driver
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+          - siderolabs/mei
+          - siderolabs/util-linux-tools
+
+  patches:
+    # Configure containerd
+    - |-
+      machine:
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+              [plugins."io.containerd.grpc.v1.cri".containerd]
+                discard_unpacked_layers = false
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                discard_unpacked_layers = false
+
+    # Disable search domain everywhere
+    - |-
+      machine:
+        network:
+          disableSearchDomain: true
+
+    # Enable host dns
+    - |-
+      machine:
+        features:
+          hostDNS:
+            enabled: true
+            resolveMemberNames: true
+            forwardKubeDNSToHost: false
+
+    # Mount openebs-hostpath in kubelet
+    - |-
+      machine:
+        kubelet:
+          extraMounts:
+            - destination: /var/mnt/extra
+              type: bind
+              source: /var/mnt/extra
+              options:
+                - rbind
+                - rshared
+                - rw
+
+    # Configure kubelet
+    - |-
+      machine:
+        kubelet:
+          extraConfig:
+            maxPods: 150
+          nodeIP:
+            validSubnets:
+                - 192.168.32.0/24
+
+    # Enable MutatingAdmissionPolicy
+    - |-
+      cluster:
+        apiServer:
+          extraArgs:
+            runtime-config: admissionregistration.k8s.io/v1alpha1=true
+            feature-gates: MutatingAdmissionPolicy=true
+
+    # Configure cluster
+    - |-
+      cluster:
+        allowSchedulingOnControlPlanes: true
+        coreDNS:
+            disabled: true
+        proxy:
+          disabled: true
+        scheduler:
+          config:
+            apiVersion: kubescheduler.config.k8s.io/v1
+            kind: KubeSchedulerConfiguration
+            profiles:
+              - schedulerName: default-scheduler
+                pluginConfig:
+                  - name: PodTopologySpread
+                    args:
+                      defaultingType: List
+                      defaultConstraints:
+                        - maxSkew: 1
+                          topologyKey: kubernetes.io/hostname
+                          whenUnsatisfiable: ScheduleAnyway
+
+    # Configure etcd
+    - |-
+      cluster:
+        etcd:
+          advertisedSubnets:
+            - 192.168.32.0/24
+
+    # Configure NFS mount options
+    - |
+      machine:
+        files:
+          - op: overwrite
+            path: /etc/nfsmount.conf
+            permissions: 0o644
+            content: |
+              [ NFSMount_Global_Options ]
+              nfsvers=4.1
+              hard=True
+              noatime=True
+              nconnect=16
+
+    # Configure static host entries
+    - |-
+      machine:
+        network:
+          extraHostEntries:
+            - ip: 192.168.32.120
+              aliases:
+                - k8s.piscio.net
+
+    # Configure custom sysctls
+    - |-
+      machine:
+        sysctls:
+          fs.inotify.max_user_instances: 8192    # Watchdog
+          fs.inotify.max_user_watches: 1048576   # Watchdog
+          net.core.rmem_max: 67108864            # Cloudflared / QUIC
+          net.core.wmem_max: 67108864            # Cloudflared / QUIC
+
+    # Configure udev rules
+    - |-
+      machine:
+        udev:
+          rules:
+            # Intel GPU
+            - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
+            # Coral Edge M.2 TPU
+            - SUBSYSTEM=="apex", KERNEL=="apex*", GROUP="44", MODE="0660"
+
+    # Disable default API server admission plugins.
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+    # Enable K8s Talos API Access
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:admin
+            allowedKubernetesNamespaces:
+              - actions-runner-system
+              - system-upgrade

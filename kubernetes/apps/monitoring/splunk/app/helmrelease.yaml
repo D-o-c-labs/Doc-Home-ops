@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: splunk
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      splunk:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/internet: allow
+            ingress.home.arpa/gateway-route: allow
+
+        containers:
+          app:
+            image:
+              repository: splunk/splunk
+              tag: 9.4
+
+            env:
+              SPLUNK_START_ARGS: --accept-license
+            envFrom:
+              - secretRef:
+                  name: splunk-secret
+
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 8000
+                  initialDelaySeconds: 120
+                  periodSeconds: 10
+                  failureThreshold: 40
+                  timeoutSeconds: 5
+            resources:
+              requests:
+                cpu: "1000m"
+                memory: "2Gi"
+              limits:
+                cpu: "2000m"
+                memory: "6Gi"
+
+    service:
+      app:
+        controller: splunk
+        ports:
+          http:
+            port: &port 8000
+      api:
+        controller: splunk
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.32.157"
+        externalTrafficPolicy: Local
+        ports:
+          api:
+            port: 8089
+
+    persistence:
+      splunk-var:
+        existingClaim: splunk-var
+        advancedMounts:
+          splunk:
+            app:
+              - path: /opt/splunk/var
+
+      splunk-etc:
+        existingClaim: splunk-etc
+        advancedMounts:
+          splunk:
+            app:
+              - path: /opt/splunk/etc
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: splunk
+                port: *port
