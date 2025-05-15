@@ -94,7 +94,7 @@ controlPlane:
   schematic:
     customization:
       extraKernelArgs:
-        - -selinux   # Prevent bootloop on 1.10.x
+        - -selinux # Prevent bootloop on 1.10.x
         - apparmor=0 # Less security, more speed
         - init_on_alloc=0 # Less security, more speed
         - init_on_free=0 # Less security, more speed

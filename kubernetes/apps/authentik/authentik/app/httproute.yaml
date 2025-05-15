@@ -13,7 +13,7 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - group: ''
+        - group: ""
           kind: Service
           name: authentik-server
           namespace: authentik

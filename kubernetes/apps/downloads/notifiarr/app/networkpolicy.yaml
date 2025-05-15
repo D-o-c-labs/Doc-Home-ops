@@ -27,7 +27,6 @@ spec:
             - port: "7878"
               protocol: TCP
 
-
     # plex
     - toEndpoints:
         - matchLabels:
