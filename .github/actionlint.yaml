@@ -2,3 +2,4 @@
 self-hosted-runner:
   labels:
     - arc-doc-labs
+    - arc-doc-labs-doc-home-ops

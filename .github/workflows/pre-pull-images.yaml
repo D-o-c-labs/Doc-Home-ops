@@ -5,11 +5,14 @@ name: Pre-pull Images
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   HOMEBREW_NO_ANALYTICS: "1"
@@ -21,9 +24,6 @@ jobs:
     outputs:
       changed-files: ${{ steps.changed-files.outputs.changed_files }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
       - name: Get changed files
         id: changed-files
         uses: bjw-s-labs/action-changed-files@930cef8463348e168cab7235c47fe95a7a235f65 # v0.3.3
@@ -51,6 +51,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: "${{ matrix.branches == 'default' && github.event.repository.default_branch || '' }}"
+          persist-credentials: false
 
       - name: Gather Images
         uses: docker://ghcr.io/allenporter/flux-local:v7.5.0@sha256:2111f5e96e65bfdb7cee71f3384cdfae0de1a6a2ce5b95d0fa6de8142c3314d1
@@ -58,7 +59,7 @@ jobs:
           args: >-
             get cluster
             --all-namespaces
-            --path /github/workspace/kubernetes/doc-home-cluster/flux/config
+            --path /github/workspace/kubernetes/flux/cluster
             --enable-images
             --only-images
             --output json
@@ -100,23 +101,36 @@ jobs:
     name: Pre-pull Images
     runs-on: ubuntu-latest
     # runs-on:
-    #   - arc-doc-labs
+    #   - arc-bjw-s-labs-home-ops
     needs:
       - compare-images
     strategy:
       matrix:
-        images: ${{ fromJSON(needs.compare-images.outputs.images) }}
+        image: ${{ fromJSON(needs.compare-images.outputs.images) }}
       max-parallel: 4
       fail-fast: false
+    env:
+      MATRIX_IMAGE: ${{ matrix.image }}
     steps:
+      - name: Attest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          case "${{ matrix.images }}" in
+            *home-operations*)
+              gh attestation verify --owner home-operations oci://${MATRIX_IMAGE} ;;
+            *bjw-s-labs*)
+              gh attestation verify --owner bjw-s-labs oci://${MATRIX_IMAGE} ;;
+          esac
+
       # - name: Install talosctl
       #   run: curl -fsSL https://talos.dev/install | sh
 
       # - name: Pre-pull Image
-      #   run: talosctl -n "$NODE_IP" image pull "${{ matrix.images }}"
+      #   run: talosctl -n "$NODE_IP" image pull "${MATRIX_IMAGE}"
 
       - name: Try to pull Image
-        run: docker pull "${{ matrix.images }}"
+        run: docker pull "${MATRIX_IMAGE}"
 
   pre-pull-images-success:
     if: ${{ !cancelled() }}
