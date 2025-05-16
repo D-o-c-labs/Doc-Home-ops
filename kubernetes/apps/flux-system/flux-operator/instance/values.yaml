@@ -13,7 +13,7 @@ instance:
   sync:
     kind: GitRepository
     url: https://github.com/D-o-c-labs/Doc-Home-ops.git
-    ref: refs/heads/master
+    ref: refs/heads/main
     path: kubernetes/flux/cluster
     interval: 1h
   commonMetadata:
