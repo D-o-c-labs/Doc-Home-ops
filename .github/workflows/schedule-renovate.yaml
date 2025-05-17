@@ -29,8 +29,8 @@ jobs:
         uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.12.0
         id: app-token
         with:
-          app_id: ${{ secrets.DOC_APP_ID }}
-          private_key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.DOC_APP_ID }}
+          private-key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
       - name: Checkout
