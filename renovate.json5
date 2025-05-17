@@ -7,7 +7,6 @@
     "github>D-o-c-labs/Doc-Home-ops//.renovate/autoMerge.json5",
     "github>D-o-c-labs/Doc-home-ops//.renovate/versioning.json5",
     "github>D-o-c-labs/Doc-Home-ops//.renovate/groups.json5",
-    "github>D-o-c-labs/Doc-Home-ops//.renovate/clusters.json5",
     "github>bjw-s-labs/home-ops//.renovate/grafanaDashboards.json5",
     "config:recommended", ":dependencyDashboard",
   ],
