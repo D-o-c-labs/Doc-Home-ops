@@ -9,29 +9,14 @@
       matchPackageNames: [
         'ghcr.io/cross-seed/cross-seed',
         'ghcr.io/home-operations/plex',
-        'ghcr.io/xirixiz/dsmr-reader-docker',
       ],
       versioning: 'loose',
     },
     {
-      description: 'PEP440 versioning for radicale',
-      matchDatasources: [
-        'docker',
-      ],
-      matchPackageNames: [
-        'tomsquest/docker-radicale',
-      ],
-      versioning: 'pep440',
-    },
-    {
-      description: 'Custom versioning for http-https-echo',
-      matchDatasources: [
-        'docker',
-      ],
-      matchPackageNames: [
-        'ghcr.io/mendhak/http-https-echo',
-      ],
-      versioning: 'regex:^(?<major>\\d+)$',
+      description: "Custom versioning for http-https-echo",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/mendhak/http-https-echo"],
+      versioning: "regex:^(?<major>\\d+)$",
     },
     {
       description: 'Enable pre-releases for LibreChat',

@@ -42,18 +42,12 @@
       ignoreTests: true,
     },
     {
-      description: 'Auto merge KPS minors and patches',
-      matchDatasources: [
-        'helm',
-      ],
+      description: "Auto merge KPS minors and patches",
+      matchDatasources: ["docker"],
       automerge: true,
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-      ],
-      matchPackageNames: [
-        'kube-prometheus-stack',
-      ],
+      automergeType: "pr",
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: ["/kube-prometheus-stack/"],
       ignoreTests: false,
     },
   ],
