@@ -55,7 +55,8 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: doc-ops-kubernetes
+    name: flux-system
+    namespace: flux-system
   wait: false
   dependsOn:
     - name: volsync
