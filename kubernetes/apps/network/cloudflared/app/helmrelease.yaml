@@ -31,11 +31,11 @@ spec:
             runAsNonRoot: true
             runAsUser: 2000
             runAsGroup: 2000
-          # labels:
-          #   egress.home.arpa/internet: allow
-          #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-          #   ingress.home.arpa/metrics: allow
-          #   egress.home.arpa/sso: allow
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            ingress.home.arpa/metrics: allow
+            egress.home.arpa/sso: allow
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
