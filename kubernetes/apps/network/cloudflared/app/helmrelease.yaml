@@ -35,6 +35,7 @@ spec:
           #   egress.home.arpa/internet: allow
           #   egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
           #   ingress.home.arpa/metrics: allow
+          #   egress.home.arpa/sso: allow
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
