@@ -29,6 +29,7 @@ spec:
             egress.home.arpa/postgres-cluster: allow
             egress.home.arpa/internet: allow
             ingress.home.arpa/gateway-route: allow
+            egress.home.arpa/sso: allow
 
         containers:
           app:
