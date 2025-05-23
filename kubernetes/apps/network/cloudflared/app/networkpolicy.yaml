@@ -8,22 +8,12 @@ spec:
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: cloudflared
-  ingress:
-    # Prometheus
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: monitoring
-            app.kubernetes.io/name: prometheus
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: "TCP"
   egress:
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: ingress-nginx
-            app.kubernetes.io/instance: nginx-external
+            app.kubernetes.io/name: home-assistant
+            app.kubernetes.io/instance: home-automation
       toPorts:
         - ports:
-            - port: "443"
+            - port: "8123"
               protocol: "TCP"
