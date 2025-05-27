@@ -1,0 +1,119 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: focalboard
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      focalboard:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+            ingress.home.arpa/gateway-route: allow
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
+            fsGroupChangePolicy: OnRootMismatch
+
+        containers:
+          app:
+            image:
+              repository: mattermost/focalboard
+              tag: 7.11.4@sha256:0bb1c1274e04ab4b35355aa0b4810c8e6e46c8e8b4d4b44eb72b8f7e1b8b4e0a
+            env:
+              FOCALBOARD_SERVER_ROOT: https://${HOSTNAME}
+              FOCALBOARD_PORT: &port 8000
+              FOCALBOARD_DBTYPE:
+                valueFrom:
+                  secretKeyRef:
+                    name: focalboard-db-secret
+                    key: DB_TYPE
+              FOCALBOARD_DBCONFIG:
+                valueFrom:
+                  secretKeyRef:
+                    name: focalboard-db-secret
+                    key: DB_DATASOURCE
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: focalboard
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          focalboard:
+            app:
+              - path: /data
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          focalboard:
+            app:
+              - path: /tmp
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: focalboard
+                port: *port
