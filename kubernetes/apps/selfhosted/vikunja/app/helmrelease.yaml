@@ -1,0 +1,180 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vikunja
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      vikunja:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+            egress.home.arpa/sso: allow
+            ingress.home.arpa/gateway-route: allow
+
+        containers:
+          api:
+            image:
+              repository: vikunja/api
+              tag: 0.25.0@sha256:8b7f688c22bb8b2b0bcaf45b5a1c0c6cdbf09b9cb3f9d1e5ab2ac8b42afbdbea
+            env:
+              VIKUNJA_SERVICE_PUBLICURL: "https://${HOSTNAME}"
+            envFrom:
+              - secretRef:
+                  name: vikunja-secret
+              - secretRef:
+                  name: vikunja-db-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/info
+                    port: 3456
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/info
+                    port: 3456
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/info
+                    port: 3456
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                cpu: 100m
+                memory: 512Mi
+
+          frontend:
+            image:
+              repository: vikunja/frontend
+              tag: 0.25.0@sha256:ce4c5b43c1b15b9c5faa3df9a4b832ddfa03f7c59c0e2c1bdf14e8b7ee6db5e2
+            env:
+              VIKUNJA_API_URL: "http://localhost:3456/api/v1"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 80
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 80
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 5m
+                memory: 64Mi
+              limits:
+                cpu: 50m
+                memory: 128Mi
+
+    service:
+      app:
+        controller: vikunja
+        ports:
+          http:
+            port: &port 80
+            targetPort: 80
+          api:
+            port: &apiPort 3456
+            targetPort: 3456
+
+    persistence:
+      files:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          vikunja:
+            api:
+              - path: /app/vikunja/files
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /api/
+            backendRefs:
+              - name: vikunja
+                port: *apiPort
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /dav/
+            backendRefs:
+              - name: vikunja
+                port: *apiPort
+          - backendRefs:
+              - name: vikunja
+                port: *port
