@@ -91,6 +91,11 @@ spec:
         - librechat
       password:
         type: AlphaNumeric
+    - name: vikunja
+      databases:
+        - vikunja
+      password:
+        type: AlphaNumeric
     - name: tandoor
       databases:
         - tandoor
