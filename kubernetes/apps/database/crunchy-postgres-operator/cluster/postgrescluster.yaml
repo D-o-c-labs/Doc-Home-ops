@@ -116,6 +116,11 @@ spec:
         - n8n-knowledge
       password:
         type: AlphaNumeric
+    - name: vikunja
+      databases:
+        - vikunja
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
