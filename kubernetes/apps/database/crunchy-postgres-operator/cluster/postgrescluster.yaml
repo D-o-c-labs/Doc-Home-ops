@@ -76,6 +76,11 @@ spec:
         - autobrr
       password:
         type: AlphaNumeric
+    - name: focalboard
+      databases:
+        - focalboard
+      password:
+        type: AlphaNumeric
     - name: home-assistant
       databases:
         - home-assistant
