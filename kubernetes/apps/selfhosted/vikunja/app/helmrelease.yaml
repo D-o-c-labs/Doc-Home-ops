@@ -25,24 +25,24 @@ spec:
 
         pod:
           labels:
-            egress.home.arpa/internet: allow
+            # egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             egress.home.arpa/postgres-cluster: allow
             ingress.home.arpa/gateway-route: allow
             egress.home.arpa/sso: allow
           securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
             fsGroupChangePolicy: "OnRootMismatch"
 
         containers:
           app:
             image:
               repository: vikunja/vikunja
-              tag: latest@sha256:5cc956d1c2a42e2e8b9e9dd6dc69c433b4d5c9fb9ea0f387ec6a0e8a3d87bab5
+              tag: 0.24.6@sha256:ed1f3ed467fecec0b57e9de7bc6607f8bbcbb23ffced6a81f5dfefc794cdbe3b
             env:
-              VIKUNJA_SERVICE_PUBLICURL: "https://${HOSTNAME}"
+              VIKUNJA_SERVICE_PUBLICURL: "https://${HOSTNAME}/"
               VIKUNJA_DATABASE_TYPE: "postgres"
               VIKUNJA_CACHE_ENABLED: "true"
               VIKUNJA_CACHE_TYPE: "redis"
@@ -53,17 +53,6 @@ spec:
               VIKUNJA_DEFAULTSETTINGS_AVATAR_PROVIDER: "initials"
               VIKUNJA_DEFAULTSETTINGS_WEEK_START: "1"
               VIKUNJA_DEFAULTSETTINGS_TIMEZONE: "Europe/Rome"
-              # Auth configuration
-              VIKUNJA_AUTH_LOCAL: "true"
-              VIKUNJA_AUTH_OPENID_ENABLED: "true"
-              VIKUNJA_AUTH_OPENID_REDIRECTURL: "https://${HOSTNAME}/auth/openid/authentik"
-              VIKUNJA_AUTH_OPENID_PROVIDERS: |
-                - name: Authentik
-                  authurl: https://auth.piscio.net/application/o/vikunja/
-                  clientid: $VIKUNJA_OIDC_CLIENT_ID
-                  clientsecret: $VIKUNJA_OIDC_CLIENT_SECRET
-                  scope: "openid profile email"
-                  logouturl: https://auth.piscio.net/application/o/vikunja/end-session/
             envFrom:
               - secretRef:
                   name: vikunja-secret

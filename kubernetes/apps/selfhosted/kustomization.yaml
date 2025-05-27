@@ -11,6 +11,7 @@ resources:
   - ./paperless/ks.yaml
   - ./tandoor/ks.yaml
   - ./tika/ks.yaml
+  - ./vikunja/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
