@@ -91,11 +91,6 @@ spec:
         - librechat
       password:
         type: AlphaNumeric
-    - name: vikunja
-      databases:
-        - vikunja
-      password:
-        type: AlphaNumeric
     - name: tandoor
       databases:
         - tandoor
@@ -119,6 +114,11 @@ spec:
     - name: n8n-knowledge
       databases:
         - n8n-knowledge
+      password:
+        type: AlphaNumeric
+    - name: openproject
+      databases:
+        - openproject
       password:
         type: AlphaNumeric
 
