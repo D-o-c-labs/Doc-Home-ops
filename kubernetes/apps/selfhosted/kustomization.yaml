@@ -8,10 +8,10 @@ resources:
   - ./librechat/ks.yaml
   - ./n8n/ks.yaml
   - ./open-webui/ks.yaml
+  - ./openproject/ks.yaml
   - ./paperless/ks.yaml
   - ./tandoor/ks.yaml
   - ./tika/ks.yaml
-  - ./vikunja/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
