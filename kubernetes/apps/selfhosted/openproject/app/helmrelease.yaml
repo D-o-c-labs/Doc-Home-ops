@@ -1,0 +1,190 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openproject
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      openproject:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+            ingress.home.arpa/gateway-route: allow
+            egress.home.arpa/sso: allow
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
+            fsGroupChangePolicy: OnRootMismatch
+
+        containers:
+          app:
+            image:
+              repository: openproject/openproject
+              tag: 15-slim
+            
+            env:
+              OPENPROJECT_HTTPS: "true"
+              OPENPROJECT_HOST__NAME: "${HOSTNAME}"
+              OPENPROJECT_HSTS: "true"
+              
+              # Database configuration
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-db-secret
+                    key: DATABASE_URL
+              
+              # Secret key
+              SECRET_KEY_BASE:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: SECRET_KEY_BASE
+              
+              # Email configuration
+              OPENPROJECT_EMAIL__DELIVERY__METHOD: "smtp"
+              OPENPROJECT_SMTP__ADDRESS:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: SMTP_ADDRESS
+              OPENPROJECT_SMTP__PORT:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: SMTP_PORT
+              OPENPROJECT_SMTP__DOMAIN:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: SMTP_DOMAIN
+              OPENPROJECT_SMTP__USER__NAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: SMTP_USERNAME
+              OPENPROJECT_SMTP__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: SMTP_PASSWORD
+              OPENPROJECT_SMTP__ENABLE__STARTTLS__AUTO: "true"
+              OPENPROJECT_SMTP__AUTHENTICATION: "login"
+              
+              # Admin user
+              OPENPROJECT_SEED__ADMIN__USER__NAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: ADMIN_USERNAME
+              OPENPROJECT_SEED__ADMIN__USER__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: ADMIN_PASSWORD
+              OPENPROJECT_SEED__ADMIN__USER__MAIL:
+                valueFrom:
+                  secretKeyRef:
+                    name: openproject-secret
+                    key: ADMIN_EMAIL
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health_checks
+                    port: 8080
+                  initialDelaySeconds: 120
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health_checks
+                    port: 8080
+                  initialDelaySeconds: 60
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health_checks
+                    port: 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                cpu: 1000m
+                memory: 2Gi
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: openproject
+        ports:
+          http:
+            port: &port 8080
+
+    persistence:
+      data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          openproject:
+            app:
+              - path: /var/openproject/assets
+                subPath: assets
+              - path: /var/openproject/pgdata
+                subPath: pgdata
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: openproject
+                port: *port
