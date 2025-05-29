@@ -27,7 +27,7 @@ spec:
           labels:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-            ingress.home.arpa/lan: allow
+            # ingress.home.arpa/lan: allow
             ingress.home.arpa/gateway-route: allow
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
@@ -43,12 +43,12 @@ spec:
           app:
             image:
               repository: ghcr.io/jellyfin/jellyfin
-              tag: 10.10.3@sha256:644c25f7ea71be05629ae7b06eb7db64f8a4e3c06f99a7b4d75c92d3d4b5f9fc
+              tag: 2025051905 @sha256:0041f92f965a01252f2bd3919bb49cbee8ead378816e0f173f0ef949de6f1d75
             env:
-              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
-              JELLYFIN_FFmpeg__probesize: 50000000
-              JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: https://jellyfin.piscio.net
+              # DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
+              # JELLYFIN_FFmpeg__probesize: 50000000
+              # JELLYFIN_FFmpeg__analyzeduration: 50000000
+              JELLYFIN_PublishedServerUrl: "https://${HOSTNAME}"
             probes:
               liveness: &probes
                 enabled: true
@@ -91,12 +91,12 @@ spec:
         ports:
           http:
             port: &port 8096
-          dlna:
-            port: 1900
-            protocol: UDP
-          autodiscovery:
-            port: 7359
-            protocol: UDP
+          # dlna:
+          #   port: 1900
+          #   protocol: UDP
+          # autodiscovery:
+          #   port: 7359
+          #   protocol: UDP
 
     persistence:
       config:
@@ -111,15 +111,6 @@ spec:
           jellyfin:
             app:
               - path: /cache
-      transcode:
-        type: emptyDir
-        advancedMounts:
-          jellyfin:
-            app:
-              - path: /config/transcodes
-                subPath: transcodes
-              - path: /tmp
-                subPath: tmp
       nfs-nas-media:
         type: nfs
         server: piscionas.piscio.net
@@ -127,7 +118,7 @@ spec:
         advancedMounts:
           jellyfin:
             app:
-              - path: /data/nas-media/library
+              - path: /media
                 subPath: library
 
     route:
@@ -135,7 +126,7 @@ spec:
         hostnames:
           - ${HOSTNAME}
         parentRefs:
-          - name: external
+          - name: internal
             namespace: kube-system
             sectionName: https
         rules:
