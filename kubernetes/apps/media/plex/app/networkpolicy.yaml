@@ -13,12 +13,19 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: plex-auto-languages
+            k8s:io.kubernetes.pod.namespace: media
         - matchLabels:
             app.kubernetes.io/name: plex-image-cleanup
+            k8s:io.kubernetes.pod.namespace: media
         - matchLabels:
             app.kubernetes.io/name: plex-trakt-sync
+            k8s:io.kubernetes.pod.namespace: media
         - matchLabels:
             app.kubernetes.io/name: tautulli
+            k8s:io.kubernetes.pod.namespace: media
+        - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: notifiarr
             k8s:io.kubernetes.pod.namespace: downloads

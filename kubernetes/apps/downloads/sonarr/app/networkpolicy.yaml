@@ -12,18 +12,28 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: overseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: prowlarr
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: notifiarr
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: bazarr
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: autobrr
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: cross-seed
+            k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
             app.kubernetes.io/name: unpackerr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "8989"

@@ -3,8 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &appname jellyfin
-  namespace: &namespace media
+  name: &appname jellyseerr
+  namespace: &namespace downloads
 spec:
   targetNamespace: *namespace
   commonMetadata:
@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *appname
   interval: 30m
   timeout: 5m
-  path: "./kubernetes/apps/media/jellyfin/app"
+  path: "./kubernetes/apps/downloads/jellyseerr/app"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -20,6 +20,8 @@ spec:
     namespace: flux-system
   wait: false
   dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
     - name: volsync
       namespace: system
   components:
@@ -27,8 +29,7 @@ spec:
   postBuild:
     substitute:
       APP: *appname
-      HOSTNAME: jellyfin.piscio.net
+      HOSTNAME: jellyseerr.piscio.net
+      VOLSYNC_CLAIM: jellyseerr-config
       APP_UID: "2000"
       APP_GID: "2000"
-      VOLSYNC_CLAIM: jellyfin-config
-      VOLSYNC_CAPACITY: 10Gi
