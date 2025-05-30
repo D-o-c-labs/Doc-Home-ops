@@ -20,6 +20,8 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: tautulli
         - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+        - matchLabels:
             app.kubernetes.io/name: notifiarr
             k8s:io.kubernetes.pod.namespace: downloads
         - matchLabels:
