@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: jellyseer
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: jellyseer
+  egress:
+    # sonarr
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: sonarr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "8989"
+              protocol: TCP
+
+    # radarr
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: radarr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "7878"
+              protocol: TCP
+
+    # plex
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
