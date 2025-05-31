@@ -26,3 +26,11 @@ spec:
         - ports:
             - port: "32400"
               protocol: "TCP"
+    - toEndpoints:
+        - matchLabels:
+            app: notification-controller
+            k8s:io.kubernetes.pod.namespace: flux-system
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: "TCP"
