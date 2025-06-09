@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: getmeili/meilisearch
-              tag: v1.14.0
+              tag: v1.15.0
             probes:
               liveness:
                 enabled: false
