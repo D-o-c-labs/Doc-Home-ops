@@ -26,6 +26,7 @@ spec:
         - ports:
             - port: "32400"
               protocol: "TCP"
+
     - toEndpoints:
         - matchLabels:
             app: notification-controller
@@ -33,4 +34,22 @@ spec:
       toPorts:
         - ports:
             - port: "80"
+              protocol: "TCP"
+
+    - toEndpoints:
+        - matchLabels:
+            app: prowlarr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "9696"
+              protocol: "TCP"
+
+    - toEndpoints:
+        - matchLabels:
+            app: open-webui
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "8080"
               protocol: "TCP"
