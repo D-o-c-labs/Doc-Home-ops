@@ -7,7 +7,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: jellyseer
+      app.kubernetes.io/name: jellyseerr
   egress:
     # sonarr
     - toEndpoints:
