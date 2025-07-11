@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghostfolio/ghostfolio
-              tag: 2.173.0@sha256:92a080215ff6e1c4b588190f14f503e2199bfa76ae569c366e4790d635ef4cb1
+              tag: 2.181.0@sha256:f2a0594528fe0e7e3aa611102ea9da1e3269cdfdbea0fc39856f3c166ae5a503
             probes:
               liveness:
                 enabled: true
