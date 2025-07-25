@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev
-              tag: latest@sha256:7b389b5eaa168da319bc885ed46a2feab0383098d91a4144f972c284d25d48e2
+              tag: latest@sha256:0c36e518c3580199bb4500fb1d12f8e65fe6480592a55df63bcab1e29de55545
             probes:
               liveness:
                 enabled: true
