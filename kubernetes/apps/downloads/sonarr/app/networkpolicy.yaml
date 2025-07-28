@@ -34,6 +34,12 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: unpackerr
             k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: maintainerr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: huntarr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "8989"

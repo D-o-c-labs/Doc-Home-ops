@@ -8,11 +8,21 @@ spec:
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: overseerr
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: maintainerr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "5055"
+              protocol: TCP
   egress:
     # sonarr
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: sonarr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "8989"
@@ -22,6 +32,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: radarr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "7878"
@@ -45,4 +56,14 @@ spec:
       toPorts:
         - ports:
             - port: "8181"
+              protocol: TCP
+
+    # maintainerr
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: maintainerr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "5055"
               protocol: TCP
