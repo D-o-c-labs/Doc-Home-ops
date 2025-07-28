@@ -3,21 +3,32 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: jellyseer
+  name: maintainerr
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: jellyseerr
-  ingress:
-    - fromEndpoints:
+      app.kubernetes.io/name: maintainerr
+  egress:
+    # plex
+    - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: maintainerr
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+
+    # overseerr
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: overseerr
             k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "5055"
               protocol: TCP
-  egress:
+
     # sonarr
     - toEndpoints:
         - matchLabels:
@@ -38,22 +49,38 @@ spec:
             - port: "7878"
               protocol: TCP
 
-    # plex
+    # jellyseerr
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: plex
-            k8s:io.kubernetes.pod.namespace: media
-      toPorts:
-        - ports:
-            - port: "32400"
-              protocol: TCP
-
-    # maintainerr
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: maintainerr
+            app.kubernetes.io/name: jellyseerr
             k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "5055"
+              protocol: TCP
+
+    # tautulli
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tautulli
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "8181"
+              protocol: TCP
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+        - matchLabels:
+            app.kubernetes.io/name: overseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "6246"
               protocol: TCP

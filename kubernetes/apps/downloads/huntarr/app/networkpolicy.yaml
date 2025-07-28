@@ -3,30 +3,28 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: tautulli
+  name: huntarr
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: tautulli
+      app.kubernetes.io/name: huntarr
   egress:
-    # plex
+    # sonarr
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: plex
+            app.kubernetes.io/name: sonarr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
-            - port: "32400"
+            - port: "8989"
               protocol: TCP
-  ingress:
-    # plex
-    - fromEndpoints:
+
+    # radarr
+    - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: overseerr
-            k8s:io.kubernetes.pod.namespace: downloads
-        - matchLabels:
-            app.kubernetes.io/name: maintainerr
+            app.kubernetes.io/name: radarr
             k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
-            - port: "8181"
+            - port: "7878"
               protocol: TCP
