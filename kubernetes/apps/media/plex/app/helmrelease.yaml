@@ -36,10 +36,10 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
                   - matchExpressions:
-                    - key: kubernetes.io/hostname
-                      operator: In
-                      values:
-                      - ares
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values:
+                          - ares
               preferredDuringSchedulingIgnoredDuringExecution:
                 - weight: 100
                   preference:
