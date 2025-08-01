@@ -33,13 +33,13 @@ spec:
             intel.feature.node.kubernetes.io/gpu: "true"
           affinity:
             nodeAffinity:
-              # requiredDuringSchedulingIgnoredDuringExecution:
-              #   nodeSelectorTerms:
-              #   - matchExpressions:
-              #     - key: kubernetes.io/hostname
-              #       operator: In
-              #       values:
-              #       - ares
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values:
+                      - ares
               preferredDuringSchedulingIgnoredDuringExecution:
                 - weight: 100
                   preference:
