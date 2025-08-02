@@ -19,6 +19,8 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: qbtools
         - matchLabels:
+            app.kubernetes.io/name: tqm
+        - matchLabels:
             app.kubernetes.io/name: autobrr
         - matchLabels:
             app.kubernetes.io/name: cross-seed
