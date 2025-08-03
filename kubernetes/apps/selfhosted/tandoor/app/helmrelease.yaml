@@ -45,10 +45,13 @@ spec:
               GUNICORN_MEDIA: 0
               MAX_OWNED_SPACES_PREF_DEFAULT: 0
               SHOPPING_MIN_AUTOSYNC_INTERVAL: 5
+              ALLOWED_HOSTS: ${HOSTNAME}
               TANDOOR_PORT: &tandoorPort 8000
             envFrom:
               - secretRef:
                   name: tandoor-db-secret
+              - secretRef:
+                  name: tandoor-secret
             probes:
               liveness: &probes
                 enabled: true
