@@ -3,11 +3,11 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: qbtools
+  name: tqm
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: qbtools
+      app.kubernetes.io/name: tqm
   egress:
     # qBittorrent
     - toEndpoints:
