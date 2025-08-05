@@ -46,7 +46,6 @@ spec:
               # Login method
               ACTUAL_LOGIN_METHOD: "password"
 
-
             probes:
               liveness:
                 enabled: true
