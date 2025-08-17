@@ -46,7 +46,6 @@ spec:
             args:
               - retag
               - qbt
-              - --dry-run
             resources:
               requests:
                 cpu: 10m
@@ -65,7 +64,6 @@ spec:
             args:
               - clean
               - qbt
-              - --dry-run
       orphaned:
         type: cronjob
         cronjob:
@@ -78,7 +76,6 @@ spec:
             args:
               - orphan
               - qbt
-              - --dry-run
       tqm-l:
         type: cronjob
         cronjob: &cronJobSpec
