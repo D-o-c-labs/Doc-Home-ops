@@ -45,6 +45,56 @@ spec:
               tag: 1.16.0@sha256:4b9fb56c43e1e5d82dec0be3b471af415e1d4092daff87354ad6d1008f756bba
             args:
               - retag
+              - qbt
+              - --dry-run
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+        containers:
+          clean:
+            <<: *container
+            args:
+              - clean
+              - qbt
+              - --dry-run
+      orphaned:
+        type: cronjob
+        cronjob:
+          <<: *cronJobSpec
+          schedule: 0 0 * * 0
+          suspend: true
+        containers:
+          app:
+            <<: *container
+            args:
+              - orphan
+              - qbt
+              - --dry-run
+      tqm_l:
+        type: cronjob
+        cronjob: &cronJobSpec
+          schedule: "@hourly"
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          failedJobsHistory: 1
+          successfulJobsHistory: 5
+          ttlSecondsAfterFinished: 3600
+        initContainers:
+          retag: &container
+            image:
+              repository: ghcr.io/home-operations/tqm
+              tag: 1.16.0@sha256:4b9fb56c43e1e5d82dec0be3b471af415e1d4092daff87354ad6d1008f756bba
+            args:
+              - retag
               - qbt_l
             resources:
               requests:
@@ -64,7 +114,7 @@ spec:
             args:
               - clean
               - qbt_l
-      orphaned:
+      orphaned_l:
         type: cronjob
         cronjob:
           <<: *cronJobSpec
