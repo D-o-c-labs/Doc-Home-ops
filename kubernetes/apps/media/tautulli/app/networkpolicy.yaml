@@ -26,6 +26,9 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: maintainerr
             k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+            k8s:io.kubernetes.pod.namespace: downloads
       toPorts:
         - ports:
             - port: "8181"
