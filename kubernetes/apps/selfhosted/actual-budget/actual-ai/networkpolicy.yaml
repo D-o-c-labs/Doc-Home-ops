@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: actual-ai
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: actual-ai
+  egress:
+    # Allow access to actual-budget service
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: actual-budget
+      toPorts:
+        - ports:
+            - port: "5006"
+              protocol: TCP
+          rules:
+            http:
+              - method: "GET"
+              - method: "POST"
