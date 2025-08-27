@@ -25,6 +25,7 @@ spec:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             ingress.home.arpa/gateway-route: allow
+            egress.home.arpa/sso: allow
           securityContext:
             runAsUser: "${APP_UID}"
             runAsGroup: "${APP_GID}"
@@ -44,7 +45,12 @@ spec:
               # Data directory
               ACTUAL_DATA_DIR: /data
               # Login method
-              ACTUAL_LOGIN_METHOD: "password"
+              ACTUAL_LOGIN_METHOD: "openid"
+              ACTUAL_ALLOWED_LOGIN_METHODS: "openid"
+
+            envFrom:
+              - secretRef:
+                  name: actual-secret
 
             probes:
               liveness:
