@@ -46,7 +46,6 @@ spec:
               ACTUAL_DATA_DIR: /data
               # Login method
               ACTUAL_LOGIN_METHOD: "openid"
-              ACTUAL_ALLOWED_LOGIN_METHODS: "openid"
 
             envFrom:
               - secretRef:
