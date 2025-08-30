@@ -40,8 +40,6 @@ spec:
               pullPolicy: IfNotPresent
 
             env:
-              # API configuration
-              API_PORT: &port 3000
               # Connection to Actual Budget server
               ACTUAL_SERVER_URL: "http://actual-budget.selfhosted.svc.cluster.local:5006"
 
@@ -56,7 +54,7 @@ spec:
                 spec:
                   httpGet:
                     path: /health
-                    port: *port
+                    port: &port 5007
                   initialDelaySeconds: 30
                   periodSeconds: 30
                   timeoutSeconds: 10
