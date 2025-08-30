@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: actual-api
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: actual-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: n8n
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      ports:
+        - protocol: TCP
+          port: 3000
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: actual-budget
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      ports:
+        - protocol: TCP
+          port: 5006
