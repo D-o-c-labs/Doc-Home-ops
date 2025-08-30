@@ -9,15 +9,15 @@ spec:
     matchLabels:
       app.kubernetes.io/name: actual-budget
   ingress:
-    # Allow ingress from actual-ai
+    # Allow ingress from actual-ai & API service
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: actual-ai
+            k8s:io.kubernetes.pod.namespace: selfhosted
+        - matchLabels:
+            app.kubernetes.io/name: actual-api
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "5006"
               protocol: TCP
-          rules:
-            http:
-              - method: "GET"
-              - method: "POST"
