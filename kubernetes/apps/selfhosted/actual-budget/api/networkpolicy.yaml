@@ -17,7 +17,7 @@ spec:
             k8s:io.kubernetes.pod.namespace: selfhosted
       ports:
         - protocol: TCP
-          port: 3000
+          port: 5007
   egress:
     - toEndpoints:
         - matchLabels:
