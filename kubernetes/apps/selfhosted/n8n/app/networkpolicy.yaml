@@ -49,5 +49,5 @@ spec:
             k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
-            - port: "3000"
+            - port: "5007"
               protocol: TCP
