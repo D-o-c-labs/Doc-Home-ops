@@ -39,6 +39,17 @@ repos:
     hooks:
       - id: fix-smartquotes
 
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        files: \.(json5?|ya?ml)$
+        exclude: |
+          (?x)^(
+              .*\.sops\.yaml$
+            | .*\.sops\.yml$
+          )$
+
   - repo: https://github.com/k8s-at-home/sops-pre-commit
     rev: v2.1.1
     hooks:

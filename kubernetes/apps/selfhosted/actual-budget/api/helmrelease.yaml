@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: actual-budget
+  name: actual-api
 spec:
   interval: 30m
   chart:
@@ -14,18 +14,18 @@ spec:
         kind: HelmRepository
         name: bjw-s-labs
         namespace: flux-system
+  dependsOn:
+    - name: actual-budget
+      namespace: selfhosted
   values:
     controllers:
-      actual-budget:
+      actual-api:
         annotations:
           reloader.stakater.com/auto: "true"
 
         pod:
           labels:
-            egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
-            ingress.home.arpa/gateway-route: allow
-            egress.home.arpa/sso: allow
           securityContext:
             runAsUser: "${APP_UID}"
             runAsGroup: "${APP_GID}"
@@ -35,21 +35,19 @@ spec:
         containers:
           app:
             image:
-              repository: actualbudget/actual-server
-              tag: ${ACTUAL_VERSION}@sha256:3d7fb08d3b405426e8625013a5ed95f5015e6c04d0f044e2e3fe7d7b7a41951b
+              repository: jhonderson/actual-http-api
+              tag: ${ACTUAL_VERSION}@sha256:f8d33188350a5e2db30cff60a489429d4ccd154a77f0305b5c8199c1b36de443
               pullPolicy: IfNotPresent
 
             env:
-              # Port configuration
-              ACTUAL_PORT: &port 5006
-              # Data directory
-              ACTUAL_DATA_DIR: /data
-              # Login method
-              ACTUAL_LOGIN_METHOD: "openid"
+              # API configuration
+              API_PORT: &port 3000
+              # Connection to Actual Budget server
+              ACTUAL_SERVER_URL: "http://actual-budget.selfhosted.svc.cluster.local:5006"
 
             envFrom:
               - secretRef:
-                  name: actual-secret
+                  name: actual-api-secret
 
             probes:
               liveness:
@@ -57,7 +55,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /health
                     port: *port
                   initialDelaySeconds: 30
                   periodSeconds: 30
@@ -68,7 +66,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /health
                     port: *port
                   initialDelaySeconds: 10
                   periodSeconds: 10
@@ -79,7 +77,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /health
                     port: *port
                   initialDelaySeconds: 10
                   periodSeconds: 10
@@ -91,37 +89,18 @@ spec:
                 cpu: 50m
                 memory: 128Mi
               limits:
-                memory: 512Mi
+                memory: 256Mi
 
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities:
                 drop:
                   - ALL
 
     service:
       app:
-        controller: actual-budget
+        controller: actual-api
         ports:
           http:
             port: *port
-
-    persistence:
-      data:
-        existingClaim: "${VOLSYNC_CLAIM}"
-        globalMounts:
-          - path: /data
-
-    route:
-      app:
-        hostnames:
-          - ${HOSTNAME}
-        parentRefs:
-          - name: external
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: actual-budget
-                port: *port

@@ -13,6 +13,7 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: open-webui-pipelines
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "5678"
@@ -23,6 +24,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: open-webui-pipelines
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "9099"
@@ -30,6 +32,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: open-webui
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "8080"
@@ -38,3 +41,13 @@ spec:
             http:
               - method: "POST"
                 path: "/api/chat/completions"
+
+    # actual-api
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: actual-api
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP

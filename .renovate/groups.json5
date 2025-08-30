@@ -14,22 +14,22 @@
       },
     },
     {
-      "description": ["Cert-Manager Group"],
-      "groupName": "Cert-Manager",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/cert-manager/"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
+      description: ["Cert-Manager Group"],
+      groupName: "Cert-Manager",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cert-manager/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
     },
     {
-      "description": ["Cilium Group"],
-      "groupName": "Cilium",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/cilium/"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
+      description: ["Cilium Group"],
+      groupName: "Cilium",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cilium/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
     },
     {
       description: "CoreDNS Group",
@@ -72,6 +72,18 @@
       groupName: "Silence-Operator",
       matchPackageNames: ["/silence-operator/"],
       matchDatasources: ["docker", "github-releases"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Actual Budget Group",
+      groupName: "Actual Budget",
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "actualbudget/actual-server",
+        "jhonderson/actual-http-api",
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },

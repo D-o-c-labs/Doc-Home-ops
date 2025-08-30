@@ -13,6 +13,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: actual-budget
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "5006"
