@@ -81,8 +81,8 @@
       groupName: "Actual Budget",
       matchDatasources: ["docker"],
       matchPackageNames: [
-        "actualbudget/actual-server",
-        "jhonderson/actual-http-api",
+        "/actualbudget\\/actual-server/",
+        "/jhonderson\\/actual-http-api/",
       ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
