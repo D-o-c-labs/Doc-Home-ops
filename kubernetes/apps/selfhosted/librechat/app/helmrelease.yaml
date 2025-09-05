@@ -35,7 +35,7 @@ spec:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
               # tag: v0.7.6
-              tag: latest@sha256:c097de13272c279cd68f66162f06a86b4402c5004f476bfccb1e4e2a43b890ad
+              tag: latest@sha256:d3e3dd747ac8675a939d1e63eba5b74d8e64911a01577c95b40d9c0f362abfca
             probes:
               liveness: &probes # Keep anchor for liveness probe definition
                 enabled: true
