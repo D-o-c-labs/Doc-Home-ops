@@ -147,7 +147,7 @@ spec:
         hostnames:
           - ${HOSTNAME}
         parentRefs:
-          - name: internal
+          - name: external
             namespace: kube-system
             sectionName: https
         rules:
