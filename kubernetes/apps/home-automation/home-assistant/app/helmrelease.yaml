@@ -145,8 +145,8 @@ spec:
         hostnames:
           - ${HOSTNAME}
         parentRefs:
-          - name: external
-            namespace: kube-system
+          - name: envoy-external
+            namespace: network
             sectionName: https
         rules:
           - backendRefs:
@@ -156,8 +156,8 @@ spec:
         hostnames:
           - code-homeassistant.piscio.net
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: network
             sectionName: https
         rules:
           - backendRefs:
