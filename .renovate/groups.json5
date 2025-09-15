@@ -59,6 +59,16 @@
       },
     },
     {
+      description: "Gateway API CRDs Group",
+      groupName: "gateway-api-crds",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/gateway-api-crds/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
       description: "Rook-Ceph Group",
       groupName: "Rook-Ceph",
       matchDatasources: ["docker"],
@@ -87,6 +97,7 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
+      minimumGroupSize: 2,
     },
   ],
 }
