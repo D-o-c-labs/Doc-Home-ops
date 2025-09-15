@@ -10,6 +10,6 @@ spec:
       ingress.home.arpa/gateway-route: allow
   ingress:
     - fromEndpoints:
-        - matchExpressions:
-            - key: reserved:ingress
-              operator: Exists
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            k8s:io.kubernetes.pod.namespace: network
