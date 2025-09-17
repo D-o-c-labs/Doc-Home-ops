@@ -24,23 +24,27 @@ spec:
       - piscio.net
     extraArgs:
       - --ignore-ingress-tls-spec
+      - --rfc2136-host="192.168.32.201"
+      - --rfc2136-port=53
+      - --rfc2136-zone=piscio.net
+      - --rfc2136-tsig-secret-alg=hmac-sha512
       - --rfc2136-tsig-axfr
     podAnnotations:
       secret.reloader.stakater.com/reload: externaldns-internal-secrets
     provider:
       name: rfc2136
     env:
-      - name: EXTERNAL_DNS_RFC2136_ZONE
-        value: piscio.net
-      - name: EXTERNAL_DNS_RFC2136_PORT
-        value: "53"
-      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
-        value: hmac-sha512
-      - name: EXTERNAL_DNS_RFC2136_HOST
-        valueFrom:
-          secretKeyRef:
-            name: externaldns-internal-secrets
-            key: host
+      # - name: EXTERNAL_DNS_RFC2136_ZONE
+      #   value: piscio.net
+      # - name: EXTERNAL_DNS_RFC2136_PORT
+      #   value: "53"
+      # - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
+      #   value: hmac-sha512
+      # - name: EXTERNAL_DNS_RFC2136_HOST
+      #   valueFrom:
+      #     secretKeyRef:
+      #       name: externaldns-internal-secrets
+      #       key: host
       - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
         valueFrom:
           secretKeyRef:
