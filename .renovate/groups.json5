@@ -99,5 +99,13 @@
       },
       minimumGroupSize: 2,
     },
+    {
+      description: "Librechat Group",
+      groupName: "Librechat",
+      matchPaths: ["kubernetes/apps/selfhosted/librechat/**"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
   ],
 }
