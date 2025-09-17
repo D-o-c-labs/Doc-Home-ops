@@ -6,15 +6,9 @@ metadata:
   name: externaldns-internal
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: external-dns
-      version: 1.15.2
-      sourceRef:
-        kind: HelmRepository
-        name: external-dns-internal
-      interval: 30m
-
+  chartRef:
+    kind: OCIRepository
+    name: externaldns-internal
   values:
     fullnameOverride: &name externaldns-internal
     image: # TODO: Remove this block when new chart version is released
