@@ -13,7 +13,18 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: ghostfolio-redis
+            k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "6379"
+              protocol: TCP
+  ingress:
+    # n8n
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: n8n
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "3333"
               protocol: TCP
