@@ -44,6 +44,9 @@ spec:
               WEBHOOK_URL: "https://${HOSTNAME}"
               N8N_METRICS: "true"
               NODE_ENV: "production"
+              NODE_FUNCTION_ALLOW_EXTERNAL: "cheerio"
+              N8N_RUNNERS_ENABLED: true
+              N8N_BLOCK_ENV_ACCESS_IN_NODE: true
             envFrom:
               - secretRef:
                   name: n8n-db-secret
