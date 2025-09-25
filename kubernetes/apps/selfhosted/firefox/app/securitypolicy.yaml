@@ -1,0 +1,18 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: oidc-firefox
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: firefox
+  oidc:
+    provider:
+      issuer: "https://auth.piscio.net/application/o/firefox/"
+    clientID: "Zpxi5UAmcxrTEMkEBaw6ufXNCG7po9a2nuDZssYo"
+    clientSecret:
+      name: "firefox-oidc-secret"
+    redirectURL: "https://firefox.piscio.net/myapp/oauth2/callback"
+    logoutPath: "/application/o/firefox/end-session/"

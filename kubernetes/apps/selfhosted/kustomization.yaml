@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: selfhosted
 resources:
   - ./actual-budget/ks.yaml
+  - ./firefox/ks.yaml
   - ./ghostfolio/ks.yaml
   - ./librechat/ks.yaml
   - ./n8n/ks.yaml
