@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: mongo
-              tag: 8.0.13
+              tag: 8.0.14
             args:
               - --noauth
             probes:
