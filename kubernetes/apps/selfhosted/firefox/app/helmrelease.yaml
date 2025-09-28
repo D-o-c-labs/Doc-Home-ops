@@ -1,0 +1,151 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: firefox
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  values:
+    controllers:
+      firefox:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            ingress.home.arpa/gateway-route: allow
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 0
+            fsGroupChangePolicy: "OnRootMismatch"
+          dnsPolicy: "None"
+          dnsConfig:
+            nameservers:
+              - 1.1.1.1
+              - 1.0.0.1
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/jlesage/firefox
+              tag: v25.9.1@sha256:eddd62209e03b020274425468bb841548e6a96c3941c8f8842e4edc521dea38c
+              pullPolicy: IfNotPresent
+
+            env:
+              # Display settings
+              DISPLAY_WIDTH: "1920"
+              DISPLAY_HEIGHT: "1080"
+              DARK_MODE: "1"
+              # VNC settings
+              VNC_PASSWORD: ""
+              # Keep app running
+              KEEP_APP_RUNNING: "1"
+              # Enable audio
+              ENABLE_AUDIO: "1"
+              # User settings
+              USER_ID: "${APP_UID}"
+              GROUP_ID: "${APP_GID}"
+
+              WEB_AUDIO: "1"
+              WEB_AUTHENTICATION: "0"
+              SECURE_CONNECTION: "0"
+
+              WEB_LISTENING_PORT: &port 5800
+              VNC_LISTENING_PORT: -1
+
+            envFrom:
+              - secretRef:
+                  name: firefox-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 30
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 1
+                memory: 2Gi
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              # capabilities:
+              #   drop:
+              #     - ALL
+
+    service:
+      app:
+        controller: firefox
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        # type: emptyDir
+        existingClaim: "${VOLSYNC_CLAIM}"
+        globalMounts:
+          - path: /config
+      downloads:
+        type: emptyDir
+        globalMounts:
+          - path: /config/downloads
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: firefox
+                port: *port

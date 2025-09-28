@@ -52,10 +52,10 @@ spec:
             - port: "5007"
               protocol: TCP
 
-    # n8n
+    # ghostfolio
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: n8n
+            app.kubernetes.io/name: ghostfolio
             k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
