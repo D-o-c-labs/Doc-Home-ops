@@ -8,6 +8,7 @@ spec:
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: ghostfolio
+      k8s:io.kubernetes.pod.namespace: selfhosted
   egress:
     # Redis
     - toEndpoints:
