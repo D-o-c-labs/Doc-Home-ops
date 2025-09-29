@@ -7,11 +7,7 @@ resources:
   - ./actual-budget/ks.yaml
   - ./firefox/ks.yaml
   - ./ghostfolio/ks.yaml
-  - ./librechat/ks.yaml
   - ./n8n/ks.yaml
-  - ./open-webui/ks.yaml
-  - ./paperless/ks.yaml
-  - ./tika/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
