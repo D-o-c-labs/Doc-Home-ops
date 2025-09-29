@@ -1,16 +1,14 @@
 {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: 'Loose versioning for non-semver packages',
-      matchDatasources: [
-        'docker',
-      ],
+      description: "Loose versioning for non-semver packages",
+      matchDatasources: ["docker"],
       matchPackageNames: [
-        'ghcr.io/cross-seed/cross-seed',
-        'ghcr.io/home-operations/plex',
+        "ghcr.io/cross-seed/cross-seed",
+        "ghcr.io/home-operations/plex",
       ],
-      versioning: 'loose',
+      versioning: "loose",
     },
     {
       description: "Custom versioning for http-https-echo",
@@ -19,34 +17,22 @@
       versioning: "regex:^(?<major>\\d+)$",
     },
     {
-      description: 'Enable pre-releases for LibreChat',
-      matchDatasources: [
-        'docker',
-      ],
-      matchPackageNames: [
-        'ghcr.io/danny-avila/librechat',
-      ],
+      description: "Enable pre-releases for LibreChat",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/danny-avila/librechat"],
       ignoreUnstable: false,
     },
     {
-      description: 'Authentik helm chart',
-      matchPackagePatterns: [
-        '^authentik$',
-      ],
-      matchDatasources: [
-        'helm',
-      ],
-      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
+      description: "Authentik helm chart",
+      matchPackagePatterns: ["^authentik$"],
+      matchDatasources: ["helm"],
+      versioning: "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$",
     },
     {
-      description: 'Authentik image',
-      matchPackageNames: [
-        'ghcr.io/goauthentik/server',
-      ],
-      matchDatasources: [
-        'docker',
-      ],
-      versioning: 'regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$',
+      description: "Authentik image",
+      matchPackageNames: ["ghcr.io/goauthentik/server"],
+      matchDatasources: ["docker"],
+      versioning: "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$",
     },
   ],
 }
