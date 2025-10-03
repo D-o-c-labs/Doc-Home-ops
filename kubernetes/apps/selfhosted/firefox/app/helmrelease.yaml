@@ -24,17 +24,13 @@ spec:
           labels:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/envoy-internal: allow
             ingress.home.arpa/gateway-route: allow
           securityContext:
             runAsUser: 0
             runAsGroup: 0
             fsGroup: 0
             fsGroupChangePolicy: "OnRootMismatch"
-          dnsPolicy: "None"
-          dnsConfig:
-            nameservers:
-              - 1.1.1.1
-              - 1.0.0.1
 
         containers:
           app:
