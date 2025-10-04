@@ -9,3 +9,5 @@ resources:
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
+replacements:
+  - path: ../../components/replacements/ks.yaml

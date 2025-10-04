@@ -16,3 +16,5 @@ patches:
         value: "true"
     target:
       kind: Namespace
+replacements:
+  - path: ../../components/replacements/ks.yaml
