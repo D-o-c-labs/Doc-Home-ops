@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tandoorrecipes/recipes
-              tag: 2.0.1@sha256:b95f7b3e3df000cd39a152be0ddff7139c6d7c5f59cd306f325da44c50a81d05
+              tag: 2.3.0@sha256:94a048d2ca34209654ecb984e29de1f621625b632925b28243735f1de4187d58
             env:
               DB_ENGINE: django.db.backends.postgresql
               COMMENT_PREF_DEFAULT: 0
