@@ -30,7 +30,7 @@ Run `mise install` followed by `task --list` to confirm everything is available.
 | Path                     | Purpose                                                                                                                                                                                                                                                    |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `kubernetes/apps/`       | Application stacks grouped by domain (e.g. `media/`, `monitoring/`, `network/`). Each stack includes `ks.yaml`, `kustomization.yaml`, and an `app/` folder with manifests such as `helmrelease.yaml`, `externalsecret.yaml`, and network policy resources. |
-| `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                                                         |
+| `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, replacements transformers, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                              |
 | `kubernetes/bootstrap/`  | Helmfile-driven cluster bootstrap (Cilium, CoreDNS, cert-manager, flux-operator) plus supporting templates and environment.                                                                                                                                |
 | `kubernetes/flux/`       | Flux `GitRepository` and `Kustomization` definitions that reconcile the rest of the repository.                                                                                                                                                            |
 | `kubernetes/talos/`      | Talos cluster configuration (`talconfig.yaml`), secrets wiring (`talhelper-secrets.env`), and generated machine configs in `clusterconfig/`.                                                                                                               |
@@ -74,6 +74,7 @@ The helper environment file `kubernetes/talos/talhelper-secrets.env` maps Talos 
 ## Flux & Application Stacks
 
 - Each domain under `kubernetes/apps/` owns its namespace `kustomization.yaml` and delegates workload specifics to nested `ks.yaml` entries.
+- Domain-level Kustomizations include the shared `../../components/replacements/ks.yaml` transformer so Flux Kustomizations inherit the namespace automatically—avoid setting `metadata.namespace` or `spec.targetNamespace` directly in `ks.yaml`.
 - Workloads typically use the [`bjw-s/app-template`](https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common) via a `HelmRelease` in `app/helmrelease.yaml` plus overlays for PVCs, ConfigMaps, and network policies.
 - Shared behavior (Flux alerting, VolSync replication, namespace creation) is composed with `components` references.
 - External dependencies (databases, monitoring exporters, ingress gateways, etc.) live alongside application code so Flux can reconcile the full graph.
