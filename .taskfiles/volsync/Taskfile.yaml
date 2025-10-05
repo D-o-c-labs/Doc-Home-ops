@@ -23,13 +23,13 @@ tasks:
     desc: List snapshots for an app [NS=default] [APP=required]
     preconditions:
       - which kubectl minijinja-cli
-      - kubectl --namespace {{.NS}} get replicationsources {{.APP}}
+      - kubectl --namespace {{.NS}} get replicationsources {{.APP}}-wasabi
       - test -f "{{.VOLSYNC_TASK_RESOURCES_DIR}}/list-snapshots.yaml.j2"
     requires:
       vars:
         - APP
     vars:
-      NS: '{{.NS | default "default"}}'
+      NS: "{{.NS | default 'default'}}"
       JOB: "list-snapshots-{{ .APP }}"
     env:
       NS: "{{.NS}}"
@@ -45,16 +45,16 @@ tasks:
     desc: Snapshot an app [NS=default] [APP=required]
     preconditions:
       - which kubectl
-      - kubectl --namespace {{.NS}} get replicationsources {{.APP}}
+      - kubectl --namespace {{.NS}} get replicationsources {{.APP}}-wasabi
     requires:
       vars:
         - APP
     vars:
-      WAIT: '{{.WAIT | default "true"}}'
-      NS: '{{.NS | default "default"}}'
+      WAIT: "{{.WAIT | default 'true'}}"
+      NS: "{{.NS | default 'default'}}"
       JOB: volsync-src-{{.APP}}
     cmds:
-      - kubectl --namespace {{.NS}} patch replicationsources {{.APP}} --type merge -p '{"spec":{"trigger":{"manual":"{{now | unixEpoch}}"}}}'
+      - kubectl --namespace {{.NS}} patch replicationsources {{.APP}}-wasabi --type merge -p '{"spec":{"trigger":{"manual":"{{now | unixEpoch}}"}}}'
       - |-
         {{ if eq "true" .WAIT }}until kubectl --namespace {{.NS}} get job/{{.JOB}} &>/dev/null; do sleep 5; done{{ end }}
       - |-
@@ -75,8 +75,8 @@ tasks:
         task: snapshot
         vars:
           WAIT: "false"
-          NS: '{{splitList "," .ITEM | first}}'
-          APP: '{{splitList "," .ITEM | last}}'
+          NS: "{{ splitList ',' .ITEM | first }}"
+          APP: "{{ splitList ',' .ITEM | last }}"
 
   restore:
     desc: Restore an app [NS=default] [APP=required] [PREVIOUS=required]
@@ -88,7 +88,7 @@ tasks:
         - APP
         - PREVIOUS
     vars:
-      NS: '{{.NS | default "default"}}'
+      NS: "{{.NS | default 'default'}}"
       CONTROLLER:
         sh: kubectl --namespace {{.NS}} get deployment {{.APP}} &>/dev/null && echo deployment || echo statefulset
     env:
@@ -96,15 +96,15 @@ tasks:
       APP: "{{.APP}}"
       PREVIOUS: "{{.PREVIOUS}}"
       CLAIM:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.sourcePVC}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-wasabi --output=jsonpath="{.spec.sourcePVC}"
       ACCESS_MODES:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.restic.accessModes}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-wasabi --output=jsonpath="{.spec.restic.accessModes}"
       STORAGE_CLASS_NAME:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.restic.storageClassName}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-wasabi --output=jsonpath="{.spec.restic.storageClassName}"
       PUID:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.restic.moverSecurityContext.runAsUser}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-wasabi --output=jsonpath="{.spec.restic.moverSecurityContext.runAsUser}"
       PGID:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.restic.moverSecurityContext.runAsGroup}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-wasabi --output=jsonpath="{.spec.restic.moverSecurityContext.runAsGroup}"
     cmds:
       # Suspend
       - flux --namespace flux-system suspend kustomization {{.APP}}
