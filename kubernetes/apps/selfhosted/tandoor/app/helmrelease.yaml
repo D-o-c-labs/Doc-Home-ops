@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.2.0
+      version: 4.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s-labs
@@ -28,7 +28,7 @@ spec:
             runAsUser: 2000
             runAsGroup: 2000
             fsGroup: 2000
-            runAsNonRoot: true
+            runAsNonRoot: false
             fsGroupChangePolicy: "OnRootMismatch"
 
         containers:
@@ -36,10 +36,6 @@ spec:
             image:
               repository: ghcr.io/tandoorrecipes/recipes
               tag: 2.0.1@sha256:b95f7b3e3df000cd39a152be0ddff7139c6d7c5f59cd306f325da44c50a81d05
-            command:
-              - /bin/sh
-              - -c
-              - "tail -f /dev/null"
             env:
               DB_ENGINE: django.db.backends.postgresql
               COMMENT_PREF_DEFAULT: 0
@@ -66,6 +62,9 @@ spec:
                   httpGet:
                     path: /accounts/login/
                     port: *tandoorPort
+                    httpHeaders:
+                      - name: Host
+                        value: ${HOSTNAME}
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -78,32 +77,34 @@ spec:
                   httpGet:
                     path: /accounts/login/
                     port: *tandoorPort
+                    httpHeaders:
+                      - name: Host
+                        value: ${HOSTNAME}
                   failureThreshold: 30
                   periodSeconds: 10
             resources:
               requests:
                 cpu: 10m
-                memory: 128Mi
+                memory: 256Mi
               limits:
-                memory: 512Mi
+                memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
               capabilities:
                 drop:
                   - ALL
-
-          nginx:
-            image:
-              repository: ghcr.io/nginxinc/nginx-unprivileged
-              tag: 1.27.4-alpine
+            ports:
+              - name: http
+                containerPort: *tandoorPort
 
     service:
       app:
         controller: tandoor
         ports:
           http:
-            port: &port 8080
+            port: &port 8000
+            targetPort: *tandoorPort
 
     persistence:
       files:
@@ -115,20 +116,12 @@ spec:
                 subPath: mediafiles
               - path: /opt/recipes/staticfiles
                 subPath: staticfiles
-            nginx:
-              - path: /media
-                subPath: mediafiles
-              - path: /static
-                subPath: staticfiles
-      nginx-config:
-        type: configMap
-        name: tandoor-nginx
+      nginx-runtime:
+        type: emptyDir
         advancedMounts:
           tandoor:
-            nginx:
-              - path: /etc/nginx/nginx.conf
-                subPath: nginx-config
-                readOnly: true
+            app:
+              - path: /var/lib/nginx
       temp:
         type: emptyDir
         advancedMounts:

@@ -12,7 +12,12 @@ spec:
     destinationPVC: {{ ENV.CLAIM }}
     copyMethod: Direct
     storageClassName: {{ ENV.STORAGE_CLASS_NAME }}
+{% if ENV.ACCESS_MODES %}
     accessModes: {{ ENV.ACCESS_MODES }}
+{% else %}
+    accessModes:
+      - ReadWriteOnce
+{% endif %}
     previous: {{ ENV.PREVIOUS }}
     moverSecurityContext:
       runAsUser: {{ ENV.PUID }}
