@@ -8,6 +8,7 @@ resources:
   - ./firefox/ks.yaml
   - ./ghostfolio/ks.yaml
   - ./n8n/ks.yaml
+  - ./tandoor/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
