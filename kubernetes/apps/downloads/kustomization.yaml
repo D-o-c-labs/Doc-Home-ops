@@ -24,3 +24,5 @@ components:
   - ../../components/namespace
   - ../../components/flux/alerts
   - ../../components/flux/sops
+replacements:
+  - path: ../../components/replacements/ks.yaml
