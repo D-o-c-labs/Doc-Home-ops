@@ -1,0 +1,136 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mealie
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      mealie:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+            ingress.home.arpa/gateway-route: allow
+            egress.home.arpa/sso: allow
+          securityContext:
+            runAsUser: "${APP_UID}"
+            runAsGroup: "${APP_GID}"
+            fsGroup: "${APP_GID}"
+            runAsNonRoot: true
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mealie-recipes/mealie
+              tag: v3.3.1@sha256:a0d4a0b8543389ff3259eae40ffedeea94364f9229aa945a3e9d69e7a03e30ad
+            env:
+              BASE_URL: https://${HOSTNAME}
+              DB_ENGINE: postgres
+              PUID: "${APP_UID}"
+              PGID: "${APP_GID}"
+              TZ: Europe/Rome
+              ALLOW_SIGNUP: "false"
+              ALLOW_PASSWORD_LOGIN: "true"
+              OIDC_AUTH_ENABLED: "true"
+              OIDC_SIGNUP_ENABLED: "false"
+              OIDC_AUTO_REDIRECT: "true"
+              OIDC_REMEMBER_ME: "true"
+              OIDC_PROVIDER_NAME: "Authentik"
+              OPENAI_BASE_URL: https://openrouter.ai/api/v1
+              OPENAI_MODEL: anthropic/claude-sonnet-4.5
+            envFrom:
+              - secretRef:
+                  name: mealie-db-secret
+              - secretRef:
+                  name: mealie-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            ports:
+              - name: http
+                containerPort: *port
+
+    service:
+      app:
+        controller: mealie
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        globalMounts:
+          - path: /app/data/
+
+      temp:
+        type: emptyDir
+        advancedMounts:
+          mealie:
+            app:
+              - path: /tmp
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: mealie
+                port: *port

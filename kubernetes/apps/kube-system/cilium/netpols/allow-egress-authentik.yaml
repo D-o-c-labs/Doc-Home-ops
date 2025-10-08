@@ -19,3 +19,28 @@ spec:
         - ports:
             - port: "9000"
               protocol: TCP
+
+    - toFQDNs:
+        - matchName: "auth.piscio.net"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+            - port: "10080"
+              protocol: TCP
+            - port: "10443"
+              protocol: TCP
+          rules:
+            dns:
+              - matchName: "auth.piscio.net"

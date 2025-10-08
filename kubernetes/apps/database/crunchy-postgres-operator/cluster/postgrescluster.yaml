@@ -91,6 +91,11 @@ spec:
         - librechat
       password:
         type: AlphaNumeric
+    - name: mealie
+      databases:
+        - mealie
+      password:
+        type: AlphaNumeric
     - name: tandoor
       databases:
         - tandoor
@@ -134,8 +139,8 @@ spec:
         # repo1-s3-uri-style: path
         # Wasabi
         archive-push-queue-max: 4GiB
-        #repo1-block: "y"
-        #repo1-bundle: "y"
+        # repo1-block: "y"
+        # repo1-bundle: "y"
         repo1-path: /crunchy-pgo
         repo1-retention-full: "14" # days
         repo1-retention-full-type: time
