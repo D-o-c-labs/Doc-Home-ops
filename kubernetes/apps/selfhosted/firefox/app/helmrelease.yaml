@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/jlesage/firefox
-              tag: v25.9.1@sha256:eddd62209e03b020274425468bb841548e6a96c3941c8f8842e4edc521dea38c
+              tag: v25.09.1@sha256:eddd62209e03b020274425468bb841548e6a96c3941c8f8842e4edc521dea38c
               pullPolicy: IfNotPresent
 
             env:
