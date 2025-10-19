@@ -4,10 +4,38 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 kubernetes_dir := justfile_dir() + '/kubernetes'
 talos_dir := kubernetes_dir + '/talos'
 controller := `talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1`
+clusterconfig_dir := talos_dir + '/clusterconfig'
 
 [private]
 default:
   just -l talos
+
+[doc('Generate Talos cluster configuration manifests using talhelper')]
+generate-clusterconfig:
+  command -v talhelper >/dev/null || { echo 'talhelper CLI is required' >&2; exit 1; }
+  command -v op >/dev/null || { echo '1Password CLI (op) is required' >&2; exit 1; }
+  test -f "{{ talos_dir }}/talsecret.yaml"
+  test -f "{{ talos_dir }}/talconfig.yaml"
+  test -f "{{ talos_dir }}/talhelper-secrets.env"
+  op run --env-file "{{ talos_dir }}/talhelper-secrets.env" --no-masking -- talhelper genconfig \
+  --secret-file "{{ talos_dir }}/talsecret.yaml" \
+  --config-file "{{ talos_dir }}/talconfig.yaml" \
+  --out-dir "{{ clusterconfig_dir }}"
+
+[doc('Apply talhelper-generated Talos machineconfigs to every node')]
+apply-clusterconfig mode='auto' dry_run='false' insecure='false':
+  command -v talosctl >/dev/null || { echo 'talosctl CLI is required' >&2; exit 1; }
+  test -d "{{ clusterconfig_dir }}"
+  shopt -s nullglob
+  files=("{{ clusterconfig_dir }}"/*.yaml)
+  if [[ ${#files[@]} -eq 0 ]]; then echo 'no clusterconfig YAML files found to apply' >&2; exit 1; fi
+  for file in "${files[@]}"; do
+  base=$(basename "$file")
+  hostname=${base%.yaml}
+  hostname=${hostname#doc-home-ops-}
+  just talos _apply-machineconfig path="$file" hostname="$hostname" mode="{{ mode }}" dry_run="{{ dry_run }}" insecure="{{ insecure }}"
+  done
+  shopt -u nullglob
 
 [doc('Apply Talos config to a node')]
 apply-node node *args:
@@ -66,6 +94,13 @@ download-image version schematic:
       -o "{{ talos_dir }}/talos-{{ version }}-{{ replace_regex(schematic, '^(.{8}).*', '$1') }}.iso" \
       "https://factory.talos.dev/image/{{ schematic }}/{{ version }}/metal-amd64.iso"
   just log info "Downloaded Talos" version "{{ version }}" schematic "{{ schematic }}"
+
+[private]
+_apply-machineconfig path hostname mode='auto' dry_run='false' insecure='false':
+  args=(--nodes "{{ hostname }}" --file "{{ path }}" --mode "{{ mode }}")
+  if [[ "{{ dry_run }}" == "true" ]]; then args+=(--dry-run); fi
+  if [[ "{{ insecure }}" == "true" ]]; then args+=(--insecure); fi
+  talosctl apply-config "${args[@]}"
 
 [private]
 machine-controller node:
