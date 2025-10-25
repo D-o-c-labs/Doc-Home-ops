@@ -16,11 +16,13 @@ node-shell node:
   kubectl debug node/{{ node }} -n default -it --image='mirror.gcr.io/alpine:latest' --profile sysadmin
   kubectl delete pod -n default -l app.kubernetes.io/managed-by=kubectl-debug
 
-[doc('Prune pods in Failed, Pending, or Succeeded state')]
-prune-pods:
+[doc('Clean up pods stuck in Failed, Pending, or Succeeded states')]
+cleanup-pods:
   for phase in Failed Pending Succeeded; do \
     kubectl delete pods -A --field-selector status.phase="$phase" --ignore-not-found=true; \
   done
+
+alias prune-pods := cleanup-pods
 
 [doc('Apply local Flux Kustomization')]
 apply-ks ns ks:
@@ -58,15 +60,15 @@ sync-all-ks:
 
 [doc('Sync all ExternalSecrets')]
 sync-all-es:
-  kubectl get es --no-headers -A | while read -r ns name _; do \
+  kubectl get externalsecret --no-headers -A | while read -r ns name _; do \
     just k8s sync-es "$ns" "$name"; \
   done
 
-[doc('Snapshot VolSync PVCs')]
+alias sync-externalsecrets := sync-all-es
+
+[doc('Snapshot all VolSync replication sources')]
 snapshot:
-  kubectl get replicationsources --no-headers -A | while read -r ns name _; do \
-    kubectl -n "$ns" patch replicationsources "$name" --type merge -p '{"spec":{"trigger":{"manual":"$(date +%s)"}}}'; \
-  done
+  just volsync snapshot-all
 
 [private]
 render-local-ks ns ks:

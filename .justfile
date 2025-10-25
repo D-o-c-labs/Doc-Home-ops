@@ -4,7 +4,11 @@ set quiet := true
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 mod k8s-bootstrap "kubernetes/bootstrap"
+mod flux "kubernetes/flux"
 mod k8s "kubernetes"
+mod volsync "kubernetes/volsync"
+mod postgres "kubernetes/postgres"
+mod sops "sops"
 mod talos "kubernetes/talos"
 
 [private]
