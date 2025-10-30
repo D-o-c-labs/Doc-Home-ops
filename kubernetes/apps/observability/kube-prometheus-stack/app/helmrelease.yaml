@@ -34,6 +34,10 @@ spec:
           name: alertmanager
           global:
             resolveTimeout: 5m
+        alertmanagerConfigSelector:
+          matchLabels:
+            alertmanager: ${APP}
+        alertmanagerConfigNamespaceSelector: {}
         externalUrl: https://${ALERTMANAGER_HOSTNAME}
         storage:
           volumeClaimTemplate:
