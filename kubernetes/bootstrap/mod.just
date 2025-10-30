@@ -3,8 +3,6 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 kubernetes_dir := justfile_dir() + '/kubernetes'
 bootstrap_dir := kubernetes_dir + '/bootstrap'
-controller := `talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1`
-nodes := `talosctl config info -o yaml | yq -e '.nodes | join (" ")'`
 
 [private]
 default: talos kubernetes (kubeconfig "node") wait namespaces resources crds apps kubeconfig
@@ -12,34 +10,37 @@ default: talos kubernetes (kubeconfig "node") wait namespaces resources crds app
 [doc('Install Talos')]
 talos:
   just log info "Running stage..." "stage" "$0"
-  for n in {{ nodes }}; do \
-    if ! op=$(just talos apply-node "$n" --insecure 2>&1); then \
-      if [[ "$op" == *"certificate required"* ]]; then \
-        just log info "Talos already configured, skipping apply of config" "stage" "$0" "node" "$n"; \
-        continue; \
-      fi; \
-      just log fatal "Failed to apply Talos configuration" "stage" "$0" "node" "$n" "output" "$op"; \
-    fi; \
+  nodes=$(talosctl config info -o yaml | yq -e '.nodes | join (" ")')
+  for n in $nodes; do
+    if ! op=$(just talos apply-node "$n" --insecure 2>&1); then
+      if [[ "$op" == *"certificate required"* ]]; then
+        just log info "Talos already configured, skipping apply of config" "stage" "$0" "node" "$n"
+        continue
+      fi
+      just log fatal "Failed to apply Talos configuration" "stage" "$0" "node" "$n" "output" "$op"
+    fi
   done
 
 [doc('Install Kubernetes')]
 kubernetes:
   just log info "Running stage..." "stage" "$0"
-  until op=$(talosctl -n "{{ controller }}" bootstrap 2>&1 || true) && [[ "$op" == *"AlreadyExists"* ]]; do \
-    just log info "Kubernetes bootstrap in progress. Retrying in 5 seconds..." "stage" "$0"; \
-    sleep 5; \
+  controller=$(talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1)
+  until op=$(talosctl -n "$controller" bootstrap 2>&1 || true) && [[ "$op" == *"AlreadyExists"* ]]; do
+    just log info "Kubernetes bootstrap in progress. Retrying in 5 seconds..." "stage" "$0"
+    sleep 5
   done
 
 [doc('Fetch kubeconfig')]
 kubeconfig lb="cilium":
   just log info "Running stage..." "stage" "$0"
-  if ! talosctl kubeconfig -n "{{ controller }}" -f --force-context-name home-ops {{ justfile_dir() }}; then \
-    just log fatal "Failed to fetch kubeconfig" "stage" "$0"; \
+  controller=$(talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1)
+  if ! talosctl kubeconfig -n "$controller" -f --force-context-name home-ops {{ justfile_dir() }}; then
+    just log fatal "Failed to fetch kubeconfig" "stage" "$0"
   fi
-  if [[ "{{ lb }}" != "cilium" ]]; then \
-    if ! kubectl config set-cluster home-ops --server "https://{{ controller }}:6443"; then \
-      just log fatal "Failed to set kubectl cluster server address" "stage" "$0"; \
-    fi; \
+  if [[ "{{ lb }}" != "cilium" ]]; then
+    if ! kubectl config set-cluster home-ops --server "https://$controller:6443"; then
+      just log fatal "Failed to set kubectl cluster server address" "stage" "$0"
+    fi
   fi
 
 [doc('Wait for nodes to be not-ready')]
