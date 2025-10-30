@@ -3,7 +3,6 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 kubernetes_dir := justfile_dir() + '/kubernetes'
 talos_dir := kubernetes_dir + '/talos'
-controller := `talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1`
 clusterconfig_dir := talos_dir + '/clusterconfig'
 
 [private]
@@ -50,7 +49,8 @@ apply-cluster *args:
 
 [doc('Generate kubeconfig for Talos cluster')]
 gen-kubeconfig:
-  talosctl kubeconfig -n "{{ controller }}" -f --force-context-name main {{ kubernetes_dir }}
+  controller=$(talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1)
+  talosctl kubeconfig -n "$controller" -f --force-context-name main {{ kubernetes_dir }}
 
 [doc('Generate schematic ID from Talos schematic')]
 gen-schematic-id:
@@ -81,7 +81,8 @@ reset-cluster mode="reboot":
 
 [doc('Upgrade Kubernetes version on the cluster')]
 upgrade-k8s version:
-  talosctl -n "{{ controller }}" upgrade-k8s --to {{ version }}
+  controller=$(talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1)
+  talosctl -n "$controller" upgrade-k8s --to {{ version }}
 
 [doc('Upgrade Talos version on a node')]
 upgrade-node node:

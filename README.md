@@ -27,17 +27,17 @@ Run `mise install` followed by `just -l` to confirm everything is available.
 
 ## Repository Layout
 
-| Path                     | Purpose                                                                                                                                                                                                                                                    |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `kubernetes/apps/`       | Application stacks grouped by domain (e.g. `media/`, `monitoring/`, `network/`). Each stack includes `ks.yaml`, `kustomization.yaml`, and an `app/` folder with manifests such as `helmrelease.yaml`, `externalsecret.yaml`, and network policy resources. |
-| `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, replacements transformers, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                              |
-| `kubernetes/bootstrap/`  | Helmfile-driven cluster bootstrap (Cilium, CoreDNS, cert-manager, flux-operator) plus supporting templates and environment.                                                                                                                                |
-| `kubernetes/flux/`       | Flux `GitRepository` and `Kustomization` definitions that reconcile the rest of the repository.                                                                                                                                                            |
-| `kubernetes/talos/`      | Talos cluster configuration (`talconfig.yaml`), secrets wiring (`talhelper-secrets.env`), and generated machine configs in `clusterconfig/`.                                                                                                               |
-| `kubernetes/*/mod.just`  | `just` automation modules for Flux stacks, Talos lifecycle, VolSync workflows, and supporting operations scoped to each domain.                                                                                                                            |
-| `sops/mod.just`          | Repository-wide SOPS helpers (bulk re-encryption) exposed via `just`.                                                                                                                                                                                      |
-| `docs/`                  | Space for architecture notes and runbooks; expand as new components are added.                                                                                                                                                                             |
-| `.github/workflows/`     | CI pipelines for linting, flux-local diff/test, CodeQL, image pre-pulls, Renovate scheduling, and label automation.                                                                                                                                        |
+| Path                     | Purpose                                                                                                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kubernetes/apps/`       | Application stacks grouped by domain (e.g. `media/`, `observability/`, `network/`). Each stack includes `ks.yaml`, `kustomization.yaml`, and an `app/` folder with manifests such as `helmrelease.yaml`, `externalsecret.yaml`, and network policy resources. |
+| `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, replacements transformers, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                                 |
+| `kubernetes/bootstrap/`  | Helmfile-driven cluster bootstrap (Cilium, CoreDNS, cert-manager, flux-operator) plus supporting templates and environment.                                                                                                                                   |
+| `kubernetes/flux/`       | Flux `GitRepository` and `Kustomization` definitions that reconcile the rest of the repository.                                                                                                                                                               |
+| `kubernetes/talos/`      | Talos cluster configuration (`talconfig.yaml`), secrets wiring (`talhelper-secrets.env`), and generated machine configs in `clusterconfig/`.                                                                                                                  |
+| `kubernetes/*/mod.just`  | `just` automation modules for Flux stacks, Talos lifecycle, VolSync workflows, and supporting operations scoped to each domain.                                                                                                                               |
+| `sops/mod.just`          | Repository-wide SOPS helpers (bulk re-encryption) exposed via `just`.                                                                                                                                                                                         |
+| `docs/`                  | Space for architecture notes and runbooks; expand as new components are added.                                                                                                                                                                                |
+| `.github/workflows/`     | CI pipelines for linting, flux-local diff/test, CodeQL, image pre-pulls, Renovate scheduling, and label automation.                                                                                                                                           |
 
 ## GitOps Flow
 
@@ -175,7 +175,8 @@ Before merging changes:
 ## Further Reading
 
 - Extend documentation under `docs/` for runbooks, network maps, or architecture decisions.
-- Review existing stacks (e.g. `kubernetes/apps/monitoring/`, `kubernetes/apps/network/`) for patterns to reuse.
+- Review existing stacks (e.g. `kubernetes/apps/observability/`, `kubernetes/apps/network/`) for patterns to reuse.
+- Review `docs/kubernetes/observability.md` for log and metrics stack details and runbooks.
 - Consult the upstream projects referenced here:
   - [Talos Linux](https://www.talos.dev)
   - [FluxCD](https://fluxcd.io)

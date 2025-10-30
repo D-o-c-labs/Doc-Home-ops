@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Get changed files
         id: changed-files
-        uses: bjw-s-labs/action-changed-files@930cef8463348e168cab7235c47fe95a7a235f65 # v0.3.3
+        uses: bjw-s-labs/action-changed-files@1a5aeab1bfa64d0c4e786f501d5a3f1fad4a24da # v0.4.1
         with:
           patterns: |-
             kubernetes/**/*
@@ -54,7 +54,7 @@ jobs:
           persist-credentials: false
 
       - name: Gather Images
-        uses: docker://ghcr.io/allenporter/flux-local:v7.10.1@sha256:eea3ef015803ce58ca7331c94f7a8dac65faa925a3ff4d72f39c94b3096ca2fe
+        uses: docker://ghcr.io/allenporter/flux-local:v7.11.0@sha256:5e815fabc544d56adaed7b815c6243eca4776ef83b9a11bec370fd888196de03
         with:
           args: >-
             get cluster

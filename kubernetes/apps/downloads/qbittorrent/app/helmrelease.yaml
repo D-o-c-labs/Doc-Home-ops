@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.3.0
+      version: 4.4.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s-labs
@@ -42,7 +42,7 @@ spec:
           coredns:
             image:
               repository: mirror.gcr.io/coredns/coredns
-              tag: 1.12.4
+              tag: 1.13.1
             args:
               - -conf
               - /etc/coredns/Corefile

@@ -11,21 +11,13 @@ repositories:
     url: https://helm.cilium.io
 
 releases:
-  - name: prometheus-operator-crds
-    namespace: monitoring
-    atomic: true
-    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
-    version: 24.0.0
-
   - name: cilium
     namespace: kube-system
     atomic: true
     chart: cilium/cilium
-    version: 1.18.2
+    version: 1.18.3
     values:
       - "{{ requiredEnv `ROOT_DIR` }}/kubernetes/apps/kube-system/cilium/app/values.yaml"
-    needs:
-      - monitoring/prometheus-operator-crds
     hooks:
       - # Wait for cilium CRDs to be available
         events:
@@ -51,7 +43,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: oci://ghcr.io/coredns/charts/coredns
-    version: 1.44.3
+    version: 1.45.0
     values:
       - "{{ requiredEnv `ROOT_DIR` }}/kubernetes/apps/kube-system/coredns/app/values.yaml"
     needs:
@@ -61,7 +53,7 @@ releases:
     namespace: cert-manager
     atomic: true
     chart: oci://quay.io/jetstack/charts/cert-manager
-    version: v1.19.0
+    version: v1.19.1
     values:
       - "{{ requiredEnv `ROOT_DIR` }}/kubernetes/apps/cert-manager/cert-manager/app/values.yaml"
     needs:
