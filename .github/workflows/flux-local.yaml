@@ -124,7 +124,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           header: ${{ github.event.pull_request.number }}/kubernetes/${{ matrix.resources }}
-          message-path: comment.md
+          path: comment.md
 
   flux-local-success:
     needs:
