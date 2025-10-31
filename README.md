@@ -198,12 +198,18 @@ Each `just` module exposes reusable workflows. The examples below assume you are
 
 ### Kubernetes (`just k8s ...`)
 
+- Use the `sync-*` helpers when you only need Flux to retry reconciliation with the currently fetched revision. Reach for the `reconcile-*` helpers when you want Flux to fetch sources with `--with-source`, rebuild manifests, and apply immediately.
+
 - `browse-pvc`: Mount a PVC into an ephemeral Alpine shell (`just k8s browse-pvc namespace=media claim=tdarr-config`).
 - `node-shell`: Spawn a debug pod on a node (`just k8s node-shell node=k8s-master-01`).
 - `cleanup-pods`: Remove pods stuck in Failed/Pending/Succeeded phases (`just k8s cleanup-pods`).
 - `sync-externalsecrets`: Force-refresh every ExternalSecret (`just k8s sync-externalsecrets`).
-- `sync-all-hr`: Trigger HelmRelease reconciles across the cluster (`just k8s sync-all-hr`).
-- `sync-all-ks`: Trigger Flux Kustomization reconciles across the cluster (`just k8s sync-all-ks`).
+- `sync-all-hr`: Trigger HelmRelease reconciles across the cluster using the existing revision cached by Flux (`just k8s sync-all-hr`).
+- `sync-all-ks`: Trigger Flux Kustomization reconciles across the cluster using the existing revision cached by Flux (`just k8s sync-all-ks`).
+- `reconcile-hr`: Force a HelmRelease to pull its source, re-render the chart, and apply immediately (`just k8s reconcile-hr namespace=media name=unpackerr`).
+- `reconcile-ks`: Force a Flux Kustomization to pull its source, rebuild manifests, and apply immediately (`just k8s reconcile-ks namespace=selfhosted name=n8n`).
+- `reconcile-all-hr`: Loop every HelmRelease and perform a full `flux reconcile --with-source` refresh (`just k8s reconcile-all-hr`).
+- `reconcile-all-ks`: Loop every Flux Kustomization and perform a full `flux reconcile --with-source` refresh (`just k8s reconcile-all-ks`).
 - `snapshot`: Fan out VolSync snapshots for every replication source (`just k8s snapshot`).
 
 ### VolSync (`just volsync ...`)
