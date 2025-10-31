@@ -48,7 +48,7 @@ sync-es ns name:
 
 [doc('Reconcile Flux HelmRelease')]
 reconcile-hr ns name:
-  flux reconcile helmrelease "{{ name }}" --namespace "{{ ns }}" --with-source
+  flux reconcile helmrelease "{{ name }}" --namespace "{{ ns }}" --with-source --force
 
 [doc('Reconcile Flux Kustomization')]
 reconcile-ks ns name:
@@ -69,7 +69,7 @@ sync-all-ks:
 [doc('Reconcile all Flux HelmReleases')]
 reconcile-all-hr:
   kubectl get hr --no-headers -A | while read -r ns name _; do \
-    flux reconcile helmrelease "$name" --namespace "$ns" --with-source; \
+    flux reconcile helmrelease "$name" --namespace "$ns" --with-source --force; \
   done
 
 [doc('Reconcile all Flux Kustomizations')]
