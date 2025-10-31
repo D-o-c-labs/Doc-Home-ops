@@ -46,6 +46,14 @@ sync-ks ns name:
 sync-es ns name:
   kubectl -n "{{ ns }}" annotate --field-manager flux-client-side-apply --overwrite es "{{ name }}" force-sync="$(date +%s)"; \
 
+[doc('Reconcile Flux HelmRelease')]
+reconcile-hr ns name:
+  flux reconcile helmrelease "{{ name }}" --namespace "{{ ns }}" --with-source
+
+[doc('Reconcile Flux Kustomization')]
+reconcile-ks ns name:
+  flux reconcile kustomization "{{ name }}" --namespace "{{ ns }}" --with-source
+
 [doc('Sync all Flux HelmReleases')]
 sync-all-hr:
   kubectl get hr --no-headers -A | while read -r ns name _; do \
@@ -56,6 +64,18 @@ sync-all-hr:
 sync-all-ks:
   kubectl get ks --no-headers -A | while read -r ns name _; do \
     just k8s sync-ks "$ns" "$name"; \
+  done
+
+[doc('Reconcile all Flux HelmReleases')]
+reconcile-all-hr:
+  kubectl get hr --no-headers -A | while read -r ns name _; do \
+    flux reconcile helmrelease "$name" --namespace "$ns" --with-source; \
+  done
+
+[doc('Reconcile all Flux Kustomizations')]
+reconcile-all-ks:
+  kubectl get ks --no-headers -A | while read -r ns name _; do \
+    flux reconcile kustomization "$name" --namespace "$ns" --with-source; \
   done
 
 [doc('Sync all ExternalSecrets')]
