@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: ghcr.io/cross-seed/cross-seed
-              tag: 6.13.6-1@sha256:c6614c3f1f5a6e387db60db5e68d580ee7c5eda12ab988625dfe60b5798bc146
+              tag: 6.13.6-2-arm64@sha256:c9e4ff00e6bd4a8f4e24d0897b68d8075928d8be4e46c8ca50a38dcb6e3c00dd
             args:
               - daemon
               - -v
