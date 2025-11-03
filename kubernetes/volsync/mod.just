@@ -11,14 +11,24 @@ default:
 
 [doc('Unlock all VolSync replication sources across the cluster')]
 unlock:
+  #!/usr/bin/env bash
+  set -euo pipefail
+
   command -v kubectl >/dev/null || { echo 'kubectl not found in PATH' >&2; exit 1; }
-  sources=$(kubectl get replicationsources --all-namespaces --no-headers --output=jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{"\n"}{end}') || { echo 'failed to list VolSync replication sources' >&2; exit 1; }
-  if [[ -z "${sources:-}" ]]; then echo 'no VolSync replication sources found to unlock'; exit 0; fi
+  sources=$(
+    kubectl get replicationsources --all-namespaces --no-headers --output=jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{"\n"}{end}'
+  ) || { echo 'failed to list VolSync replication sources' >&2; exit 1; }
+
+  if [[ -z "${sources:-}" ]]; then
+    echo 'no VolSync replication sources found to unlock'
+    exit 0
+  fi
+
   while IFS= read -r entry; do
-  [[ -z "$entry" ]] && continue
-  ns="${entry%%,*}"
-  name="${entry##*,}"
-  kubectl --namespace "$ns" patch --field-manager=flux-client-side-apply replicationsources "$name" --type merge --patch "{\"spec\":{\"restic\":{\"unlock\":\"$(date +%s)\"}}}" || true
+    [[ -z "$entry" ]] && continue
+    ns="${entry%%,*}"
+    name="${entry##*,}"
+    kubectl --namespace "$ns" patch --field-manager=flux-client-side-apply replicationsources "$name" --type merge --patch "{\"spec\":{\"restic\":{\"unlock\":\"$(date +%s)\"}}}" || true
   done <<< "${sources:-}"
 
 [doc('List VolSync snapshots for an application')]
@@ -41,14 +51,24 @@ snapshot app ns='default' wait='true':
 
 [doc('Trigger VolSync snapshots for every application without waiting')]
 snapshot-all:
-  raw_apps=$(kubectl get replicationsources -A --no-headers -o jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{"\n"}{end}') || { echo 'failed to list VolSync replication sources' >&2; exit 1; }
-  if [[ -z "${raw_apps:-}" ]]; then echo 'no VolSync replication sources found to snapshot'; exit 0; fi
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  raw_apps=$(
+    kubectl get replicationsources -A --no-headers -o jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{"\n"}{end}'
+  ) || { echo 'failed to list VolSync replication sources' >&2; exit 1; }
+
+  if [[ -z "${raw_apps:-}" ]]; then
+    echo 'no VolSync replication sources found to snapshot'
+    exit 0
+  fi
+
   while IFS= read -r entry; do
-  [[ -z "$entry" ]] && continue
-  [[ "$entry" == *'-r2' ]] && continue
-  ns="${entry%%,*}"
-  app="${entry##*,}"
-  just volsync snapshot "${app}" ns="$ns" wait='false'
+    [[ -z "$entry" ]] && continue
+    [[ "$entry" == *'-r2' ]] && continue
+    ns="${entry%%,*}"
+    app="${entry##*,}"
+    just volsync snapshot "${app}" ns="$ns" wait='false'
   done <<< "${raw_apps:-}"
 
 [doc('Restore a VolSync snapshot for an application')]
