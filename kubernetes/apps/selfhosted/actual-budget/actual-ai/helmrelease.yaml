@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: sakowicz/actual-ai
-              tag: 2.2.3@sha256:6de126e923b4020bcda640409bf55f7b52d609506ae9eab0a2cca3781fe16545
+              tag: 2.2.4@sha256:15c65d204528feaf30dbde07c391ec097a529d5fb9bf1c4b11b1e8f349e0c1c7
               pullPolicy: IfNotPresent
 
             envFrom:
