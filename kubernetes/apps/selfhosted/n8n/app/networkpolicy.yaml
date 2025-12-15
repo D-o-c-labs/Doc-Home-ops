@@ -61,3 +61,13 @@ spec:
         - ports:
             - port: "3333"
               protocol: TCP
+
+    # metamcp
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: metamcp
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "12008"
+              protocol: TCP

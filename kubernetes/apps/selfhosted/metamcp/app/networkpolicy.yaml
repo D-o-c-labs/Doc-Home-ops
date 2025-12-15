@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: metamcp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: metamcp
+      k8s:io.kubernetes.pod.namespace: selfhosted
+  ingress:
+    # n8n
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: n8n
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "12008"
+              protocol: TCP
