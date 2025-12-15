@@ -96,6 +96,11 @@ spec:
         - mealie
       password:
         type: AlphaNumeric
+    - name: metamcp
+      databases:
+        - metamcp
+      password:
+        type: AlphaNumeric
     - name: tandoor
       databases:
         - tandoor

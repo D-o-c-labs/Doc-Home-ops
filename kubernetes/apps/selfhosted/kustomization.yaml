@@ -9,6 +9,7 @@ resources:
   - ./ghostfolio/ks.yaml
   - ./n8n/ks.yaml
   - ./mealie/ks.yaml
+  - ./metamcp/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
