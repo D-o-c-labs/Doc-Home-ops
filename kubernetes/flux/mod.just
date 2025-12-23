@@ -38,7 +38,7 @@ _render-ks dir ns_flag name:
   trap cleanup EXIT
 
   if [[ -f "$dir_path/ks.yaml" ]]; then
-    NAMESPACE="$namespace" yq e '.metadata.namespace = (.metadata.namespace // strenv(NAMESPACE))' "$dir_path/ks.yaml" > "$tmp_dir/ks.yaml"
+    NAMESPACE="$namespace" yq e '.metadata.namespace = (.metadata.namespace // strenv(NAMESPACE)) | .spec.targetNamespace = (.spec.targetNamespace // strenv(NAMESPACE))' "$dir_path/ks.yaml" > "$tmp_dir/ks.yaml"
   else
     printf 'unable to locate Flux Kustomization manifest: %s\n' "$dir_path/ks.yaml" >&2
     exit 1
