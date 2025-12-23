@@ -48,6 +48,16 @@ spec:
             - port: "32400"
               protocol: TCP
 
+    # jellyfin
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: jellyfin
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+
     # tautulli
     - toEndpoints:
         - matchLabels:
