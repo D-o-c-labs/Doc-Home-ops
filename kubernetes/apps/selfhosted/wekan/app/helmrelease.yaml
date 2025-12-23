@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wekan
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: wekan-mongodb
+      namespace: selfhosted
+  values:
+    controllers:
+      wekan:
+        annotations:
+          secret.reloader.stakater.com/reload: wekan-secret
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            ingress.home.arpa/gateway-route: allow
+
+        containers:
+          app:
+            image:
+              repository: wekanteam/wekan
+              tag: v8.17@sha256:3cf0176f1b4b22d3273dbe93841cc673791b6e9a8d6347cb6ceffb8866f20745
+            env:
+              ROOT_URL: "https://${HOSTNAME}"
+              PORT: &port 8080
+            envFrom:
+              - secretRef:
+                  name: wekan-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: wekan
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: wekan
+                port: *port

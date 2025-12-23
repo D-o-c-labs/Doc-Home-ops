@@ -62,6 +62,16 @@ spec:
             - port: "3333"
               protocol: TCP
 
+    # wekan
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: wekan
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+
     # metamcp
     - toEndpoints:
         - matchLabels:

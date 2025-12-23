@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wekan-mongodb
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  values:
+    controllers:
+      wekan-mongodb:
+        annotations:
+          secret.reloader.stakater.com/reload: wekan-mongodb-secret
+
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: "${APP_GID}"
+            fsGroupChangePolicy: "OnRootMismatch"
+            runAsUser: "${APP_UID}"
+            runAsGroup: "${APP_GID}"
+            runAsNonRoot: true
+
+        containers:
+          app:
+            image:
+              repository: mongo
+              tag: 8.8.2@sha256:bf5995bcccb65725aa81fd92e68449323c94b96bf1c1fa9f7acbc2a8ad518114
+            env:
+              MONGO_INITDB_DATABASE: wekan
+            envFrom:
+              - secretRef:
+                  name: wekan-mongodb-secret
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: wekan-mongodb
+        ports:
+          mongodb:
+            port: &port 27017
+
+    persistence:
+      data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        globalMounts:
+          - path: /data/db

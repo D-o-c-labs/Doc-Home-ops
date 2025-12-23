@@ -10,6 +10,7 @@ resources:
   - ./n8n/ks.yaml
   - ./mealie/ks.yaml
   - ./metamcp/ks.yaml
+  - ./wekan/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
