@@ -3,29 +3,31 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: metamcp
+  name: wekan
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: metamcp
-      k8s:io.kubernetes.pod.namespace: selfhosted
+      app.kubernetes.io/name: wekan
   ingress:
     # n8n
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: n8n
             k8s:io.kubernetes.pod.namespace: selfhosted
-      toPorts:
-        - ports:
-            - port: "12008"
-              protocol: TCP
-  egress:
-    # wekan
-    - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: wekan
+            app.kubernetes.io/name: metamcp
             k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
             - port: "8080"
+              protocol: TCP
+  egress:
+    # mongodb
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: wekan-mongodb
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "27017"
               protocol: TCP
