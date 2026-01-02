@@ -86,6 +86,16 @@ spec:
             namespace: network
             sectionName: https
         rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /api
+            timeouts:
+              request: 5m
+              backendRequest: 5m
+            backendRefs:
+              - name: sonarr
+                port: *port
           - backendRefs:
               - name: sonarr
                 port: *port

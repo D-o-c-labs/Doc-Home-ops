@@ -107,6 +107,16 @@ spec:
           - matches:
               - path:
                   type: PathPrefix
+                  value: /metamcp
+            timeouts:
+              request: 0s
+              backendRequest: 0s
+            backendRefs:
+              - name: metamcp
+                port: *port
+          - matches:
+              - path:
+                  type: PathPrefix
                   value: /
             backendRefs:
               - name: metamcp
