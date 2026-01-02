@@ -141,7 +141,7 @@ spec:
           plex:
             app:
               - path: /data/nas-media/external
-                subPath: external
+                subPath: external-src
                 readOnly: true
       transcode:
         type: emptyDir
