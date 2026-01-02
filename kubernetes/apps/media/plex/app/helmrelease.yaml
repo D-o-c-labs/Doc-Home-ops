@@ -141,7 +141,7 @@ spec:
           plex:
             app:
               - path: /data/nas-media/external
-                subPath: external-src/merged
+                subPath: external
                 readOnly: true
       transcode:
         type: emptyDir
