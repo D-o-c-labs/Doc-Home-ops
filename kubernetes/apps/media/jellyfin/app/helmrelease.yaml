@@ -86,7 +86,7 @@ spec:
               - path: /data/nas-media/library
                 subPath: library
       external-nfs:
-        existingClaim: plex-external-nfs
+        existingClaim: jellyfin-external-nfs
         advancedMounts:
           jellyfin:
             app:
