@@ -85,6 +85,14 @@ spec:
             app:
               - path: /data/nas-media/library
                 subPath: library
+      external-nfs:
+        existingClaim: plex-external-nfs
+        advancedMounts:
+          jellyfin:
+            app:
+              - path: /data/nas-media/external
+                subPath: external-src
+                readOnly: true
       transcode:
         type: emptyDir
         advancedMounts:
