@@ -126,6 +126,16 @@ spec:
         - n8n-knowledge
       password:
         type: AlphaNumeric
+    - name: rvn
+      databases:
+        - rvn
+      password:
+        type: AlphaNumeric
+    - name: aios
+      databases:
+        - aios
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
