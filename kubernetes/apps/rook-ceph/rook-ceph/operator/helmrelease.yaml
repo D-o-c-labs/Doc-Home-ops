@@ -15,7 +15,7 @@ spec:
       enabled: true
     csi:
       cephFSKernelMountOptions: ms_mode=prefer-crc
-      enableCephfsDriver: false
+      enableCephfsDriver: true
       enableCephfsSnapshotter: false
       enableLiveness: true
       serviceMonitor:
