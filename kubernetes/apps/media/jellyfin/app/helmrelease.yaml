@@ -98,6 +98,12 @@ spec:
           jellyfin:
             app:
               - path: /transcode
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          jellyfin:
+            app:
+              - path: /tmp
 
     route:
       app:
