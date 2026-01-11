@@ -22,23 +22,59 @@ generate-clusterconfig:
   --out-dir "{{ clusterconfig_dir }}"
 
 [doc('Apply talhelper-generated Talos machineconfigs to every node')]
-apply-clusterconfig mode='auto' dry_run='false' insecure='false':
+apply-clusterconfig *args:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mode="auto"
+  dry_run="false"
+  insecure="false"
+  pos=0
+  for arg in {{ args }}; do
+    if [[ "$arg" == *=* ]]; then
+      key="${arg%%=*}"
+      val="${arg#*=}"
+      case "$key" in
+        mode) mode="$val" ;;
+        dry_run) dry_run="$val" ;;
+        insecure) insecure="$val" ;;
+      esac
+    else
+      case "$pos" in
+        0) mode="$arg" ;;
+        1) dry_run="$arg" ;;
+        2) insecure="$arg" ;;
+      esac
+      pos=$((pos + 1))
+    fi
+  done
   command -v talosctl >/dev/null || { echo 'talosctl CLI is required' >&2; exit 1; }
   test -d "{{ clusterconfig_dir }}"
   shopt -s nullglob
-  files=("{{ clusterconfig_dir }}"/*.yaml)
+  files=({{ clusterconfig_dir }}/*.yaml)
   if [[ ${#files[@]} -eq 0 ]]; then echo 'no clusterconfig YAML files found to apply' >&2; exit 1; fi
   for file in "${files[@]}"; do
-  base=$(basename "$file")
-  hostname=${base%.yaml}
-  hostname=${hostname#doc-home-ops-}
-  just talos _apply-machineconfig path="$file" hostname="$hostname" mode="{{ mode }}" dry_run="{{ dry_run }}" insecure="{{ insecure }}"
+    base=$(basename "$file")
+    hostname=${base%.yaml}
+    hostname=${hostname#doc-home-ops-}
+    just talos _apply-machineconfig path="$file" hostname="$hostname" mode="$mode" dry_run="$dry_run" insecure="$insecure"
   done
   shopt -u nullglob
 
-[doc('Apply Talos config to a node')]
+[doc('Apply talhelper-generated Talos machineconfig to a node')]
 apply-node node *args:
-  just talos render-config "{{ node }}" | talosctl -n "{{ node }}" apply-config -f /dev/stdin {{ args }}
+  #!/usr/bin/env bash
+  set -euo pipefail
+  file="{{ clusterconfig_dir }}/doc-home-ops-{{ node }}.yaml"
+  if [[ ! -f "$file" ]]; then
+    alt="{{ clusterconfig_dir }}/{{ node }}.yaml"
+    if [[ -f "$alt" ]]; then
+      file="$alt"
+    else
+      echo "no clusterconfig file found for {{ node }}" >&2
+      exit 1
+    fi
+  fi
+  just talos _apply-machineconfig path="$file" hostname="{{ node }}" {{ args }}
 
 [doc('Apply Talos config to all nodes in the cluster')]
 apply-cluster *args:
@@ -97,11 +133,45 @@ download-image version schematic:
   just log info "Downloaded Talos" version "{{ version }}" schematic "{{ schematic }}"
 
 [private]
-_apply-machineconfig path hostname mode='auto' dry_run='false' insecure='false':
-  args=(--nodes "{{ hostname }}" --file "{{ path }}" --mode "{{ mode }}")
-  if [[ "{{ dry_run }}" == "true" ]]; then args+=(--dry-run); fi
-  if [[ "{{ insecure }}" == "true" ]]; then args+=(--insecure); fi
-  talosctl apply-config "${args[@]}"
+_apply-machineconfig *args:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  path=""
+  hostname=""
+  mode="auto"
+  dry_run="false"
+  insecure="false"
+  pos=0
+  for arg in {{ args }}; do
+    if [[ "$arg" == *=* ]]; then
+      key="${arg%%=*}"
+      val="${arg#*=}"
+      case "$key" in
+        path) path="$val" ;;
+        hostname) hostname="$val" ;;
+        mode) mode="$val" ;;
+        dry_run) dry_run="$val" ;;
+        insecure) insecure="$val" ;;
+      esac
+    else
+      case "$pos" in
+        0) path="$arg" ;;
+        1) hostname="$arg" ;;
+        2) mode="$arg" ;;
+        3) dry_run="$arg" ;;
+        4) insecure="$arg" ;;
+      esac
+      pos=$((pos + 1))
+    fi
+  done
+  if [[ -z "$path" || -z "$hostname" ]]; then
+    echo "path and hostname are required" >&2
+    exit 1
+  fi
+  cmd=(talosctl apply-config --nodes "$hostname" --file "$path" --mode "$mode")
+  if [[ "$dry_run" == "true" ]]; then cmd+=(--dry-run); fi
+  if [[ "$insecure" == "true" ]]; then cmd+=(--insecure); fi
+  "${cmd[@]}"
 
 [private]
 machine-controller node:
