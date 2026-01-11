@@ -39,10 +39,11 @@ nodes:
         vip:
           ip: *talosControlplaneVip
         vlans:
-          - &vlan40
-            vlanId: 40
+          - vlanId: 40
             mtu: 1500
             dhcp: false
+            addresses:
+              - 192.168.40.121/24
             dhcpOptions:
               routeMetric: 4096
 
@@ -64,7 +65,13 @@ nodes:
         vip:
           ip: *talosControlplaneVip
         vlans:
-          - *vlan40
+          - vlanId: 40
+            mtu: 1500
+            dhcp: false
+            addresses:
+              - 192.168.40.122/24
+            dhcpOptions:
+              routeMetric: 4096
 
   - hostname: athena.piscio.net
     ipAddress: 192.168.32.123
@@ -84,7 +91,13 @@ nodes:
         vip:
           ip: *talosControlplaneVip
         vlans:
-          - *vlan40
+          - vlanId: 40
+            mtu: 1500
+            dhcp: false
+            addresses:
+              - 192.168.40.123/24
+            dhcpOptions:
+              routeMetric: 4096
 
 controlPlane:
   nodeLabels:
