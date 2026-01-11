@@ -31,13 +31,13 @@ spec:
             ingress.home.arpa/gateway-route: allow
             ingress.home.arpa/lan: allow
             egress.home.arpa/postgres-cluster: allow
-          # annotations:
-          #   k8s.v1.cni.cncf.io/networks: |
-          #     [{
-          #       "name":"multus-iot",
-          #       "namespace": "network",
-          #       "ips": ["192.168.32.151/24"]
-          #     }]
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name":"multus-iot",
+                "namespace": "network",
+                "ips": ["192.168.40.2/24"]
+              }]
           securityContext:
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
