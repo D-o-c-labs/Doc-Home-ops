@@ -22,6 +22,12 @@ _render-ks dir ns_flag name:
   namespace="${dir%%/*}"
   ns_args="{{ ns_flag }}"
   name_arg="{{ name }}"
+  if [[ "$ns_args" == ns_flag=* ]]; then ns_args="${ns_args#ns_flag=}"; fi
+  if [[ "$name_arg" == name=* ]]; then name_arg="${name_arg#name=}"; fi
+  if [[ "$ns_args" == name=* && -z "$name_arg" ]]; then
+    name_arg="${ns_args#name=}"
+    ns_args="--all-namespaces"
+  fi
 
   command -v flux-local >/dev/null || { echo 'flux-local not found in PATH' >&2; exit 1; }
   command -v yq >/dev/null || { echo 'yq not found in PATH' >&2; exit 1; }
