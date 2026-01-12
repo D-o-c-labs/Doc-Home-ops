@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: ghcr.io/esphome/esphome
-              tag: 2025.12.5
+              tag: 2025.12.5@sha256:02fb00e3b79badaa54c7017e12d2afa9f1158887541f148459b7f653d3f05314
             probes:
               liveness:
                 enabled: false
@@ -68,9 +68,9 @@ spec:
                   - ALL
 
             env:
-              HOME: "/config"
-              XDG_CACHE_HOME: "/cache"
-              TMPDIR: "/tmp"
+              #   HOME: "/config"
+              #   XDG_CACHE_HOME: "/cache"
+              #   TMPDIR: "/tmp"
               PLATFORMIO_CORE_DIR: "/cache/platformio"
               ESPHOME_BUILD_PATH: "/cache/esphome-builds"
 
