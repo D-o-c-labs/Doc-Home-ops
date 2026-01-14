@@ -2,10 +2,18 @@
 
 ## Project Structure & Module Organization
 
-- `kubernetes/apps/<domain>/<app>/` houses Flux-ready app stacks; each stack keeps `ks.yaml`, `kustomization.yaml`, and an `app/` folder for HelmRelease, ExternalSecret, and NetPol manifests.
+- `kubernetes/apps/<domain>/<app>/` houses Flux-ready app stacks (for example `kubernetes/apps/selfhosted/n8n/`); each stack keeps `ks.yaml`, `kustomization.yaml`, and an `app/` folder for HelmRelease, ExternalSecret, and NetworkPolicy manifests.
 - `kubernetes/components/` provides reusable overlays (namespaces, VolSync, alerts) that app stacks import via `components:`.
 - `kubernetes/bootstrap/` contains the Helmfile bootstrap for core controllers, while `kubernetes/flux/` defines GitRepositories and Kustomizations that reconcile the cluster.
 - `.justfile` and the `mod.just` modules under `kubernetes/**` and `sops/` expose automation recipes; `docs/` stores architecture notes and runbooks.
+
+## Quick Workflow (New or Updated Stack)
+
+- Add or update the stack in `kubernetes/apps/<domain>/<app>/` with `ks.yaml`, `kustomization.yaml`, and `app/` manifests.
+- Prefer the bjw-s app-template HelmRelease unless the README documents an exception.
+- Apply required Cilium access by setting the matching pod label (see Cilium section) before writing a custom `app/networkpolicy.yaml`.
+- Render locally with `just flux build-ks dir=<domain>/<app>` and review the output.
+- Apply with `just flux apply-ks dir=<domain>/<app>` and run `pre-commit run -a` before pushing.
 
 ## Build, Test, and Development Commands
 
@@ -35,11 +43,32 @@
 
 ## Service Deployment Guidelines
 
-- **Helm Chart**: Default to the [bjw-s app-template chart](https://github.com/bjw-s-labs/helm-charts/tree/main) unless explicity requested.
+- **Helm Chart**: Default to the [bjw-s app-template chart](https://github.com/bjw-s-labs/helm-charts/tree/main) unless explicitly requested.
 - **Structure**: Mirror the layout used in `kubernetes/apps/downloads`, `.../home-automation`, `.../media`, and `.../selfhosted`; include `ks.yaml`, `kustomization.yaml`, and an `app/` directory for HelmRelease, ExternalSecret, and policy manifests.
-- **Network Security**: Start with shared policies under `kubernetes/apps/kube-system/cilium/netpols/`, then add service-specific rules and pod annotations to keep ingress/egress minimal. Ensure not to duplicate the policies (e.g. `ingress.home.arpa/gateway-route: allow` annotation has to be used to allow traffic from envoy gateway. It is useless to replicate this in a dedicated `networkpolicy.yaml` file)
+- **Network Security**: Start with shared policies under `kubernetes/apps/kube-system/cilium/netpols/` and apply the matching pod labels. Only add a service-specific `app/networkpolicy.yaml` if no existing clusterwide rule fits.
 - **Inter-service Communication**: Update network rules for every participant when enabling cross-namespace traffic; document the rationale in the PR.
-- **Documentation**: Use the `context7` documentation tool to confirm controller behavior or chart values before diverging from established patterns.
+- **Documentation**: Use the Context7 MCP server to confirm controller behavior or chart values before diverging from established patterns.
+
+## Cilium Network Policy Guidance
+
+- Use existing CiliumClusterwideNetworkPolicy rules first by applying the matching pod label (`egress.home.arpa/*` or `ingress.home.arpa/*`). Most charts expose this as `podLabels`; if not, patch labels in via Kustomize.
+- Define a custom `app/networkpolicy.yaml` only when no clusterwide rule fits or you need tighter port/CIDR restrictions; document the rationale in the PR.
+- When enabling cross-namespace traffic, update both sides of the policy and note the intent in the PR.
+
+### Clusterwide Cilium Rules (Label -> Intent)
+
+- `egress.home.arpa/apiserver: allow` -> egress to kube-apiserver (entity + host:6443).
+- `egress.home.arpa/kubedns: allow` -> DNS to kube-dns (TCP/UDP 53).
+- `egress.home.arpa/internet: allow` -> egress to public internet (non-RFC1918).
+- `egress.home.arpa/world: allow` -> egress to `world` entity.
+- `egress.home.arpa/lan: allow` -> egress to LAN CIDRs `192.168.32.0/24`, `192.168.3.0/24`, `192.168.4.0/24`, `192.168.40.0/24`.
+- `egress.home.arpa/domus-vlan: allow` -> egress to `192.168.40.0/24`.
+- `egress.home.arpa/synology: allow` -> egress to `piscionas.piscio.net` and `192.168.32.201/32`.
+- `egress.home.arpa/envoy-internal: allow` -> egress to Envoy internal gateway ports `80`, `443`, `10080`, `10443`.
+- `egress.home.arpa/sso: allow` -> egress to Authentik + `auth.piscio.net` (via Envoy).
+- `ingress.home.arpa/gateway-route: allow` -> ingress from Envoy gateway (namespace `network`).
+- `ingress.home.arpa/lan: allow` -> ingress from LAN CIDRs `192.168.32.0/24`, `192.168.3.0/24`, `192.168.4.0/24`, `192.168.40.0/24`.
+- `ingress.home.arpa/metrics: allow` -> ingress from Prometheus in namespace `observability`.
 
 ## Security & Configuration Tips
 
