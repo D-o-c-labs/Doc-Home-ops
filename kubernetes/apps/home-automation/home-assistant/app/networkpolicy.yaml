@@ -58,11 +58,55 @@ spec:
             - port: "8095"
               protocol: TCP
 
+    # speech-to-phrase
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: speech-to-phrase
+      toPorts:
+        - ports:
+            - port: "10300"
+              protocol: TCP
+
+    # whisper
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: whisper
+      toPorts:
+        - ports:
+            - port: "10300"
+              protocol: TCP
+
+    # piper
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: piper
+      toPorts:
+        - ports:
+            - port: "10200"
+              protocol: TCP
+
+    # openwakeword
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: openwakeword
+      toPorts:
+        - ports:
+            - port: "10400"
+              protocol: TCP
+
   ingress:
     # music-assistant
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: music-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
+    # speech-to-phrase (needs HA websocket access)
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: speech-to-phrase
       toPorts:
         - ports:
             - port: "8123"
