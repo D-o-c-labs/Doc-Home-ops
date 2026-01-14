@@ -27,3 +27,5 @@ talosconfig
 
 # Aider
 .aider*
+
+!AGENTS.md
