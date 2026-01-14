@@ -1,0 +1,96 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: speech-to-phrase
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      speech-to-phrase:
+        annotations:
+          secret.reloader.stakater.com/reload: speech-to-phrase-secret
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
+        containers:
+          app:
+            image:
+              repository: rhasspy/wyoming-speech-to-phrase
+              tag: 1.4.1@sha256:74b3866bceb708d5ee7706ee564f80067128fdab389002db6bb9c0d9bd5311e9
+            # --hass-websocket-uri can be ws:// for in-cluster or wss:// for TLS.
+            args:
+              - --uri
+              - tcp://0.0.0.0:10300
+              - --hass-websocket-uri
+              - ws://home-assistant.home-automation.svc.cluster.local:8123/api/websocket
+              - --hass-token
+              - $(HASS_TOKEN)
+              # Retrain the model every start; remove to keep the last trained model.
+              - --retrain-on-start
+              - --custom-sentences-dir
+              - /custom-sentences
+            env:
+              HASS_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: speech-to-phrase-secret
+                    key: hass_token
+            resources:
+              requests:
+                cpu: 200m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: speech-to-phrase
+        ports:
+          wyoming:
+            port: &port 10300
+            primary: true
+
+    persistence:
+      data:
+        existingClaim: speech-to-phrase-data
+        advancedMounts:
+          speech-to-phrase:
+            app:
+              - path: /models
+                subPath: models
+              - path: /train
+                subPath: train
+      custom-sentences:
+        type: configMap
+        name: speech-to-phrase-sentences
+        globalMounts:
+          - path: /custom-sentences/it
+            readOnly: true
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          speech-to-phrase:
+            app:
+              - path: /tmp

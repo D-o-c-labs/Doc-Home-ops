@@ -1,0 +1,140 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openwakeword
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  values:
+    controllers:
+      openwakeword:
+        initContainers:
+          download-models:
+            image:
+              repository: curlimages/curl
+              tag: 8.18.0@sha256:d94d07ba9e7d6de898b6d96c1a072f6f8266c687af78a74f380087a0addf5d17
+            securityContext:
+              runAsUser: 0 # needs write access to the models PVC
+              runAsGroup: 0
+              allowPrivilegeEscalation: false
+            command:
+              - /bin/sh
+              - -ec
+            args:
+              - |
+                set -e
+                base_url="https://raw.githubusercontent.com/fwartner/home-assistant-wakewords-collection/main"
+                list="/config/wakewords.txt"
+                dest_dir="/custom"
+
+                if [ -z "${dest_dir}" ]; then
+                  echo "dest_dir is empty, refusing to continue"
+                  exit 1
+                fi
+
+                mkdir -p "${dest_dir}"
+
+                if [ ! -s "${list}" ]; then
+                  echo "wakewords list is missing or empty: ${list}"
+                  exit 1
+                fi
+
+                while IFS= read -r line || [ -n "${line}" ]; do
+                  line="$(printf '%s' "${line}" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+                  case "${line}" in
+                    ""|\#*) continue ;;
+                  esac
+
+                  case "${line}" in
+                    http://*|https://*) url="${line}" ;;
+                    *) url="${base_url}/${line}" ;;
+                  esac
+
+                  filename="$(basename "${line}")"
+                  dest="${dest_dir}/${filename}"
+
+                  if [ -f "${dest}" ]; then
+                    echo "Checking ${filename}..."
+                    curl -fL -z "${dest}" -o "${dest}" "${url}"
+                  else
+                    echo "Downloading ${filename}..."
+                    curl -fL -o "${dest}" "${url}"
+                  fi
+                  echo "Synced ${filename}"
+                done < "${list}"
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
+        containers:
+          app:
+            image:
+              repository: rhasspy/wyoming-openwakeword
+              tag: 2.1.0@sha256:52cb1168731a1849fc28cf339c935fde58746bbabc94226668a40ef6ddf5d42b
+            args:
+              - --uri
+              - tcp://0.0.0.0:10400
+              - --custom-model-dir
+              - /custom
+              # - --debug
+            # If you switch to dustynv/wyoming-openwakeword, env vars like
+            # OPENWAKEWORD_THRESHOLD, OPENWAKEWORD_TRIGGER_LEVEL, and
+            # OPENWAKEWORD_PRELOAD_MODEL are available.
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: openwakeword
+        ports:
+          wyoming:
+            port: 10400
+            primary: true
+
+    persistence:
+      custom:
+        existingClaim: openwakeword-models
+        globalMounts:
+          - path: /custom
+      models-config:
+        type: configMap
+        name: openwakeword-models-config
+        globalMounts:
+          - path: /config/wakewords.txt
+            subPath: wakewords.txt
+            readOnly: true
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          openwakeword:
+            app:
+              - path: /tmp

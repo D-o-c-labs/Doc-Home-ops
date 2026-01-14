@@ -1,0 +1,6 @@
+# Relative paths under https://github.com/fwartner/home-assistant-wakewords-collection/tree/main
+en/computer/computer_v2.tflite
+en/ok_jarvis/ok_jarvis.tflite
+en/darth_vader/Darth_Vader.tflite
+en/Dumbledore/Dumbledore.tflite
+en/hey_homer/Hey_Homer.tflite

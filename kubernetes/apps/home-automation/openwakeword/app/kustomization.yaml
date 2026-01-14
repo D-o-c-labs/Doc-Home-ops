@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrelease.yaml
+  - ./networkpolicy.yaml
+  - ./pvc.yaml
+configMapGenerator:
+  - name: openwakeword-models-config
+    files:
+      - custom-models/wakewords.txt
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+configurations:
+  - kustomizeconfig.yaml
