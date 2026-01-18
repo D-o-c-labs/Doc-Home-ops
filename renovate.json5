@@ -24,14 +24,28 @@
   customManagers: [
     {
       customType: "regex",
-      description: "Update Talos/Kubernetes versions in system-upgrade Kustomization",
+      description: "Update Talos version in system-upgrade Kustomization",
       managerFilePatterns: [
         "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
       ],
       matchStrings: [
-        "# renovate: depName=(?<depName>\\S+) datasource=docker\\n(?<indentation>\\s+)(?<varName>TALOS_VERSION|KUBERNETES_VERSION): (?<currentValue>\\S+)",
+        "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\\r?\\n(?<indentation>\\s+)TALOS_VERSION: (?<currentValue>\\S+)",
       ],
-      autoReplaceStringTemplate: "# renovate: depName={{{depName}}} datasource=docker\n{{{indentation}}}{{{varName}}}: {{{newValue}}}",
+      depNameTemplate: "ghcr.io/siderolabs/installer",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\n{{{indentation}}}TALOS_VERSION: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+    {
+      customType: "regex",
+      description: "Update Kubernetes version in system-upgrade Kustomization",
+      managerFilePatterns: [
+        "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
+      ],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\\r?\\n(?<indentation>\\s+)KUBERNETES_VERSION: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/kubelet",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\n{{{indentation}}}KUBERNETES_VERSION: {{{newValue}}}",
       datasourceTemplate: "docker",
     },
   ],
