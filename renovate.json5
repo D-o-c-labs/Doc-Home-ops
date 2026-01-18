@@ -21,4 +21,18 @@
   kubernetes: {
     managerFilePatterns: ["/^kubernetes/.+\\.ya?ml$/"],
   },
+  customManagers: [
+    {
+      customType: "regex",
+      description: "Update Talos/Kubernetes versions in system-upgrade Kustomization",
+      managerFilePatterns: [
+        "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
+      ],
+      matchStrings: [
+        "# renovate: depName=(?<depName>\\S+) datasource=docker\\n(?<indentation>\\s+)(?<varName>TALOS_VERSION|KUBERNETES_VERSION): (?<currentValue>\\S+)",
+      ],
+      autoReplaceStringTemplate: "# renovate: depName={{{depName}}} datasource=docker\n{{{indentation}}}{{{varName}}}: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+  ],
 }
