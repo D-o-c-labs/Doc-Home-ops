@@ -48,5 +48,27 @@
       autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\n{{{indentation}}}KUBERNETES_VERSION: {{{newValue}}}",
       datasourceTemplate: "docker",
     },
+    {
+      customType: "regex",
+      description: "Update Talos version in talconfig",
+      managerFilePatterns: ["/(^|/)kubernetes/talos/talconfig\\.ya?ml$/"],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\\r?\\n(?<indentation>\\s*)talosVersion: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/installer",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\n{{{indentation}}}talosVersion: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+    {
+      customType: "regex",
+      description: "Update Kubernetes version in talconfig",
+      managerFilePatterns: ["/(^|/)kubernetes/talos/talconfig\\.ya?ml$/"],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\\r?\\n(?<indentation>\\s*)kubernetesVersion: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/kubelet",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\n{{{indentation}}}kubernetesVersion: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
   ],
 }
