@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: wekanteam/wekan
-              tag: v8.23@sha256:6577ded48ef1ee1aeeaf84c427d8edcfc7020fac1372292d171d564bd3da51fb
+              tag: v8.24@sha256:46e631dc168a43ed33e41a785545ca236b5070a3579804a642c0637f13559315
             env:
               ROOT_URL: "https://${HOSTNAME}"
               PORT: &port 8080
