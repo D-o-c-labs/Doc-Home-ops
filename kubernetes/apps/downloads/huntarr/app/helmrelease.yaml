@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/plexguide/huntarr
-              tag: 8.2.11@sha256:94f7395112535e86fb76f9119cfdeece38bcffb73e39853e08c7f8e869411ff1
+              tag: 9.1.2@sha256:1a2b35c3020a2b1c2002ce31721a7e56e236fc5c38b69e567ec9af78f7d7dc64
 
             resources:
               requests:
