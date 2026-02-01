@@ -1,0 +1,197 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: moltbot
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  values:
+    controllers:
+      moltbot:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow
+            ingress.home.arpa/gateway-route: allow
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: ${APP_UID}
+            runAsGroup: ${APP_GID}
+            fsGroup: ${APP_GID}
+            fsGroupChangePolicy: OnRootMismatch
+
+        initContainers:
+          init-config:
+            image:
+              repository: busybox
+              tag: 1.36
+            command:
+              - /bin/sh
+              - -c
+            args:
+              - >-
+                mkdir -p /home/node/.clawdbot
+                && if [ ! -f /home/node/.clawdbot/moltbot.json ]; then
+                cp /config/moltbot.json /home/node/.clawdbot/moltbot.json;
+                fi
+            securityContext:
+              allowPrivilegeEscalation: false
+
+          # install-tools:
+          #   image:
+          #     repository: alpine
+          #     tag: 3.20.3
+          #   command:
+          #     - /bin/sh
+          #     - -c
+          #   args:
+          #     - |
+          #       set -eu
+          #       apk add --no-cache curl tar
+          #       BIN_DIR=/home/node/bin
+          #       mkdir -p "${BIN_DIR}"
+
+          #       if [ ! -x "${BIN_DIR}/gh" ] || [ "$(cat "${BIN_DIR}/.gh.version" 2>/dev/null || true)" != "${GH_VERSION}" ]; then
+          #         tmp_dir="$(mktemp -d)"
+          #         gh_tgz="gh_${GH_VERSION}_linux_amd64.tar.gz"
+          #         gh_url="https://github.com/cli/cli/releases/download/v${GH_VERSION}/${gh_tgz}"
+          #         gh_checksums="https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_checksums.txt"
+
+          #         curl -fsSL "${gh_url}" -o "${tmp_dir}/${gh_tgz}"
+          #         curl -fsSL "${gh_checksums}" -o "${tmp_dir}/gh_checksums.txt"
+          #         grep " ${gh_tgz}$" "${tmp_dir}/gh_checksums.txt" > "${tmp_dir}/gh.sha256"
+          #         sha256sum -c "${tmp_dir}/gh.sha256"
+
+          #         tar -xzf "${tmp_dir}/${gh_tgz}" -C "${tmp_dir}"
+          #         cp "${tmp_dir}/gh_${GH_VERSION}_linux_amd64/bin/gh" "${BIN_DIR}/gh"
+          #         chmod +x "${BIN_DIR}/gh"
+          #         echo "${GH_VERSION}" > "${BIN_DIR}/.gh.version"
+          #       fi
+
+          #       if [ ! -x "${BIN_DIR}/ordercli" ] || [ "$(cat "${BIN_DIR}/.ordercli.version" 2>/dev/null || true)" != "${ORDERCLI_VERSION}" ]; then
+          #         tmp_dir="$(mktemp -d)"
+          #         ordercli_tgz="ordercli_${ORDERCLI_VERSION}_linux_amd64.tar.gz"
+          #         ordercli_url="https://github.com/steipete/ordercli/releases/download/v${ORDERCLI_VERSION}/${ordercli_tgz}"
+
+          #         curl -fsSL "${ordercli_url}" -o "${tmp_dir}/${ordercli_tgz}"
+          #         printf '%s  %s\n' "${ORDERCLI_SHA256}" "${tmp_dir}/${ordercli_tgz}" > "${tmp_dir}/ordercli.sha256"
+          #         sha256sum -c "${tmp_dir}/ordercli.sha256"
+
+          #         tar -xzf "${tmp_dir}/${ordercli_tgz}" -C "${tmp_dir}"
+          #         ordercli_path="$(find "${tmp_dir}" -maxdepth 2 -type f -name ordercli | head -n1)"
+          #         if [ -z "${ordercli_path}" ]; then
+          #           echo "ordercli binary not found after extraction"
+          #           exit 1
+          #         fi
+          #         cp "${ordercli_path}" "${BIN_DIR}/ordercli"
+          #         chmod +x "${BIN_DIR}/ordercli"
+          #         echo "${ORDERCLI_VERSION}" > "${BIN_DIR}/.ordercli.version"
+          #       fi
+          #   env:
+          #     # renovate: depName=cli/cli datasource=github-releases
+          #     GH_VERSION: "2.86.0"
+          #     # renovate: depName=steipete/ordercli datasource=github-releases
+          #     ORDERCLI_VERSION: "0.1.0"
+          #     ORDERCLI_SHA256: "6793d65f60e3a143d37f6c6b87b49c5ad50d474ff25a063ef1e2cc5ca159316b"
+          #   securityContext:
+          #     allowPrivilegeEscalation: false
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/moltbot/moltbot
+              tag: latest@sha256:b8705512da9f07ea09f1ec14a0726861ca73b973e7e9e1b2f05b32e562881e62
+            command:
+              - node
+              - dist/index.js
+              - gateway
+            args:
+              - --bind
+              - auto
+              - --port
+              - "18789"
+            env:
+              HOME: /home/node
+              TERM: xterm-256color
+              PATH: /home/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+              XDG_CONFIG_HOME: /home/node/.config
+              CLAWDBOT_CONFIG_PATH: /home/node/.clawdbot/moltbot.json
+            envFrom:
+              - secretRef:
+                  name: moltbot-secrets
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                cpu: "2"
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: moltbot
+        ports:
+          gateway:
+            primary: true
+            port: 18789
+          canvas:
+            port: 18793
+
+    persistence:
+      data:
+        existingClaim: ${VOLSYNC_CLAIM}
+        globalMounts:
+          - path: /home/node
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      config-file:
+        type: configMap
+        name: moltbot-config
+        globalMounts:
+          - path: /config/moltbot.json
+            subPath: moltbot.json
+            readOnly: true
+
+    route:
+      dashboard:
+        hostnames:
+          - ${HOSTNAME_DASH}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: moltbot
+                port: 18789
+      canvas:
+        hostnames:
+          - ${HOSTNAME_CANVAS}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: moltbot
+                port: 18793
