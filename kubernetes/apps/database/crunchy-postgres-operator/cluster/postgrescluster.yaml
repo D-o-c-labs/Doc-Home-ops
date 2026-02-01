@@ -136,6 +136,11 @@ spec:
         - aios
       password:
         type: AlphaNumeric
+    - name: mcpjungle
+      databases:
+        - mcpjungle
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
