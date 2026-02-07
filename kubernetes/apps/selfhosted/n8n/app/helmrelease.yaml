@@ -21,7 +21,8 @@ spec:
     controllers:
       n8n:
         annotations:
-          secret.reloader.stakater.com/reload: auto
+          # Restart pods when the DB secret is updated (envFrom is only evaluated at container start).
+          secret.reloader.stakater.com/reload: n8n-db-secret
 
         pod:
           labels:

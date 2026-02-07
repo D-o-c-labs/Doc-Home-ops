@@ -226,6 +226,9 @@ spec:
         global:
           pool_mode: "transaction" # pgBouncer is set to transaction for Authentik. Grafana requires session https://github.com/grafana/grafana/issues/74260#issuecomment-1702795311. Everything else is happy with transaction
           client_tls_sslmode: prefer
+          # Some clients (e.g. n8n) pass runtime settings via the startup `options` parameter.
+          # PgBouncer rejects unknown values unless we explicitly ignore them.
+          ignore_startup_parameters: "extra_float_digits,options"
       # tolerations:
       # - key: CriticalAddonsOnly
       #   operator: Exists
