@@ -57,12 +57,30 @@ spec:
                   name: home-assistant-db-secret
 
             probes:
-              liveness:
-                enabled: false
-              readiness:
-                enabled: false
+              # HA can serve `/` while its internal API/event loop is wedged; probe a dynamic endpoint.
+              # `/auth/providers` is unauthenticated (200) and used by the login page.
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /auth/providers
+                    port: 8123
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probes
               startup:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /auth/providers
+                    port: 8123
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
 
             resources:
               requests:
