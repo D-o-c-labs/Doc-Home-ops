@@ -47,5 +47,6 @@ jobs:
           RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository_owner }}/${{ inputs.autodiscover_filter || '*' }}
           RENOVATE_PLATFORM: "github"
           RENOVATE_PLATFORM_COMMIT: "true"
+          RENOVATE_ALLOWED_COMMANDS: "[\"^scripts/renovate/ensure-next-minor\\\\.sh kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\\\.yaml$\"]"
         with:
           token: "${{ steps.app-token.outputs.token }}"
