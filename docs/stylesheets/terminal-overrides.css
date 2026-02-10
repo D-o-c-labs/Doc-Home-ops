@@ -1,0 +1,61 @@
+/* Small UX refinements for mkdocs-terminal */
+
+.terminal-mkdocs-main-grid {
+  gap: 1.2rem;
+}
+
+#terminal-mkdocs-main-content {
+  line-height: 1.6;
+}
+
+/* Heading anchor links: move to the beginning and make them subtle */
+#terminal-mkdocs-main-content h1,
+#terminal-mkdocs-main-content h2,
+#terminal-mkdocs-main-content h3,
+#terminal-mkdocs-main-content h4,
+#terminal-mkdocs-main-content h5,
+#terminal-mkdocs-main-content h6 {
+  position: relative;
+  padding-left: 1.15rem;
+}
+
+#terminal-mkdocs-main-content .headerlink {
+  position: absolute;
+  left: 0;
+  top: 0.08em;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  font-size: 0; /* hide default pilcrow glyph */
+}
+
+#terminal-mkdocs-main-content .headerlink::before {
+  content: "#";
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+#terminal-mkdocs-main-content h1:hover .headerlink,
+#terminal-mkdocs-main-content h2:hover .headerlink,
+#terminal-mkdocs-main-content h3:hover .headerlink,
+#terminal-mkdocs-main-content h4:hover .headerlink,
+#terminal-mkdocs-main-content h5:hover .headerlink,
+#terminal-mkdocs-main-content h6:hover .headerlink,
+#terminal-mkdocs-main-content .headerlink:focus {
+  opacity: 0.7;
+}
+
+.terminal-theme-toggle-btn {
+  cursor: pointer;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font: inherit;
+  line-height: 1.2;
+}
+
+.terminal-theme-toggle-btn:hover {
+  text-decoration: underline;
+}

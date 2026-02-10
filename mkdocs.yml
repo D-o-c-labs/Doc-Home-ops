@@ -1,5 +1,41 @@
-site_name: My Documentation
-theme: terminal
+site_name: Doc Home Ops
+site_description: Public wiki for the Doc Home Ops Talos and Kubernetes platform.
+site_url: https://docs.d-o-c.cloud
+
+theme:
+  name: terminal
+  palette: default
+
+plugins:
+  - search
+
 nav:
   - Home: index.md
-  - About: about.md
+  - Talos:
+      - Overview: talos/index.md
+  - Kubernetes:
+      - Overview: kubernetes/index.md
+      - Applications: kubernetes/apps/index.md
+      - Infrastructure: kubernetes/infrastructure/index.md
+  - Runbooks:
+      - Flux Reconciliation: runbooks/flux-reconciliation.md
+      - App Rollout: runbooks/app-rollout.md
+      - Rollback: runbooks/rollback.md
+      - Backup and Restore: runbooks/backup-restore.md
+      - Incident Triage: runbooks/incident-triage.md
+  - Troubleshooting:
+      - Flux Drift: troubleshooting/flux-drift.md
+      - HelmRelease Failures: troubleshooting/helmrelease-failures.md
+      - DNS and NetworkPolicy: troubleshooting/dns-networkpolicy.md
+  - Authoring Guidelines: authoring-guidelines.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+
+extra_css:
+  - stylesheets/terminal-overrides.css
+
+extra_javascript:
+  - javascripts/terminal-theme-toggle.js
