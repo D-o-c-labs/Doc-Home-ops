@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mcpjungle/mcpjungle
-              tag: 0.3.3-stdio@sha256:d05d6921b658783d466ebb9b4073cb4786b7fed19a05e7464d882a3ff61eec19
+              tag: 0.3.4-stdio@sha256:c65209b21c7d499e51ecc45c3e8119e547da8a4da8d68809fd31ba35ee4bd292
             env:
               SERVER_MODE: enterprise
             envFrom:
