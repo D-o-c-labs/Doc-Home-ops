@@ -1,0 +1,12 @@
+language: "it"
+intents:
+  HassTurnOn:
+    data:
+      - sentences:
+          - "accendi {name}"
+          - "accendi la {name}"
+lists:
+  name:
+    values:
+      - "luce cucina"
+      - "lampada salotto"

@@ -1,0 +1,28 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: {{ ENV.APP }}-manual
+  namespace: {{ ENV.NS }}
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: {{ ENV.APP }}-volsync-wasabi
+    destinationPVC: {{ ENV.CLAIM }}
+    copyMethod: Direct
+    storageClassName: {{ ENV.STORAGE_CLASS_NAME }}
+{% if ENV.ACCESS_MODES %}
+    accessModes: {{ ENV.ACCESS_MODES }}
+{% else %}
+    accessModes:
+      - ReadWriteOnce
+{% endif %}
+    previous: {{ ENV.PREVIOUS }}
+    moverSecurityContext:
+      runAsUser: {{ ENV.PUID }}
+      runAsGroup: {{ ENV.PGID }}
+      fsGroup: {{ ENV.PGID }}
+    enableFileDeletion: true
+    cleanupCachePVC: true
+    cleanupTempPVC: true

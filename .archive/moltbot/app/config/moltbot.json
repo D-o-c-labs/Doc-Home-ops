@@ -1,0 +1,45 @@
+{
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "token": "${CLAWDBOT_GATEWAY_TOKEN}"
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai-codex/gpt-5.2",
+        "fallbacks": ["openrouter/anthropic/claude-sonnet-4.5"]
+      }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "botToken": "${TELEGRAM_BOT_TOKEN}",
+      "dmPolicy": "pairing"
+    }
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "enabled": true,
+        "provider": "brave",
+        "apiKey": "${BRAVE_API_KEY}"
+      },
+      "fetch": {
+        "enabled": true
+      }
+    }
+  },
+  "skills": {
+    "entries": {
+      "tavily": {
+        "enabled": true,
+        "env": {
+          "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+        }
+      }
+    }
+  }
+}

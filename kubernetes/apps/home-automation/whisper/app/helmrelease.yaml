@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: whisper
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      whisper:
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
+        containers:
+          app:
+            image:
+              repository: rhasspy/wyoming-whisper
+              tag: 3.1.0@sha256:9501d2659eee83b6eead98d53842193e5fed011eda6c5b1c3ad36f3146b28fed
+            args:
+              - --uri
+              - tcp://0.0.0.0:10300
+              # Model can be tiny/base/small/medium/large or a HF model name.
+              - --model
+              - tiny-int8
+              # Set language (e.g. en, it); omit for auto-detect.
+              - --language
+              - it
+              - --data-dir
+              - /data
+              - --download-dir
+              - /data
+            env:
+              HF_HOME: /data/huggingface
+              HUGGINGFACE_HUB_CACHE: /data/huggingface
+              TRANSFORMERS_CACHE: /data/huggingface
+              XDG_CACHE_HOME: /data/.cache
+              TMPDIR: /tmp
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: whisper
+        ports:
+          wyoming:
+            port: &port 10300
+            primary: true
+
+    persistence:
+      data:
+        existingClaim: whisper-data
+        advancedMounts:
+          whisper:
+            app:
+              - path: /data
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          whisper:
+            app:
+              - path: /tmp

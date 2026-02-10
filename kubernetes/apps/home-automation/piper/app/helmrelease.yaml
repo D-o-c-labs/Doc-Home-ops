@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: piper
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      piper:
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+
+        containers:
+          app:
+            image:
+              repository: rhasspy/wyoming-piper
+              tag: 2.2.2@sha256:c874e4a04657ae3381332ee5d0c8c70a310dae6722892840f530ac0890b44eb3
+            args:
+              - --uri
+              - tcp://0.0.0.0:10200
+              # Pick a voice from https://github.com/OHF-Voice/piper1-gpl/blob/main/docs/VOICES.md
+              - --voice
+              - it_IT-paola-medium
+              - --data-dir
+              - /data
+              - --download-dir
+              - /data
+              # Refresh embedded voices.json so HA can see newly added languages.
+              - --update-voices
+            env:
+              HF_HOME: /data/huggingface
+              HUGGINGFACE_HUB_CACHE: /data/huggingface
+              TRANSFORMERS_CACHE: /data/huggingface
+              XDG_CACHE_HOME: /data/.cache
+              TMPDIR: /tmp
+            resources:
+              requests:
+                cpu: 200m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: piper
+        ports:
+          wyoming:
+            port: 10200
+            primary: true
+
+    persistence:
+      data:
+        existingClaim: piper-data
+        advancedMounts:
+          piper:
+            app:
+              - path: /data
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          piper:
+            app:
+              - path: /tmp

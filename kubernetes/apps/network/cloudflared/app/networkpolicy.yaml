@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cloudflared
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cloudflared
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: home-assistant
+            app.kubernetes.io/instance: home-automation
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: "TCP"
+
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            app.kubernetes.io/instance: multimedia
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: "TCP"
+
+    - toEndpoints:
+        - matchLabels:
+            app: notification-controller
+            k8s:io.kubernetes.pod.namespace: flux-system
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: "TCP"
+
+    - toEndpoints:
+        - matchLabels:
+            app: prowlarr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "9696"
+              protocol: "TCP"
+
+    - toEndpoints:
+        - matchLabels:
+            app: open-webui
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: "TCP"

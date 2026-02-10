@@ -1,0 +1,113 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: home-assistant
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: home-assistant
+  egress:
+    # Emqx
+    - toEndpoints:
+        - matchLabels:
+            apps.emqx.io/instance: emqx
+            apps.emqx.io/db-role: core
+            k8s:io.kubernetes.pod.namespace: database
+      toPorts:
+        - ports:
+            - port: "1883"
+              protocol: TCP
+
+    # postgres
+    - toEndpoints:
+        - matchLabels:
+            postgres-operator.crunchydata.com/cluster: home-assistant
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+
+    # babybuddy
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: babybuddy
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "8000"
+              protocol: TCP
+
+    # plex
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+
+    # music-assistant
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: music-assistant
+      toPorts:
+        - ports:
+            - port: "8095"
+              protocol: TCP
+
+    # speech-to-phrase
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: speech-to-phrase
+      toPorts:
+        - ports:
+            - port: "10300"
+              protocol: TCP
+
+    # whisper
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: whisper
+      toPorts:
+        - ports:
+            - port: "10300"
+              protocol: TCP
+
+    # piper
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: piper
+      toPorts:
+        - ports:
+            - port: "10200"
+              protocol: TCP
+
+    # openwakeword
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: openwakeword
+      toPorts:
+        - ports:
+            - port: "10400"
+              protocol: TCP
+
+  ingress:
+    # music-assistant
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: music-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
+    # speech-to-phrase (needs HA websocket access)
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: speech-to-phrase
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP

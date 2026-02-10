@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: selfhosted
+resources:
+  - ./actual-budget/ks.yaml
+  - ./firefox/ks.yaml
+  - ./ghostfolio/ks.yaml
+  - ./n8n/ks.yaml
+  - ./mealie/ks.yaml
+  - ./metamcp/ks.yaml
+  - ./mcpjungle/ks.yaml
+  - ./wekan/ks.yaml
+components:
+  - ../../components/namespace
+  - ../../components/flux/alerts
+replacements:
+  - path: ../../components/replacements/ks.yaml

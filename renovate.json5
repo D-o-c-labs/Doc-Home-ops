@@ -7,18 +7,89 @@
     "github>D-o-c-labs/Doc-Home-ops//.renovate/autoMerge.json5",
     "github>D-o-c-labs/Doc-home-ops//.renovate/versioning.json5",
     "github>D-o-c-labs/Doc-Home-ops//.renovate/groups.json5",
-    "github>D-o-c-labs/Doc-Home-ops//.renovate/clusters.json5",
     "github>bjw-s-labs/home-ops//.renovate/grafanaDashboards.json5",
-    "config:recommended", ":dependencyDashboard",
+    "config:recommended",
+    ":dependencyDashboard",
   ],
   ignorePaths: [".archive/**"],
   flux: {
-    fileMatch: ["^kubernetes/.+\\.ya?ml$"],
+    managerFilePatterns: ["/^kubernetes/.+\\.ya?ml$/"],
   },
   "helm-values": {
-    fileMatch: ["^kubernetes/.+\\.ya?ml$"],
+    managerFilePatterns: ["/^kubernetes/.+\\.ya?ml$/"],
   },
   kubernetes: {
-    fileMatch: ["^kubernetes/.+\\.ya?ml$"],
+    managerFilePatterns: ["/^kubernetes/.+\\.ya?ml$/"],
   },
+  customManagers: [
+    {
+      customType: "regex",
+      description: "Update Talos version in system-upgrade Kustomization",
+      managerFilePatterns: [
+        "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
+      ],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\\r?\\n(?<indentation>\\s+)TALOS_VERSION: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/installer",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\n{{{indentation}}}TALOS_VERSION: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+    {
+      customType: "regex",
+      description: "Update Kubernetes version in system-upgrade Kustomization",
+      managerFilePatterns: [
+        "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
+      ],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\\r?\\n(?<indentation>\\s+)KUBERNETES_VERSION: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/kubelet",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\n{{{indentation}}}KUBERNETES_VERSION: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+    {
+      customType: "regex",
+      description: "Update Talos version in talconfig",
+      managerFilePatterns: ["/(^|/)kubernetes/talos/talconfig\\.ya?ml$/"],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\\r?\\n(?<indentation>\\s*)talosVersion: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/installer",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\n{{{indentation}}}talosVersion: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+    {
+      customType: "regex",
+      description: "Update Kubernetes version in talconfig",
+      managerFilePatterns: ["/(^|/)kubernetes/talos/talconfig\\.ya?ml$/"],
+      matchStrings: [
+        "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\\r?\\n(?<indentation>\\s*)kubernetesVersion: (?<currentValue>\\S+)",
+      ],
+      depNameTemplate: "ghcr.io/siderolabs/kubelet",
+      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\n{{{indentation}}}kubernetesVersion: {{{newValue}}}",
+      datasourceTemplate: "docker",
+    },
+  ],
+  packageRules: [
+    {
+      description: "Enforce sequential minor upgrades for system-upgrade-controller versions",
+      matchFileNames: [
+        "kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
+      ],
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "ghcr.io/siderolabs/installer",
+        "ghcr.io/siderolabs/kubelet",
+      ],
+      postUpgradeTasks: {
+        commands: [
+          "scripts/renovate/ensure-next-minor.sh kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
+        ],
+        fileFilters: [
+          "kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
+        ],
+      },
+    },
+  ],
 }
