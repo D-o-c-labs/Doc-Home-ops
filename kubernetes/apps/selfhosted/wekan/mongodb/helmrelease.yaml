@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: mongo
-              tag: 8.2.2@sha256:bf5995bcccb65725aa81fd92e68449323c94b96bf1c1fa9f7acbc2a8ad518114
+              tag: 8.2.4@sha256:6f55a078e025aa29fea2826c82f67ff2f774b82efd816c4c30bbfe67904f0bb8
             env:
               MONGO_INITDB_DATABASE: wekan
             envFrom:
