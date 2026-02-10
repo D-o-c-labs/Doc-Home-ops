@@ -14,10 +14,12 @@
   - Location: `kubernetes/apps/selfhosted/ghostfolio-feeder/`
   - Source: [marco-ragusa/ghostfolio-feeder](https://github.com/marco-ragusa/ghostfolio-feeder.git)
   - Related: Complements existing ghostfolio deployment
-- [ ] **wiki** - Knowledge base and documentation platform
-  - Location: `kubernetes/apps/selfhosted/wiki/`
-  - Options: [Wiki.js](https://js.wiki/), DokuWiki, BookStack, or MediaWiki
-  - Recommend Wiki.js for modern features and Git integration
+- [ ] **wiki** - Public documentation wiki with MkDocs on GitHub Pages
+  - Location: `docs/`, `mkdocs.yml`, `.github/workflows/deploy-mkdocs.yml`
+  - Deployment: GitHub Pages via official GitHub actions
+  - Canonical URL: `https://docs.d-o-c.cloud`
+  - Redirect URL: `https://docs.piscio.net` -> `https://docs.d-o-c.cloud`
+  - Notes: Same repo, terminal theme, no Kubernetes wiki service
 
 ## Notes
 
@@ -29,3 +31,9 @@ Each deployment should follow the existing repository patterns:
 - Configure volsync for persistent data
 - Set up Gateway API routes for external access
 - Use external-secrets/onepassword for sensitive data
+
+## Documentation TODO
+
+- [ ] Expand docs content in `docs/` for Talos, Kubernetes, runbooks, and troubleshooting
+- [ ] Keep docs deploy on push to `main` for docs-related changes only
+- [ ] Maintain public content posture (no redaction of internal details)

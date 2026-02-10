@@ -2,6 +2,7 @@
 ignore/
 logs/
 testing/
+site/
 
 # Trash
 .DS_Store
