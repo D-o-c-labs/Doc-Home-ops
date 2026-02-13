@@ -27,7 +27,6 @@ nav:
       - Flux Drift: troubleshooting/flux-drift.md
       - HelmRelease Failures: troubleshooting/helmrelease-failures.md
       - DNS and NetworkPolicy: troubleshooting/dns-networkpolicy.md
-  - Authoring Guidelines: authoring-guidelines.md
 
 markdown_extensions:
   - admonition
