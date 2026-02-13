@@ -16,12 +16,6 @@ This wiki is the public reference for the `doc-home-ops` homelab platform. It do
 - Every documentation update is versioned and reviewed like code.
 - The site is built with MkDocs and published by GitHub Pages.
 
-## Publication details
-
-- Canonical URL: `https://docs.d-o-c.cloud`
-- Redirect URL: `https://docs.piscio.net` -> canonical URL
-- Deployment trigger: push to `main` when docs-related files change
-
 ## Fast links
 
 - [Talos overview](talos/index.md)
