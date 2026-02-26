@@ -146,6 +146,12 @@ spec:
       password:
         type: AlphaNumeric
 
+    - name: splitpro
+      databases:
+        - splitpro
+      password:
+        type: AlphaNumeric
+
   backups:
     pgbackrest:
       configuration: &backupConfig

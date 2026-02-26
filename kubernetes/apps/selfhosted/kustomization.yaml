@@ -8,6 +8,7 @@ resources:
   - ./firefox/ks.yaml
   - ./ghostfolio/ks.yaml
   - ./n8n/ks.yaml
+  - ./splitpro/ks.yaml
   - ./mealie/ks.yaml
   - ./metamcp/ks.yaml
   - ./mcpjungle/ks.yaml
