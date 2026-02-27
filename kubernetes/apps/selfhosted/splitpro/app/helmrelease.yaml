@@ -30,10 +30,13 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/oss-apps/split-pro
-              tag: v1.0.0
+              repository: ghcr.io/oss-apps/splitpro
+              tag: v2.0.1@sha256:1adc9547d306cbed247d634832e18c22d67e36af125b64742516c824609a34b2
             env:
-              TZ: Europe/Rome
+              HOSTNAME: 0.0.0.0
+              NEXTAUTH_URL: https://${HOSTNAME}
+              NEXTAUTH_URL_INTERNAL: http://localhost:3000
+              DISABLE_EMAIL_SIGNUP: false
             envFrom:
               - secretRef:
                   name: splitpro-db-secret
