@@ -1,0 +1,100 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: splitpro
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  values:
+    controllers:
+      splitpro:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            ingress.home.arpa/gateway-route: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+            egress.home.arpa/postgres-cluster: allow
+            egress.home.arpa/sso: allow
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/oss-apps/splitpro
+              tag: v2.0.1@sha256:1adc9547d306cbed247d634832e18c22d67e36af125b64742516c824609a34b2
+            env:
+              HOSTNAME: 0.0.0.0
+              NEXTAUTH_URL: https://${HOSTNAME}
+              NEXTAUTH_URL_INTERNAL: http://localhost:3000
+              DISABLE_EMAIL_SIGNUP: false
+            envFrom:
+              - secretRef:
+                  name: splitpro-db-secret
+              - secretRef:
+                  name: splitpro-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 3000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      app:
+        controller: splitpro
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        globalMounts:
+          - path: /data
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: splitpro
+                port: *port

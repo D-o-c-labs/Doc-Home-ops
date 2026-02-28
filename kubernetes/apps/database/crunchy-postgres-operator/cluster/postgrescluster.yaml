@@ -32,6 +32,9 @@ spec:
         pg_hba:
           - hostnossl all all 10.244.0.0/16 md5 # Needed because dbman does not support SSL yet
           - hostssl all all all md5
+        parameters:
+          shared_preload_libraries: "pg_cron"
+          cron.database_name: "splitpro"
 
   instances:
     - name: postgres
@@ -143,6 +146,11 @@ spec:
     - name: mcpjungle
       databases:
         - mcpjungle
+      password:
+        type: AlphaNumeric
+    - name: splitpro
+      databases:
+        - splitpro
       password:
         type: AlphaNumeric
 
