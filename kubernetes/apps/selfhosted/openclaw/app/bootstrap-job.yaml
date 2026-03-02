@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kubernetes
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: openclaw-bootstrap
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: db-bootstrap
+          image: docker.io/library/postgres:16
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - >-
+              set -eu;
+              SENTINEL=/data/.openclaw-bootstrap.done;
+              if [ -f "${SENTINEL}" ]; then
+                echo "Bootstrap sentinel already present, skipping schema load.";
+                exit 0;
+              fi;
+              until psql -c "select 1" >/dev/null 2>&1; do
+                echo "Waiting for PostgreSQL...";
+                sleep 2;
+              done;
+              psql -v ON_ERROR_STOP=1 -f /bootstrap/sql/001_schema.sql;
+              psql -v ON_ERROR_STOP=1 -f /bootstrap/sql/002_seed.sql;
+          envFrom:
+            - secretRef:
+                name: openclaw-db-secret
+          volumeMounts:
+            - name: config
+              mountPath: /data
+            - name: sql
+              mountPath: /bootstrap/sql
+      containers:
+        - name: workflow-import
+          image: n8nio/n8n:2.10.2
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - >-
+              set -eu;
+              SENTINEL=/data/.openclaw-bootstrap.done;
+              if [ -f "${SENTINEL}" ]; then
+                echo "Bootstrap sentinel already present, skipping workflow import.";
+                exit 0;
+              fi;
+              node -e "const net=require('net');const tryConnect=()=>{const socket=net.connect({host:'openclaw.selfhosted.svc.cluster.local',port:5678},()=>{socket.end();process.exit(0)});socket.on('error',()=>setTimeout(tryConnect,2000));};tryConnect();";
+              n8n import:workflow --separate --input=/bootstrap/workflows;
+              touch "${SENTINEL}";
+          envFrom:
+            - secretRef:
+                name: openclaw-secret
+            - secretRef:
+                name: openclaw-db-secret
+          volumeMounts:
+            - name: config
+              mountPath: /data
+            - name: workflows
+              mountPath: /bootstrap/workflows
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: "${VOLSYNC_CLAIM}"
+        - name: sql
+          configMap:
+            name: openclaw-bootstrap-sql
+        - name: workflows
+          configMap:
+            name: openclaw-workflows

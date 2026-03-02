@@ -1,0 +1,685 @@
+{
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "name": "🏗️ MCP Builder",
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Search API Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BuildPrompt": {
+      "main": [
+        [
+          {
+            "node": "Generate Tool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Tool": {
+      "main": [
+        [
+          {
+            "node": "Assemble & Deploy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble & Deploy": {
+      "main": [
+        [
+          {
+            "node": "Create Sub-Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Result": {
+      "main": [
+        [
+          {
+            "node": "Register MCP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register MCP": {
+      "main": [
+        [
+          {
+            "node": "Fetch Registry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Registry": {
+      "main": [
+        [
+          {
+            "node": "Build Instructions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Instructions": {
+      "main": [
+        [
+          {
+            "node": "Update Agent Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Agent Config": {
+      "main": [
+        [
+          {
+            "node": "Finalize Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search API Docs": {
+      "main": [
+        [
+          {
+            "node": "Fetch Doc Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Doc Content": {
+      "main": [
+        [
+          {
+            "node": "BuildPrompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test MCP": {
+      "main": [
+        [
+          {
+            "node": "Test Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Passed?": {
+      "main": [
+        [
+          {
+            "node": "Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Fix Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Fix Prompt": {
+      "main": [
+        [
+          {
+            "node": "Fix LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fix LLM": {
+      "main": [
+        [
+          {
+            "node": "Patch & Retest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Patch & Retest": {
+      "main": [
+        [
+          {
+            "node": "Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fix Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fix LLM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Patch Tool Schema": {
+      "main": [
+        [
+          {
+            "node": "Build MCP JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Sub-Workflow": {
+      "main": [
+        [
+          {
+            "node": "Patch Tool Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create MCP Workflow": {
+      "main": [
+        [
+          {
+            "node": "Test MCP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build MCP JSON": {
+      "main": [
+        [
+          {
+            "node": "Create MCP Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { api_key: $env.TAVILY_API_KEY, query: $json.task + ' API documentation REST reference', search_depth: 'basic', max_results: 3, topic: 'general' } }}",
+        "options": {}
+      },
+      "id": "search-api-docs",
+      "name": "Search API Docs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        -304
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://r.jina.ai/http://' + (($json.results?.[0]?.url || '').replace(/^https?:\\/\\//, '')) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "text/plain"
+            },
+            {
+              "name": "X-Return-Format",
+              "value": "text"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "fetch-doc-content",
+      "name": "Fetch Doc Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        -304
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "trigger",
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $('Start').first().json;\nlet task = '';\ntry {\n  const parsed = JSON.parse(raw.query || '{}');\n  task = parsed.task || parsed.description || parsed.query || raw.query || '';\n} catch (error) {\n  task = raw.task || raw.query || String(raw);\n}\ntask = task.replace(/^task:\\s*/i, '').trim();\nlet docsContext = '';\ntry {\n  const searchResults = $('Search API Docs').first().json;\n  const topResults = (searchResults?.results || []).slice(0, 3).map(r => `- ${r.title}: ${r.url}`).join('\\n');\n  const docText = $('Fetch Doc Content').first().json?.body || $('Fetch Doc Content').first().json?.data || '';\n  const truncated = String(docText).substring(0, 8000).trim();\n  if (truncated && truncated.length > 100) {\n    docsContext = `\\n\\nAPI DOCUMENTATION:\\nSources:\\n${topResults}\\n\\nContent:\\n${truncated}`;\n  } else if (topResults) {\n    docsContext = `\\n\\nFound sources:\\n${topResults}`;\n  }\n} catch (error) {\n  docsContext = '';\n}\nconst words = task.toLowerCase().split(/\\s+/).filter(w => w.length > 2 && !['the','and','for','with','from','build','create','tool','server','mcp','api','new'].includes(w));\nconst serverName = words.slice(0, 3).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Custom Tool';\nconst path = words.slice(0, 2).join('-') || 'custom-tool';\nconst prompt = `Generate JavaScript for an n8n sub-workflow that handles an external API request.\\n\\nTASK: ${task}${docsContext}\\n\\nThe code runs inside an n8n Code node. Parameters arrive through $json.\\n\\nReply ONLY with a JSON object:\\n{\\n  \"tool_name\": \"snake_case_name\",\\n  \"description\": \"What the tool does in one sentence\",\\n  \"params\": [{\"name\": \"param1\", \"description\": \"what it means\", \"type\": \"string\"}],\\n  \"jsCode\": \"the JavaScript code\"\\n}\\n\\nRULES for jsCode (n8n Code node, not toolCode):\\n- Read parameters with const isbn = $json.isbn || $input.first().json.isbn;\\n- Use HTTP with await helpers.httpRequest({method:'GET', url:'...'})\\n- Return an array: return [{json: {result: 'string response'}}];\\n- Do not use fetch(), require(), or new URL()\\n- Include error handling\\n\\nReply ONLY with the JSON object.`;\nreturn [{ json: { prompt, task, serverName, path } }];"
+      },
+      "id": "build-prompt",
+      "name": "BuildPrompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}"
+      },
+      "id": "ai-chain",
+      "name": "Generate Tool",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        896,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst llmRaw = $input.first().json.text || $input.first().json.response || '';\nconst meta = $('BuildPrompt').first().json;\n\nlet toolDef;\ntry {\n  const jsonMatch = llmRaw.match(/\\{[\\s\\S]*\\}/);\n  toolDef = JSON.parse(jsonMatch[0]);\n} catch(e) {\n  return [{json: {error: 'JSON parse failed', raw: llmRaw.substring(0,500)}}];\n}\n\nconst toolName = toolDef.tool_name || 'custom_tool';\nconst description = toolDef.description || meta.task;\nconst jsCode = toolDef.jsCode || '';\nconst params = toolDef.params || [];\n\n// sampleArgs for testing\nconst sampleObj = {};\nparams.forEach(p => { sampleObj[p.name || p] = 'test'; });\n\n// Sub-workflow JSON: Execute Workflow Trigger + Code node\nconst subWorkflow = {\n  name: 'MCP Sub: ' + meta.serverName,\n  settings: {callerPolicy: 'workflowsFromSameOwner'},\n  nodes: [\n    {\n      id: 'sub-trigger',\n      name: 'Execute Workflow Trigger',\n      type: 'n8n-nodes-base.executeWorkflowTrigger',\n      typeVersion: 1.1,\n      position: [0, 0],\n      parameters: {inputSource: 'passthrough'}\n    },\n    {\n      id: 'sub-code',\n      name: 'Run Tool',\n      type: 'n8n-nodes-base.code',\n      typeVersion: 2,\n      position: [256, 0],\n      parameters: {language: 'javaScript', jsCode: jsCode}\n    }\n  ],\n  connections: {\n    'Execute Workflow Trigger': {main: [[{node: 'Run Tool', type: 'main', index: 0}]]}\n  }\n};\n\n// MCP server workflow: mcpTrigger + toolWorkflow pointing to sub-workflow\n// (sub-workflow ID filled in after sub is created)\nconst workflowInputsSchema = params.map(p => ({\n  id: p.name || p,\n  displayName: p.name || p,\n  type: (p.type || 'string'),\n  description: p.description || '',\n  required: true,\n  defaultMatch: false,\n  display: true,\n  canBeUsedToMatch: true,\n  removed: false\n}));\n\nconst workflowInputsValue = {};\nparams.forEach(p => {\n  const pname = p.name || p;\n  workflowInputsValue[pname] = `={{ $fromAI('${pname}', '${p.description || pname}', '${p.type || 'string'}') }}`;\n});\n\nreturn [{json: {\n  subWorkflow: JSON.stringify(subWorkflow),\n  toolName,\n  description,\n  path: meta.path,\n  serverName: meta.serverName,\n  sampleArgs: JSON.stringify(sampleObj),\n  workflowInputsSchema: JSON.stringify(workflowInputsSchema),\n  workflowInputsValue: JSON.stringify(workflowInputsValue),\n  originalJsCode: jsCode\n}}];\n"
+      },
+      "id": "assemble",
+      "name": "Assemble & Deploy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_INTERNAL_URL}}/api/v1/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{$env.N8N_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.subWorkflow }}",
+        "options": {}
+      },
+      "id": "create-wf",
+      "name": "Create Sub-Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_INTERNAL_URL}}/api/v1/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{$env.N8N_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.mcpWorkflowJson }}",
+        "options": {}
+      },
+      "id": "activate-wf",
+      "name": "Create MCP Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1696,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-sonnet-4.6"
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        968,
+        -80
+      ],
+      "id": "1a628b60-a6b8-46d9-9857-199bfb495b7a",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO mcp_registry (server_name, path, mcp_url, description, tools, workflow_id, active) VALUES ('{{ $('Build MCP JSON').item.json.serverName.replace(/'/g, \"''\") }}', '{{ $('Build MCP JSON').item.json.path.replace(/'/g, \"''\") }}', '{{ ($env.WEBHOOK_URL + '/mcp/' + $('Build MCP JSON').item.json.path).replace(/'/g, \"''\") }}', '{{ $('Assemble & Deploy').item.json.description.replace(/'/g, \"''\") }}', ARRAY['{{ $('Build MCP JSON').item.json.toolName.replace(/'/g, \"''\") }}'], '{{ $('Create MCP Workflow').item.json.id }}', true) ON CONFLICT (path) DO UPDATE SET server_name = EXCLUDED.server_name, mcp_url = EXCLUDED.mcp_url, description = EXCLUDED.description, tools = EXCLUDED.tools, workflow_id = EXCLUDED.workflow_id, active = true, updated_at = now() RETURNING server_name, path, mcp_url, tools;",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "id": "register-mcp",
+      "name": "Register MCP",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3392,
+        -304
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Openclaw Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const summary = $('Result').first().json;\nconst registry = $('Register MCP').first()?.json;\nconst agentUpdate = $('Build Instructions').first()?.json;\nconst registryText = registry?.path ? `Registry: saved ${registry.path}` : 'Registry: update attempted';\nconst agentText = agentUpdate?.serverCount > 0 ? `Agent config refreshed (${agentUpdate.serverCount} MCP servers known)` : 'Agent config refresh could not be confirmed';\nreturn [{ json: {\n  response: summary.response + '\\n\\n' + registryText + '\\n' + agentText,\n  workflow_id: summary.workflow_id,\n  mcp_path: summary.mcp_path,\n  tool_name: summary.tool_name\n} }];"
+      },
+      "id": "finalize-response",
+      "name": "Finalize Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4288,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT server_name, path, mcp_url, description, tools FROM mcp_registry WHERE active = true ORDER BY created_at ASC",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "id": "fetch-registry",
+      "name": "Fetch Registry",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3616,
+        -304
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Openclaw Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const servers = $input.all().map(i => i.json);\nif (!servers.length) return [{ json: { instructions: null, serverCount: 0 } }];\nconst lines = servers.map(server => {\n  const tools = Array.isArray(server.tools) ? server.tools.join(', ') : (server.tools || '?');\n  return `- ${server.server_name}: ${server.mcp_url} (Tool: ${tools}) - ${server.description || ''}`;\n});\nconst instructions = `You have MCP (Model Context Protocol) capabilities.\\n\\n## MCP Client (mcp_client tool)\\nUse it to call tools on MCP servers. Parameters:\\n- mcp_url\\n- tool_name\\n- arguments (JSON object)\\n\\n## MCP Builder (mcp_builder tool)\\nUse it to build new MCP server workflows. Parameter:\\n- task: what the server should do\\n\\n## Currently available MCP servers (${servers.length} total):\\n${lines.join('\\n')}\\n\\n## Registry\\nAll active servers are stored in mcp_registry.`;\nreturn [{ json: { instructions, serverCount: servers.length } }];"
+      },
+      "id": "build-instructions",
+      "name": "Build Instructions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3840,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE agents SET content = '{{ $json.instructions ? $json.instructions.replace(/'/g, \"''\") : '' }}', updated_at = now() WHERE key = 'mcp_instructions' RETURNING key, updated_at;",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "id": "update-agent-config",
+      "name": "Update Agent Config",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        4064,
+        -304
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Openclaw Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst activated = $('Patch Tool Schema').first().json;\nconst assembled = $('Assemble & Deploy').first().json;\nconst workflowId = activated.id;\nconst path = assembled.path;\nconst toolName = assembled.toolName;\nlet sampleArgs;\ntry { sampleArgs = JSON.parse(assembled.sampleArgs || '{}'); } catch(e) { sampleArgs = {}; }\nconst mcpUrl = (process.env.N8N_INTERNAL_URL || 'http://127.0.0.1:5678').replace(/\\/$/, '') + '/mcp/' + path;\n\ntry {\n  const init = await helpers.httpRequest({\n    method:'POST', url:mcpUrl,\n    headers:{'Content-Type':'application/json','Accept':'application/json, text/event-stream'},\n    body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2024-11-05',capabilities:{},clientInfo:{name:'test',version:'1.0'}}}),\n    returnFullResponse:true, encoding:'utf-8', json:false\n  });\n  const sid = init.headers['mcp-session-id'];\n  if (!sid) return [{json:{success:false,error:'No session ID — webhook registration may require a deactivate/activate cycle in the UI',workflowId,toolName,path,sampleArgs:assembled.sampleArgs}}];\n  await helpers.httpRequest({method:'POST',url:mcpUrl,headers:{'Content-Type':'application/json','Accept':'application/json, text/event-stream','mcp-session-id':sid},body:JSON.stringify({jsonrpc:'2.0',method:'notifications/initialized'}),json:false});\n  const resp = await helpers.httpRequest({method:'POST',url:mcpUrl,headers:{'Content-Type':'application/json','Accept':'application/json, text/event-stream','mcp-session-id':sid},body:JSON.stringify({jsonrpc:'2.0',id:2,method:'tools/call',params:{name:toolName,arguments:sampleArgs}}),json:false});\n  const dataLine = String(resp).split('\\n').find(l => l.startsWith('data: '));\n  if (!dataLine) return [{json:{success:false,error:'No response: '+String(resp).substring(0,200),workflowId,toolName,path,sampleArgs:assembled.sampleArgs}}];\n  const result = JSON.parse(dataLine.substring(6));\n  const content = result.result?.content?.[0]?.text || '';\n  if (content.includes('Error:') || result.error) {\n    return [{json:{success:false,error:content||JSON.stringify(result.error),workflowId,toolName,path,sampleArgs:assembled.sampleArgs}}];\n  }\n  return [{json:{success:true,response:content,workflowId,toolName,path}}];\n} catch(e) {\n  return [{json:{success:false,error:e.message,workflowId,toolName,path,sampleArgs:assembled.sampleArgs}}];\n}\n"
+      },
+      "id": "test-mcp",
+      "name": "Test MCP",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        -304
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "test-passed",
+      "name": "Test Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const test = $input.first().json;\nconst assembled = $('Assemble & Deploy').first().json;\nlet schemaStr = '';\ntry { schemaStr = JSON.stringify(JSON.parse(test.inputSchema || '{}'), null, 2); } catch (error) { schemaStr = test.inputSchema || '{}'; }\nconst prompt = `An n8n MCP tool failed its self-test.\\n\\nERROR: ${test.error}\\n\\nTOOL NAME: ${test.toolName}\\nTEST PARAMETERS: ${test.sampleArgs}\\n\\nCURRENT INPUT_SCHEMA:\\n${schemaStr}\\n\\nCURRENT JSCODE:\\n${assembled.originalJsCode}\\n\\nAnalyse the failure and return corrected JavaScript code only.\\nRules:\\n- Read parameters with query.param_name\\n- Use await helpers.httpRequest({method:'GET', url:'...'})\\n- Do not use fetch(), require(), or new URL()\\n- Return a plain string\\n\\nReply ONLY with corrected JavaScript code.`;\nreturn [{ json: { prompt, toolName: test.toolName, workflowId: test.workflowId, path: test.path, sampleArgs: test.sampleArgs, inputSchema: test.inputSchema } }];"
+      },
+      "id": "build-fix-prompt",
+      "name": "Build Fix Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}"
+      },
+      "id": "fix-llm",
+      "name": "Fix LLM",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        2592,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-opus-4.6"
+      },
+      "id": "fix-model",
+      "name": "Fix Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2664,
+        44
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const llmOutput = $input.first().json.text || '';\nconst meta = $('Build Fix Prompt').first().json;\nconst apiKey = process.env.N8N_API_KEY || '';\nconst baseUrl = (process.env.N8N_INTERNAL_URL || 'http://127.0.0.1:5678').replace(/\\/$/, '');\nlet newJsCode = (llmOutput || '').trim().replace(/^```(javascript|js)?\\n?/, '').replace(/\\n?```$/, '').trim();\nif (!newJsCode) return [{ json: { success: false, error: 'LLM returned an empty fix', workflowId: meta.workflowId, path: meta.path, fixApplied: false } }];\nconst workflow = await helpers.httpRequest({\n  method: 'GET',\n  url: `${baseUrl}/api/v1/workflows/${meta.workflowId}`,\n  headers: { 'X-N8N-API-KEY': apiKey, 'Content-Type': 'application/json' }\n});\nconst nodes = workflow.nodes.map((node) => {\n  if (node.parameters && node.parameters.name === meta.toolName) {\n    node.parameters.jsCode = newJsCode;\n    node.parameters.specifyInputSchema = false;\n  }\n  return node;\n});\nawait helpers.httpRequest({\n  method: 'PUT',\n  url: `${baseUrl}/api/v1/workflows/${meta.workflowId}`,\n  headers: { 'X-N8N-API-KEY': apiKey, 'Content-Type': 'application/json' },\n  body: JSON.stringify({ name: workflow.name, nodes, connections: workflow.connections, settings: workflow.settings || {} })\n});\nconst mcpUrl = `${baseUrl}/mcp/${meta.path}`;\nlet sampleArgs;\ntry { sampleArgs = JSON.parse(meta.schemaExample || meta.sampleArgs || '{}'); } catch (error) { sampleArgs = {}; }\ntry {\n  const init = await helpers.httpRequest({\n    method: 'POST',\n    url: mcpUrl,\n    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream' },\n    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2024-11-05', capabilities: {}, clientInfo: { name: 'test', version: '1.0' } } }),\n    returnFullResponse: true,\n    encoding: 'utf-8',\n    json: false\n  });\n  const sid = init.headers['mcp-session-id'];\n  if (!sid) return [{ json: { success: false, error: 'No session ID after fix', fixApplied: true, workflowId: meta.workflowId, path: meta.path, toolName: meta.toolName } }];\n  await helpers.httpRequest({ method: 'POST', url: mcpUrl, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream', 'mcp-session-id': sid }, body: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }), json: false });\n  const resp = await helpers.httpRequest({ method: 'POST', url: mcpUrl, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream', 'mcp-session-id': sid }, body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: meta.toolName, arguments: sampleArgs } }), json: false });\n  const dataLine = String(resp).split('\\n').find((line) => line.startsWith('data: '));\n  if (!dataLine) return [{ json: { success: false, error: 'No data after fix', fixApplied: true, workflowId: meta.workflowId, path: meta.path, toolName: meta.toolName } }];\n  const result = JSON.parse(dataLine.substring(6));\n  const content = result.result?.content?.[0]?.text || '';\n  const ok = !content.startsWith('Error:') && !result.error;\n  return [{ json: { success: ok, response: content, fixApplied: true, workflowId: meta.workflowId, path: meta.path, toolName: meta.toolName } }];\n} catch (error) {\n  return [{ json: { success: false, error: 'Retest: ' + error.message, fixApplied: true, workflowId: meta.workflowId, path: meta.path, toolName: meta.toolName } }];\n}"
+      },
+      "id": "patch-retest",
+      "name": "Patch & Retest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2944,
+        -180
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const mcpCreated = $('Create MCP Workflow').first().json;\nconst assembled = $('Assemble & Deploy').first().json;\nconst subId = $('Create Sub-Workflow').first().json.id;\nconst testResult = $input.first().json;\nconst publicBaseUrl = (process.env.WEBHOOK_URL || '').replace(/\\/$/, '');\nconst testStatus = testResult.success\n  ? `Self-test passed: ${(testResult.response || '').substring(0, 100)}`\n  : `Self-test failed: ${(testResult.error || '').substring(0, 100)}`;\nreturn [{ json: {\n  response: `MCP server created.\\nMCP Workflow: ${mcpCreated.name} (ID: ${mcpCreated.id})\\nSub-workflow ID: ${subId}\\nMCP path: /mcp/${assembled.path}\\nTool: ${assembled.toolName}\\nURL: ${publicBaseUrl}/mcp/${assembled.path}\\n\\n${testStatus}\\n\\nIf the webhook does not answer immediately, deactivate and reactivate the workflow once in the n8n UI.`,\n  workflow_id: mcpCreated.id,\n  sub_workflow_id: subId,\n  mcp_path: assembled.path,\n  tool_name: assembled.toolName,\n  test_success: testResult.success\n} }];"
+      },
+      "id": "result",
+      "name": "Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        -304
+      ]
+    },
+    {
+      "id": "patch-tool-schema",
+      "name": "Patch Tool Schema",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        -200
+      ],
+      "parameters": {
+        "jsCode": "const subId = $('Create Sub-Workflow').first().json.id;\nconst apiKey = process.env.N8N_API_KEY || '';\nconst baseUrl = (process.env.N8N_INTERNAL_URL || 'http://127.0.0.1:5678').replace(/\\/$/, '');\nawait helpers.httpRequest({\n  method: 'POST',\n  url: `${baseUrl}/api/v1/workflows/${subId}/activate`,\n  headers: { 'X-N8N-API-KEY': apiKey }\n});\nreturn [{ json: { subId, activated: true } }];"
+      }
+    },
+    {
+      "id": "build-mcp-json",
+      "name": "Build MCP JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        0
+      ],
+      "parameters": {
+        "jsCode": "\nconst subId = $('Create Sub-Workflow').first().json.id;\nconst assembled = $('Assemble & Deploy').first().json;\nconst toolName = assembled.toolName;\nconst description = assembled.description;\nconst serverName = assembled.serverName;\nconst path = assembled.path;\nconst workflowInputsValue = JSON.parse(assembled.workflowInputsValue || '{}');\nconst workflowInputsSchema = JSON.parse(assembled.workflowInputsSchema || '[]');\n\nconst mcpWorkflow = {\n  name: 'MCP: ' + serverName,\n  settings: {},\n  nodes: [\n    {\n      id: 'mcp-trigger',\n      name: 'MCP Server Trigger',\n      type: '@n8n/n8n-nodes-langchain.mcpTrigger',\n      typeVersion: 2,\n      position: [0, 0],\n      parameters: {path: path, authentication: 'none'}\n    },\n    {\n      id: 'tool-wf',\n      name: toolName,\n      type: '@n8n/n8n-nodes-langchain.toolWorkflow',\n      typeVersion: 2.2,\n      position: [0, 300],\n      parameters: {\n        name: toolName,\n        description: description,\n        workflowId: {__rl: true, value: subId, mode: 'id'},\n        workflowInputs: {\n          mappingMode: 'defineBelow',\n          value: workflowInputsValue,\n          matchingColumns: [],\n          schema: workflowInputsSchema,\n          attemptToConvertTypes: false,\n          convertFieldsToString: false\n        }\n      }\n    }\n  ],\n  connections: {}\n};\nmcpWorkflow.connections[toolName] = {ai_tool: [[{node: 'MCP Server Trigger', type: 'ai_tool', index: 0}]]};\n\nreturn [{json: {mcpWorkflowJson: JSON.stringify(mcpWorkflow), subId, toolName, path, serverName}}];\n"
+      }
+    }
+  ],
+  "id": "openclaw-mcp-builder"
+}

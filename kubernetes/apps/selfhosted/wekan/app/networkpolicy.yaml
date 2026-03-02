@@ -15,6 +15,9 @@ spec:
             app.kubernetes.io/name: n8n
             k8s:io.kubernetes.pod.namespace: selfhosted
         - matchLabels:
+            app.kubernetes.io/name: openclaw
+            k8s:io.kubernetes.pod.namespace: selfhosted
+        - matchLabels:
             app.kubernetes.io/name: metamcp
             k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:

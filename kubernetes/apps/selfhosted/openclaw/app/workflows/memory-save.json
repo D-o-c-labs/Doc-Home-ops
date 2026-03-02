@@ -1,0 +1,108 @@
+{
+  "id": "openclaw-memory-save",
+  "name": "🧠 Memory Save",
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Normalize Memory Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Memory Input": {
+      "main": [
+        [
+          {
+            "node": "Insert Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Memory": {
+      "main": [
+        [
+          {
+            "node": "Memory Save Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "memory-save-start",
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json; let input; try { input = JSON.parse(raw.query || '{}'); } catch (error) { input = { content: raw.query || raw.content || '' }; } const content = String(input.content || raw.content || raw.query || '').trim(); const category = String(input.category || raw.category || 'general'); const importance = Math.max(1, Math.min(10, Number(input.importance || raw.importance || 5))); return [{ json: { content, category, importance, contentEscaped: content.replace(/'/g, \"''\"), categoryEscaped: category.replace(/'/g, \"''\") } }];"
+      },
+      "id": "memory-save-normalize",
+      "name": "Normalize Memory Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO memory_long (content, category, importance, metadata) VALUES ('{{ $json.contentEscaped }}', '{{ $json.categoryEscaped }}', {{ $json.importance }}, '{\"source\":\"openclaw\"}'::jsonb) RETURNING content, category, importance",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "id": "memory-save-db",
+      "name": "Insert Memory",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        448,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Openclaw Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const saved = $input.first().json; return [{ json: { result: `Saved memory in category ${saved.category || 'general'}.` } }];"
+      },
+      "id": "memory-save-result",
+      "name": "Memory Save Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ]
+    }
+  ]
+}
