@@ -29,9 +29,10 @@ _render-ks dir ns_flag name:
     ns_args="--all-namespaces"
   fi
 
-  command -v flux-local >/dev/null || { echo 'flux-local not found in PATH' >&2; exit 1; }
   command -v yq >/dev/null || { echo 'yq not found in PATH' >&2; exit 1; }
 
+  repo_root="{{ justfile_dir() }}"
+  workspace_parent="$(dirname "$repo_root")"
   tmp_root="{{ kubernetes_dir }}/.tmp/flux-local"
   mkdir -p "$tmp_root"
   tmp_dir="$(mktemp -d -p "$tmp_root")"
@@ -50,7 +51,92 @@ _render-ks dir ns_flag name:
     exit 1
   fi
 
-  flux-local build ks ${ns_args:+$ns_args} --path "$tmp_dir" ${name_arg:+$name_arg} --output-file "$out_file"
+  source_repo_file="$dir_path/source/gitrepository.yaml"
+  if [[ -f "$source_repo_file" ]]; then
+    command -v flux >/dev/null || { echo 'flux CLI not found in PATH' >&2; exit 1; }
+    repo_name="$(yq e '.metadata.name // ""' "$source_repo_file")"
+    repo_namespace="$(NAMESPACE="$namespace" yq e '.metadata.namespace // strenv(NAMESPACE)' "$source_repo_file")"
+    repo_url="$(yq e '.spec.url // ""' "$source_repo_file")"
+    repo_dir="$workspace_parent/$(basename "${repo_url%.git}")"
+    repo_render_dir="$tmp_dir/source-$repo_name"
+    if [[ -z "$repo_name" || -z "$repo_namespace" || -z "$repo_url" ]]; then
+      printf 'unable to derive GitRepository metadata from %s\n' "$source_repo_file" >&2
+      exit 1
+    fi
+    if [[ ! -d "$repo_dir/.git" ]]; then
+      printf 'unable to locate local checkout for GitRepository/%s/%s at %s\n' "$repo_namespace" "$repo_name" "$repo_dir" >&2
+      exit 1
+    fi
+    mkdir -p "$repo_render_dir"
+    cp -R "$repo_dir"/. "$repo_render_dir"
+
+    doc_max="$(yq e 'document_index' "$tmp_dir/ks.yaml" | tail -n1)"
+    : > "$out_file"
+    rendered=0
+
+    for idx in $(seq 0 "$doc_max"); do
+      doc_kind="$(yq e "select(document_index == $idx) | .kind // \"\"" "$tmp_dir/ks.yaml")"
+      [[ "$doc_kind" == "Kustomization" ]] || continue
+
+      doc_name="$(yq e "select(document_index == $idx) | .metadata.name // \"\"" "$tmp_dir/ks.yaml")"
+      if [[ -n "$name_arg" && "$doc_name" != "$name_arg" ]]; then
+        continue
+      fi
+
+      doc_file="$tmp_dir/ks-$idx.yaml"
+      yq e "select(document_index == $idx)" "$tmp_dir/ks.yaml" > "$doc_file"
+
+      doc_source_name="$(yq e '.spec.sourceRef.name // ""' "$doc_file")"
+      doc_source_namespace="$(NAMESPACE="$namespace" yq e '.spec.sourceRef.namespace // strenv(NAMESPACE)' "$doc_file")"
+      doc_path="$(yq e '.spec.path // "./"' "$doc_file")"
+      doc_path="${doc_path#./}"
+
+      if [[ "$doc_source_name" == "flux-system" && "$doc_source_namespace" == "flux-system" ]]; then
+        build_path="$repo_root/${doc_path}"
+      elif [[ "$doc_source_name" == "$repo_name" && "$doc_source_namespace" == "$repo_namespace" ]]; then
+        build_path="$repo_render_dir/${doc_path}"
+      else
+        printf 'unable to map sourceRef %s/%s for %s\n' "$doc_source_namespace" "$doc_source_name" "$doc_name" >&2
+        exit 1
+      fi
+
+      if [[ ! -d "$build_path" ]]; then
+        printf 'unable to locate manifests path for %s: %s\n' "$doc_name" "$build_path" >&2
+        exit 1
+      fi
+
+      flux_cmd=(flux build kustomization "$doc_name" --dry-run --namespace "$namespace" --path "$build_path" --kustomization-file "$doc_file")
+      if [[ "$doc_source_name" == "$repo_name" && "$doc_source_namespace" == "$repo_namespace" ]]; then
+        flux_cmd+=(--local-sources "GitRepository/${repo_namespace}/${repo_name}=$repo_render_dir")
+      fi
+
+      if [[ -s "$out_file" ]]; then
+        printf '\n---\n' >> "$out_file"
+      fi
+
+      "${flux_cmd[@]}" >> "$out_file"
+      rendered=1
+    done
+
+    [[ "$rendered" -eq 1 ]] || { printf 'no Kustomization matched in %s\n' "$tmp_dir/ks.yaml" >&2; exit 1; }
+    cat "$out_file"
+    exit 0
+  fi
+
+  command -v flux-local >/dev/null || { echo 'flux-local not found in PATH' >&2; exit 1; }
+
+  cmd=(flux-local build ks)
+  if [[ -n "$ns_args" ]]; then
+    read -r -a ns_tokens <<< "$ns_args"
+    cmd+=("${ns_tokens[@]}")
+  fi
+  cmd+=(--path "$tmp_dir")
+  if [[ -n "$name_arg" ]]; then
+    cmd+=("$name_arg")
+  fi
+  cmd+=(--output-file "$out_file")
+
+  "${cmd[@]}"
   cat "$out_file"
 
 [doc('Render a Flux Kustomization stack to stdout')]
