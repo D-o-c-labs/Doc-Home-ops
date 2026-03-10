@@ -133,11 +133,6 @@ spec:
         - n8n-knowledge
       password:
         type: AlphaNumeric
-    - name: openclaw
-      databases:
-        - openclaw
-      password:
-        type: AlphaNumeric
     - name: rvn
       databases:
         - rvn

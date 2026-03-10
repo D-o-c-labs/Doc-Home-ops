@@ -10,22 +10,14 @@ spec:
       app.kubernetes.io/name: metamcp
       k8s:io.kubernetes.pod.namespace: selfhosted
   ingress:
-    # n8n
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: n8n
             k8s:io.kubernetes.pod.namespace: selfhosted
-      toPorts:
-        - ports:
-            - port: "12008"
-              protocol: TCP
-  egress:
-    # wekan
-    - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: wekan
+            app.kubernetes.io/name: openclaw
             k8s:io.kubernetes.pod.namespace: selfhosted
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "12008"
               protocol: TCP
