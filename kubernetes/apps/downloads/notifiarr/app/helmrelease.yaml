@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: golift/notifiarr
-              tag: v0.9.4
+              tag: v0.9.5
 
             env:
               DN_API_KEY:
