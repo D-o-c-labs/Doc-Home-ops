@@ -111,3 +111,12 @@ spec:
         - ports:
             - port: "8123"
               protocol: TCP
+    # openclaw
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: openclaw
+            k8s:io.kubernetes.pod.namespace: selfhosted
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
