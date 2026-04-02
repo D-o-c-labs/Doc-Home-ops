@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/oss-apps/splitpro
-              tag: v2.0.1@sha256:1adc9547d306cbed247d634832e18c22d67e36af125b64742516c824609a34b2
+              tag: v2.0.3@sha256:6e3cbc88dbd4c1b64dcb39b1c24ae8da71c8a475f1e012345da1d1ed0dd2cbe9
             env:
               HOSTNAME: 0.0.0.0
               NEXTAUTH_URL: https://${HOSTNAME}
