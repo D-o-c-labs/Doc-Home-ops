@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: rhasspy/wyoming-speech-to-phrase
-              tag: 1.4.1@sha256:74b3866bceb708d5ee7706ee564f80067128fdab389002db6bb9c0d9bd5311e9
+              tag: 1.4.3@sha256:e532f0dbc6b21285c4c784212003865b9167041927328a767cb0beb1a0beaa20
             # --hass-websocket-uri can be ws:// for in-cluster or wss:// for TLS.
             args:
               - --uri
