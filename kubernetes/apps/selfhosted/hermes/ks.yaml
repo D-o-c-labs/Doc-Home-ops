@@ -35,6 +35,32 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: honcho
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: honcho
+  interval: 30m
+  timeout: 5m
+  path: "./hermes/honcho"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: openclaw
+    namespace: selfhosted
+  wait: false
+  dependsOn:
+    - name: openclaw-source
+      namespace: selfhosted
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: crunchy-postgres-operator-cluster
+      namespace: database
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: &appname hermes
 spec:
   commonMetadata:
@@ -42,7 +68,7 @@ spec:
       app.kubernetes.io/name: *appname
   interval: 30m
   timeout: 5m
-  path: "./app"
+  path: "./hermes/app"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -53,6 +79,8 @@ spec:
     - name: openclaw-source
       namespace: selfhosted
     - name: hermes-volsync
+      namespace: selfhosted
+    - name: honcho
       namespace: selfhosted
     - name: onepassword-store
       namespace: external-secrets
