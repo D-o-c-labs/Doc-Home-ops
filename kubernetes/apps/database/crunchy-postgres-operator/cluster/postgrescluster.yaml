@@ -108,6 +108,11 @@ spec:
         - metamcp
       password:
         type: AlphaNumeric
+    - name: honcho
+      databases:
+        - honcho
+      password:
+        type: AlphaNumeric
     - name: tandoor
       databases:
         - tandoor
