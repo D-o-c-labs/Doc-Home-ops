@@ -21,6 +21,7 @@ spec:
         replicas: 2
 
         pod:
+          automountServiceAccountToken: true
           securityContext:
             runAsNonRoot: true
             runAsUser: 65534
