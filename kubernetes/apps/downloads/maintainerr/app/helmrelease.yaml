@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s-labs
@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/maintainerr/maintainerr
-              tag: 3.4.1@sha256:6d454b8a5dc5eaeec869d60d0e6da4d1e9fca13f102aa6914421a714a158f2c0
+              tag: 3.11.0@sha256:64180be4ceb4e64cba2c1087ef5183192759277923f1d2ab467b03d958b29408
 
             resources:
               requests:

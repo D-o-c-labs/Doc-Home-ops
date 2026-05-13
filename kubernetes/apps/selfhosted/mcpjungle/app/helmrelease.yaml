@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s-labs
@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mcpjungle/mcpjungle
-              tag: 0.3.7-stdio@sha256:3793e0b522e9f8e014a7ef86b4f4515b4ab1b563d248af676b39234498858ed5
+              tag: 0.4.3-stdio@sha256:b57196aa951d91b6dc5f2d88411522cbae905863b837f5805917e0675560f136
             env:
               SERVER_MODE: enterprise
             envFrom:
