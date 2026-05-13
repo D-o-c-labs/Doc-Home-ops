@@ -23,7 +23,7 @@ spec:
           download-models:
             image:
               repository: curlimages/curl
-              tag: 8.19.0@sha256:b066cbf876d50a5d024927878a586c4a39c985325ded195e2e231f4abdddf3c8
+              tag: 8.19.0@sha256:c03110c736db81bbe1be0296f1f1608c81b954b01626bdfb0a8f84e5bd00ff3c
             securityContext:
               runAsUser: 0 # needs write access to the models PVC
               runAsGroup: 0
