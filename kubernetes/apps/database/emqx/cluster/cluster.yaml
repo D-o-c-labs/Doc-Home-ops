@@ -1,11 +1,11 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/apps.emqx.io/emqx_v2beta1.json
-apiVersion: apps.emqx.io/v2beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/apps.emqx.io/emqx_v2.json
+apiVersion: apps.emqx.io/v2
 kind: EMQX
 metadata:
   name: emqx
 spec:
-  image: public.ecr.aws/emqx/emqx:5.8.9
+  image: emqx/emqx:5.10.3
   config:
     data: |
       authentication {
@@ -36,7 +36,9 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
-      replicas: 2
+      # EMQX 5.9+ requires a license for clustered deployments.
+      # Keep a single core until a license secret is wired into the cluster.
+      replicas: 1
       envFrom:
         - secretRef:
             name: emqx-secret
@@ -59,4 +61,7 @@ spec:
         external-dns.alpha.kubernetes.io/hostname: "mqtt.piscio.net"
         lbipam.cilium.io/ips: 192.168.32.156
     spec:
+      # Keep listener endpoints published during broker rebuilds so clients can
+      # reconnect as soon as a new pod is accepting MQTT.
+      publishNotReadyAddresses: true
       type: LoadBalancer
