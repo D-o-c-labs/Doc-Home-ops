@@ -1,0 +1,8 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "github>home-operations/renovate-presets//managers/oci.json5#2.0.0",
+    "github>D-o-c-labs/Doc-Home-ops//.renovate/grafanaDashboards.json5",
+    "github>home-operations/renovate-presets//managers/talosFactory.json5#2.0.0",
+  ],
+}
