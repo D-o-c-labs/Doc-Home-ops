@@ -14,6 +14,8 @@ spec:
         kind: HelmRepository
         name: ceph-csi-operator
       interval: 30m
+  driftDetection:
+    mode: enabled
   values:
     operatorConfig:
       namespace: rook-ceph
