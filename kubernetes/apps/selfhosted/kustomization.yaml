@@ -6,6 +6,7 @@ namespace: selfhosted
 resources:
   - ./actual-budget/ks.yaml
   - ./firefox/ks.yaml
+  - ./fork-democracy/ks.yaml
   - ./ghostfolio/ks.yaml
   # - ./hermes/ks.yaml
   - ./n8n/ks.yaml

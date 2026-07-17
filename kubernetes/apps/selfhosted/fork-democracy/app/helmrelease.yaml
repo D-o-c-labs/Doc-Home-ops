@@ -1,0 +1,166 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: fork-democracy
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  values:
+    controllers:
+      fork-democracy:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow
+            ingress.home.arpa/gateway-route: allow
+          securityContext:
+            runAsUser: "${APP_UID}"
+            runAsGroup: "${APP_GID}"
+            fsGroup: "${APP_GID}"
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/astral-sh/uv
+              tag: python3.13-bookworm-slim@sha256:531f855bda2c73cd6ef67d56b733b357cea384185b3022bd09f05e002cd144ca
+              pullPolicy: IfNotPresent
+
+            command:
+              - /bin/sh
+            args:
+              - /runtime-source/bootstrap.sh
+
+            env:
+              FORK_DEMOCRACY_CONFIG: /config/config.yaml
+              FORK_DEMOCRACY_IDENTITIES: /secrets/identities.yaml
+              FORK_DEMOCRACY_DATABASE_PATH: /data/fork-democracy.sqlite3
+              FORK_DEMOCRACY_BACKUP_DIR: /data/backups
+              FORK_DEMOCRACY_TELEGRAM_MODE: webhook
+              FORK_DEMOCRACY_PUBLIC_BASE_URL: https://${HOSTNAME}
+              FORK_DEMOCRACY_HOST: 0.0.0.0
+              FORK_DEMOCRACY_PORT: &port 8080
+              TELEGRAM_BOT_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: fork-democracy-secret
+                    key: TELEGRAM_BOT_TOKEN
+              TELEGRAM_WEBHOOK_SECRET_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: fork-democracy-secret
+                    key: TELEGRAM_WEBHOOK_SECRET_TOKEN
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 60
+
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 768Mi
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: fork-democracy
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      runtime-source:
+        type: configMap
+        name: fork-democracy-runtime
+        globalMounts:
+          - path: /runtime-source
+            readOnly: true
+      config:
+        type: configMap
+        name: fork-democracy-config
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      secrets:
+        type: secret
+        name: fork-democracy-secret
+        globalMounts:
+          - path: /secrets/identities.yaml
+            subPath: identities.yaml
+            readOnly: true
+      data:
+        existingClaim: "${VOLSYNC_CLAIM}"
+        globalMounts:
+          - path: /data
+      work:
+        type: emptyDir
+        globalMounts:
+          - path: /work
+
+    route:
+      app:
+        hostnames:
+          - ${HOSTNAME}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - matches:
+              - path:
+                  type: Exact
+                  value: /telegram/webhook
+            backendRefs:
+              - name: fork-democracy
+                port: *port

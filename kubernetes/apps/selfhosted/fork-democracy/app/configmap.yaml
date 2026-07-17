@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fork-democracy-config
+data:
+  config.yaml: |
+    app:
+      language: en
+      timezone: Europe/Rome
+
+    runtime:
+      database_path: /data/fork-democracy.sqlite3
+      backup_dir: /data/backups
+      source_mode: configmap
+
+    telegram:
+      mode: webhook
+      webhook_path: /telegram/webhook
+      public_base_url: https://${HOSTNAME}
+
+    policy:
+      monthly_veto_allowance: 1
+      voting_window_hours: 3
+
+    selection:
+      sigmoid_steepness: 1.0
+      vote_midpoint: 0.0
+      preference_weight: 0.5
+      recency_weight: 0.5
+      recency_max_age_days: 183
+      minimum_selection_weight: 0.05
+
+    retention:
+      detailed_event_days: 365
+
+    backup:
+      enabled: true
+      schedule_hour: 3
+      retain_count: 30

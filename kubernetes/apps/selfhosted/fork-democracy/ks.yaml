@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: fork-democracy-source
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: fork-democracy
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/fork-democracy/source"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: true
+  healthChecks:
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: GitRepository
+      name: fork-democracy
+      namespace: selfhosted
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: fork-democracy-runtime
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: fork-democracy
+  interval: 30m
+  timeout: 5m
+  path: "./deploy/runtime-configmap"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: fork-democracy
+    namespace: selfhosted
+  targetNamespace: selfhosted
+  wait: true
+  dependsOn:
+    - name: fork-democracy-source
+      namespace: selfhosted
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname fork-democracy
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/selfhosted/fork-democracy/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: fork-democracy-runtime
+      namespace: selfhosted
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: volsync
+      namespace: system
+  components:
+    - ../../../../components/volsync
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: fork.piscio.net
+      APP_UID: "2000"
+      APP_GID: "2000"
+      VOLSYNC_CLAIM: fork-democracy-data
+      VOLSYNC_CAPACITY: 1Gi
