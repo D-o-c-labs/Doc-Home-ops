@@ -137,8 +137,9 @@ spec:
         resources:
           requests:
             cpu: 100m
+            memory: 2Gi
           limits:
-            memory: 2000M
+            memory: 4Gi
         retention: 14d
         retentionSize: 50GB
         ruleSelectorNilUsesHelmValues: false
