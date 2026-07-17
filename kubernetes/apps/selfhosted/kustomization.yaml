@@ -13,7 +13,6 @@ resources:
   - ./splitpro/ks.yaml
   - ./mealie/ks.yaml
   - ./metamcp/ks.yaml
-  - ./mcpjungle/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
