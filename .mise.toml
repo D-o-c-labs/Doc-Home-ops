@@ -1,5 +1,7 @@
 [settings]
-pipx_uvx = true
+
+[settings.pipx]
+uvx = true
 
 [env]
 JUST_UNSTABLE = "1"

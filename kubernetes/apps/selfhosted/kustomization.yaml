@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: selfhosted
 resources:
   - ./actual-budget/ks.yaml
-  - ./firefox/ks.yaml
+  # - ./fork-democracy/ks.yaml
   - ./ghostfolio/ks.yaml
   # - ./hermes/ks.yaml
   - ./n8n/ks.yaml
@@ -13,7 +13,6 @@ resources:
   - ./splitpro/ks.yaml
   - ./mealie/ks.yaml
   - ./metamcp/ks.yaml
-  - ./mcpjungle/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts

@@ -83,7 +83,8 @@ jobs:
         uses: bjw-s-labs/action-changed-files@a9a36fb08ce06db9b02fbd8026cc2c0945eb9841 # v0.6.0
         with:
           patterns: |-
-            **/*.md
+            *.md
+            !(.agents)/**/*.md
 
       - name: Run markdownlint-cli2
         if: steps.changed-files.outputs.changed_files != '[]'

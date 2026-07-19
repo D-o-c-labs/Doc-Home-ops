@@ -3,7 +3,8 @@ fail_fast: false
 
 exclude: |
   (?x)^(
-      docs/_assets/.*
+      \.agents/.*
+    | docs/_assets/.*
     | .*\.sops\.toml
   )$
 
