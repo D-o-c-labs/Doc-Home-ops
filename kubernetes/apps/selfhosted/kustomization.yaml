@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: selfhosted
 resources:
   - ./actual-budget/ks.yaml
-  - ./fork-democracy/ks.yaml
+  # - ./fork-democracy/ks.yaml
   - ./ghostfolio/ks.yaml
   # - ./hermes/ks.yaml
   - ./n8n/ks.yaml
