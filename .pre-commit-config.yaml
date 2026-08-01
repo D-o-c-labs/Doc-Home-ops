@@ -48,7 +48,7 @@ repos:
         entry: prettier --write
         language: node
         additional_dependencies:
-          - prettier@3.9.5
+          - prettier@3.9.6
         files: \.(json5?|ya?ml|md|markdown)$
         exclude: |
           (?x)^(
