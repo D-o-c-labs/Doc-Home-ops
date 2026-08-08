@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/maintainerr/maintainerr
-              tag: 3.17.1@sha256:95e429451ea45380430d260450ab301eed9ce91fbcba5f94cf8507bd0bac0d08
+              tag: 3.22.0@sha256:19692312e2dfd49dfb6de53bf82c320d62d04c8174b8db2413c953c85b48a876
 
             resources:
               requests:
