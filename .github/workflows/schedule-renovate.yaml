@@ -15,7 +15,7 @@ on:
         required: false
       logLevel:
         description: "Log-Level"
-        default: "debug"
+        default: "info"
         required: false
   schedule:
     - cron: "0 * * * *"
@@ -41,7 +41,7 @@ jobs:
       - name: Renovate
         uses: renovatebot/github-action@22e0a16091fc706b04affe6ae53d5e3358ac4023 # v46.1.19
         env:
-          LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
+          LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun == true }}
           RENOVATE_AUTODISCOVER: true
           RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository_owner }}/${{ inputs.autodiscover_filter || '*' }}
