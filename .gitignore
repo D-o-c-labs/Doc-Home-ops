@@ -30,3 +30,7 @@ talosconfig
 .aider*
 
 !AGENTS.md
+!CLAUDE.md
+!.claude/
+.claude/*
+!.claude/skills/

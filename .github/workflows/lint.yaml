@@ -106,13 +106,22 @@ jobs:
         id: changed-files
         uses: bjw-s-labs/action-changed-files@147be9638332cf68fd60714a610509d7a9360d60 # v0.7.0
 
+      # Prettier rejects symlinks passed explicitly (e.g. .claude/skills/*), even when ignored
+      - name: Drop symlinks
+        id: files
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.changed_files }}
+        run: |
+          files=$(jq -r '.[]' <<<"$CHANGED_FILES" | while IFS= read -r f; do [ -L "$f" ] || printf '%s\n' "$f"; done | jq -Rsc 'split("\n") | map(select(length > 0))')
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+
       - name: Run prettier
-        if: steps.changed-files.outputs.changed_files != '[]'
+        if: steps.files.outputs.files != '[]'
         uses: bjw-s/action-prettier-lint@1014e6a3453ff28a8b746715f44a75306d223266 # v0.1.1
         with:
           prettier_ignore: .prettierignore
           prettier_config: .prettierrc.yaml
-          file_pattern: ${{ join(fromJSON(steps.changed-files.outputs.changed_files), ' ') }}
+          file_pattern: ${{ join(fromJSON(steps.files.outputs.files), ' ') }}
 
   lint_success:
     needs:
