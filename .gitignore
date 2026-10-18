@@ -31,3 +31,6 @@ talosconfig
 
 !AGENTS.md
 !CLAUDE.md
+!.claude/
+.claude/*
+!.claude/skills/
