@@ -9,7 +9,7 @@ resources:
   - ./ghostfolio/ks.yaml
   # - ./hermes/ks.yaml
   - ./n8n/ks.yaml
-  - ./openclaw/ks.yaml
+  # - ./openclaw/ks.yaml
   - ./splitpro/ks.yaml
   - ./mealie/ks.yaml
   - ./metamcp/ks.yaml
