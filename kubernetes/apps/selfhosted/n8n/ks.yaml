@@ -30,6 +30,7 @@ spec:
     substitute:
       APP: *appname
       HOSTNAME: n8n.piscio.net
+      EDITOR_HOSTNAME: n8n-editor.piscio.net
       APP_UID: "1000"
       APP_GID: "1000"
       VOLSYNC_CLAIM: n8n-config

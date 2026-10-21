@@ -41,7 +41,8 @@ spec:
               repository: n8nio/n8n
               tag: 2.30.4@sha256:d1606a508b1e426de07a98fa10f3758ef474b17590c6f181a0dd38c999f819d0
             env:
-              VUE_APP_URL_BASE_API: "https://${HOSTNAME}"
+              N8N_EDITOR_BASE_URL: "https://${EDITOR_HOSTNAME}"
+              VUE_APP_URL_BASE_API: "https://${EDITOR_HOSTNAME}"
               WEBHOOK_URL: "https://${HOSTNAME}"
               N8N_METRICS: "true"
               NODE_ENV: "production"
@@ -92,11 +93,42 @@ spec:
                 readOnly: false
 
     route:
+      # Public: only webhook and form endpoints. The editor, REST API and /metrics stay on the LAN.
       app:
         hostnames:
           - ${HOSTNAME}
         parentRefs:
           - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /webhook
+              - path:
+                  type: PathPrefix
+                  value: /webhook-test
+              - path:
+                  type: PathPrefix
+                  value: /webhook-waiting
+              - path:
+                  type: PathPrefix
+                  value: /form
+              - path:
+                  type: PathPrefix
+                  value: /form-test
+              - path:
+                  type: PathPrefix
+                  value: /form-waiting
+            backendRefs:
+              - name: n8n
+                port: *port
+      editor:
+        hostnames:
+          - ${EDITOR_HOSTNAME}
+        parentRefs:
+          - name: envoy-internal
             namespace: network
             sectionName: https
         rules:
