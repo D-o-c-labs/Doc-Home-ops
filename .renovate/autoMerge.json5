@@ -15,6 +15,7 @@
         "ghcr.io/flaresolverr/flaresolverr",
         "ghcr.io/esphome/esphome",
         "docker.io/cloudflare/cloudflared",
+        "ghcr.io/home-operations/actions-runner",
       ],
       ignoreTests: true,
     },
