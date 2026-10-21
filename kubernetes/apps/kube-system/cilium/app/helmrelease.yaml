@@ -67,6 +67,10 @@ spec:
         prometheus:
           serviceMonitor:
             enabled: true
+      tls:
+        auto:
+          # helm method reuses existing certs via lookup and never renews them
+          method: cronJob
       ui:
         enabled: true
         rollOutPods: true
