@@ -23,3 +23,5 @@ spec:
     pruneIntervalDays: 14
     retain:
       daily: 14
+      weekly: 4
+      monthly: 3

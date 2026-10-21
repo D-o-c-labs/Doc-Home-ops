@@ -5,5 +5,3 @@ kind: Kustomization
 resources:
   - ./ocirepository.yaml
   - ./doc-labs.yaml
-  - ./doc-labs-home-ops.yaml
-  - ./rbac.yaml

@@ -82,10 +82,13 @@ jobs:
     steps:
       - name: Compare Images
         id: compare-images
+        env:
+          DEFAULT_IMAGES: ${{ needs.extract-images.outputs.default }}
+          PULL_IMAGES: ${{ needs.extract-images.outputs.pull }}
         run: |
           images=$(jq --compact-output --null-input \
-              --argjson f1 '${{ needs.extract-images.outputs.default }}' \
-              --argjson f2 '${{ needs.extract-images.outputs.pull }}' \
+              --argjson f1 "${DEFAULT_IMAGES}" \
+              --argjson f2 "${PULL_IMAGES}" \
               '$f2 - $f1' \
           )
           echo "images=${images}" >> "${GITHUB_OUTPUT}"
@@ -117,7 +120,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          case "${{ matrix.image }}" in
+          case "${MATRIX_IMAGE}" in
             *home-operations*)
               gh attestation verify --owner home-operations oci://"${MATRIX_IMAGE}" ;;
             *bjw-s-labs*)
