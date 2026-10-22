@@ -6,3 +6,13 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./pvc.yaml
+configMapGenerator:
+  - name: home-assistant-git-sync
+    files:
+      - git-sync/known_hosts
+      - git-sync/sync.sh
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+configurations:
+  - kustomizeconfig.yaml
