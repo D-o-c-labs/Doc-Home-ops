@@ -120,6 +120,39 @@ spec:
               limits:
                 memory: 1Gi
 
+          # Two-way sync of /config with GitHub; see git-sync/sync.sh.
+          git-sync:
+            image:
+              repository: docker.io/alpine/git
+              tag: v2.52.0@sha256:4a0e72d49596a1f5d3701aeedafdadc5c0da4062be4657c7bdc4017387f591cc
+            command:
+              - /bin/sh
+              - /etc/git-sync/sync.sh
+            env:
+              GIT_REMOTE_URL: git@github.com:D-o-c/Home-Assistant.git
+              GIT_BRANCH: master
+              GIT_AUTHOR_NAME: &gitName Home Assistant
+              GIT_AUTHOR_EMAIL: &gitEmail 8810257+D-o-c@users.noreply.github.com
+              GIT_COMMITTER_NAME: *gitName
+              GIT_COMMITTER_EMAIL: *gitEmail
+              HASS_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: homeassistant-secrets
+                    key: LLToken
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
     service:
       app:
         controller: home-assistant
@@ -139,6 +172,25 @@ spec:
               - path: /config
             code-server:
               - path: /config
+            git-sync:
+              - path: /config
+      git-sync:
+        type: configMap
+        name: home-assistant-git-sync
+        advancedMounts:
+          home-assistant:
+            git-sync:
+              - path: /etc/git-sync
+                readOnly: true
+      deploy-key:
+        type: secret
+        name: home-assistant-deploykey
+        defaultMode: 288 # 0440: readable through fsGroup; sync.sh copies it to 0600
+        advancedMounts:
+          home-assistant:
+            git-sync:
+              - path: /secrets/ssh
+                readOnly: true
       hass-cache:
         existingClaim: hass-cache
         advancedMounts:
@@ -158,6 +210,9 @@ spec:
                 subPath: code-server-tmp
               - path: /nonexistent
                 subPath: nonexistent
+            git-sync:
+              - path: /tmp
+                subPath: git-sync-tmp
 
     route:
       app:
