@@ -35,8 +35,8 @@ just volsync restore app=<app> ns=<namespace> previous=<snapshot-timestamp>
 For Crunchy Postgres:
 
 ```bash
-just postgres crunchy-dump db_name=<db> ns=<namespace>
-just postgres crunchy-restore db_name=<db> db_user=<user> file=<backup-file>
+just postgres crunchy-dump <db> [output_dir]
+just postgres crunchy-restore <db> <user> <backup-file>
 ```
 
 ## Verification

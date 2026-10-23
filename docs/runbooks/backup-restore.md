@@ -32,14 +32,16 @@ just volsync restore app=<app> ns=<namespace> previous=<snapshot-timestamp>
 
 Dump a database from Crunchy Postgres:
 
+Arguments are positional; the namespace and cluster default to `database`/`postgres`. The dump is written as `<output_dir>/<db>.psql` with mode 600 because it contains credentials and secrets.
+
 ```bash
-just postgres crunchy-dump db_name=<db> ns=<namespace>
+just postgres crunchy-dump <db> [output_dir]
 ```
 
 Restore a dump:
 
 ```bash
-just postgres crunchy-restore db_name=<db> db_user=<user> file=<backup-file>
+just postgres crunchy-restore <db> <user> <backup-file>
 ```
 
 ## Validation
