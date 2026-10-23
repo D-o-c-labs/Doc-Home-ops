@@ -241,6 +241,6 @@ Each `just` module exposes reusable workflows. The examples below assume you are
 
 ### Crunchy Postgres (`just postgres ...`)
 
-- `crunchy-dump`: Run `pg_dump` on the primary and copy it locally (`just postgres crunchy-dump db_name=immich ns=media`).
-- `crunchy-restore`: Upload and restore a backup into the primary pod (`just postgres crunchy-restore db_name=immich db_user=immich file=backups/immich.psql`).
-- `crunchy-exec`: Open an interactive shell in the Crunchy primary (`just postgres crunchy-exec ns=media`).
+- `crunchy-dump`: Run `pg_dump` on the primary and copy it locally (`just postgres crunchy-dump immich [output_dir]`).
+- `crunchy-restore`: Upload and restore a backup into the primary pod (`just postgres crunchy-restore immich immich backups/immich.psql`).
+- `crunchy-exec`: Open an interactive shell in the Crunchy primary (`just postgres crunchy-exec`).

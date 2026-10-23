@@ -104,43 +104,53 @@ pgadmin local_port=pgadmin_port ns=default_ns timeout='5m':
   port_forward_pid=''
   exit "$forward_status"
 
+[private]
+_crunchy-primary ns=default_ns db_cluster=default_cluster:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  primary="$(kubectl get pods --namespace "{{ ns }}" \
+    --selector "postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster={{ db_cluster }}" \
+    --output jsonpath='{.items[0].metadata.name}')"
+  if [[ -z "$primary" ]]; then
+    printf 'no primary pod found for cluster %s in namespace %s\n' "{{ db_cluster }}" "{{ ns }}" >&2
+    exit 1
+  fi
+  printf '%s\n' "$primary"
+
 [doc('Run pg_dump on the master instance of a CrunchyData Postgres cluster')]
-crunchy-dump db_name ns='' db_cluster='' output_dir='.' cli_args='':
-  ns_value="{{ default_ns }}"
-  [[ -n "{{ ns }}" ]] && ns_value="{{ ns }}"
-  cluster_value="{{ default_cluster }}"
-  [[ -n "{{ db_cluster }}" ]] && cluster_value="{{ db_cluster }}"
-  cli_flags="{{ default_cli_args }}"
-  [[ -n "{{ cli_args }}" ]] && cli_flags="{{ cli_args }}"
-  command -v kubectl >/dev/null || { echo 'kubectl is required' >&2; exit 1; }
-  kubectl get pods -n "$ns_value" -l postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster=$cluster_value >/dev/null
-  primary=$(kubectl get pods -n "$ns_value" -l postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster=$cluster_value -o jsonpath='{.items[0].metadata.name}')
-  kubectl exec -it --container database --namespace "$ns_value" "$primary" -- /bin/bash -c "pg_dump --dbname {{ db_name }} ${cli_flags} --file /pgdata/{{ db_name }}.psql"
-  kubectl cp --container database "$ns_value/$primary:/pgdata/{{ db_name }}.psql" "{{ output_dir }}/{{ db_name }}.psql"
-  kubectl exec -it --container database --namespace "$ns_value" "$primary" -- /bin/bash -c 'rm -rf /pgdata/{{ db_name }}.psql'
+crunchy-dump db_name output_dir='.' ns=default_ns db_cluster=default_cluster cli_args=default_cli_args:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  primary="$(just postgres _crunchy-primary "{{ ns }}" "{{ db_cluster }}")"
+  remote="/pgdata/{{ db_name }}.psql"
+  trap 'kubectl exec --container database --namespace "{{ ns }}" "$primary" -- rm -f "$remote"' EXIT
+  kubectl exec --container database --namespace "{{ ns }}" "$primary" -- \
+    pg_dump --dbname "{{ db_name }}" {{ cli_args }} --file "$remote"
+  kubectl cp --container database "{{ ns }}/$primary:$remote" "{{ output_dir }}/{{ db_name }}.psql"
+  chmod 600 "{{ output_dir }}/{{ db_name }}.psql"
 
 [doc('Restore a pg_dump backup into a CrunchyData Postgres cluster')]
-crunchy-restore db_name db_user file ns='' db_cluster='' cli_args='':
+crunchy-restore db_name db_user file ns=default_ns db_cluster=default_cluster cli_args='':
+  #!/usr/bin/env bash
+  set -euo pipefail
   if [[ ! -f "{{ file }}" ]]; then printf 'backup file not found: %s\n' "{{ file }}" >&2; exit 1; fi
-  ns_value="{{ default_ns }}"
-  [[ -n "{{ ns }}" ]] && ns_value="{{ ns }}"
-  cluster_value="{{ default_cluster }}"
-  [[ -n "{{ db_cluster }}" ]] && cluster_value="{{ db_cluster }}"
-  kubectl get pods -n "$ns_value" -l postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster=$cluster_value >/dev/null
-  primary=$(kubectl get pods -n "$ns_value" -l postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster=$cluster_value -o jsonpath='{.items[0].metadata.name}')
+  primary="$(just postgres _crunchy-primary "{{ ns }}" "{{ db_cluster }}")"
   restore_flags="{{ cli_args }}"
-  if [[ -z "$restore_flags" ]]; then restore_flags=$(printf -- '--verbose --format=c --clean --if-exists --no-owner --role %s' "{{ db_user }}"); fi
-  kubectl cp --container database "{{ file }}" "$ns_value/$primary:/pgdata/restore-{{ db_name }}.psql"
-  kubectl exec -it --container database --namespace "$ns_value" "$primary" -- /bin/bash -c 'echo "ALTER DATABASE \"{{ db_name }}\" OWNER TO \"{{ db_user }}\";" | psql'
-  kubectl exec -it --container database --namespace "$ns_value" "$primary" -- /bin/bash -c "pg_restore --dbname {{ db_name }} ${restore_flags} /pgdata/restore-{{ db_name }}.psql"
-  kubectl exec -it --container database --namespace "$ns_value" "$primary" -- /bin/bash -c 'rm -rf /pgdata/restore-{{ db_name }}.psql'
+  if [[ -z "$restore_flags" ]]; then
+    restore_flags="--verbose --format=c --clean --if-exists --no-owner --role {{ db_user }}"
+  fi
+  remote="/pgdata/restore-{{ db_name }}.psql"
+  trap 'kubectl exec --container database --namespace "{{ ns }}" "$primary" -- rm -f "$remote"' EXIT
+  kubectl cp --container database "{{ file }}" "{{ ns }}/$primary:$remote"
+  kubectl exec --container database --namespace "{{ ns }}" "$primary" -- \
+    psql --command 'ALTER DATABASE "{{ db_name }}" OWNER TO "{{ db_user }}";'
+  # shellcheck disable=SC2086 # restore_flags is a flag list
+  kubectl exec --container database --namespace "{{ ns }}" "$primary" -- \
+    pg_restore --dbname "{{ db_name }}" $restore_flags "$remote"
 
 [doc('Open a shell inside the CrunchyData master pod')]
-crunchy-exec ns='' db_cluster='':
-  ns_value="{{ default_ns }}"
-  [[ -n "{{ ns }}" ]] && ns_value="{{ ns }}"
-  cluster_value="{{ default_cluster }}"
-  [[ -n "{{ db_cluster }}" ]] && cluster_value="{{ db_cluster }}"
-  kubectl get pods -n "$ns_value" -l postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster=$cluster_value >/dev/null
-  primary=$(kubectl get pods -n "$ns_value" -l postgres-operator.crunchydata.com/role=master,postgres-operator.crunchydata.com/cluster=$cluster_value -o jsonpath='{.items[0].metadata.name}')
-  kubectl exec -it --container database --namespace "$ns_value" "$primary" -- /bin/bash
+crunchy-exec ns=default_ns db_cluster=default_cluster:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  primary="$(just postgres _crunchy-primary "{{ ns }}" "{{ db_cluster }}")"
+  kubectl exec -it --container database --namespace "{{ ns }}" "$primary" -- /bin/bash
