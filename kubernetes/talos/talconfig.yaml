@@ -175,6 +175,9 @@ controlPlane:
         kubelet:
           extraConfig:
             maxPods: 150
+            # Prune images before Ceph's MON_DISK_LOW (<30% avail) fires on the shared /var
+            imageGCHighThresholdPercent: 65
+            imageGCLowThresholdPercent: 55
           nodeIP:
             validSubnets:
                 - 192.168.32.0/24
