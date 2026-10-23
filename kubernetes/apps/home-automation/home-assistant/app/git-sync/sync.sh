@@ -32,23 +32,32 @@ notify() {
         log "could not raise notification"
 }
 
+# Clears reload_pending once the pulled config was reloaded or rejected; an
+# unreachable API (e.g. Home Assistant still starting) keeps it for the next run.
 reload() {
     if ! result=$(hass_post config/core/check_config); then
-        log "config check request failed; not reloading"
+        log "config check request failed; retrying next run"
         return
     fi
     case "$result" in
     *'"result":"valid"'* | *'"result": "valid"'*)
-        hass_post services/homeassistant/reload_all >/dev/null && log "reloaded Home Assistant"
+        if hass_post services/homeassistant/reload_all >/dev/null; then
+            log "reloaded Home Assistant"
+            reload_pending=""
+        else
+            log "reload request failed; retrying next run"
+        fi
         ;;
     *)
         log "config check failed, not reloading: $result"
         notify "Pulled config failed the check and was not reloaded. See the git-sync container logs."
+        reload_pending=""
         ;;
     esac
 }
 
 last_conflict=""
+reload_pending=""
 
 sync_once() {
     git add -A
@@ -81,7 +90,7 @@ sync_once() {
 
     if [ -n "$(git diff --name-only "$before" HEAD)" ]; then
         log "pulled $(git rev-parse --short "$before")..$(git rev-parse --short HEAD)"
-        reload
+        reload_pending=1
     fi
 }
 
@@ -89,6 +98,7 @@ trap 'exit 0' TERM INT
 log "syncing $REPO_DIR with $BRANCH every ${INTERVAL}s"
 while true; do
     sync_once
+    [ -z "$reload_pending" ] || reload
     sleep "$INTERVAL" &
     wait $!
 done
