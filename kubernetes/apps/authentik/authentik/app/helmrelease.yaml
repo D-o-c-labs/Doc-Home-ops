@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: authentik
-      version: 2024.10.4
+      version: 2026.8.5
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -22,7 +22,7 @@ spec:
 
       image:
         repository: ghcr.io/goauthentik/server
-        tag: 2026.5.4
+        tag: 2026.8.5
 
       envFrom:
         - secretRef:
@@ -38,6 +38,9 @@ spec:
       error_reporting:
         enabled: false
         send_pii: false
+      web:
+        # Required from 2026.11
+        base_url: https://${HOSTNAME}
 
     server:
       metrics:
@@ -45,22 +48,9 @@ spec:
         serviceMonitor:
           enabled: true
 
-      route:
-        main:
-          enabled: true
-          hostnames:
-            - ${HOSTNAME}
-          parentRefs:
-            - name: external
-              namespace: kube-system
-              sectionName: https
-
     postgresql:
       enabled: false
 
     prometheus:
       rules:
         enabled: true
-
-    redis:
-      enabled: false
