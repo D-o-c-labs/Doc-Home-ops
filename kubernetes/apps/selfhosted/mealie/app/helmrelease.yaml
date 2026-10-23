@@ -49,11 +49,13 @@ spec:
               PGID: "${APP_GID}"
               TZ: Europe/Rome
               ALLOW_SIGNUP: "false"
-              ALLOW_PASSWORD_LOGIN: "true"
+              ALLOW_PASSWORD_LOGIN: "false" # authentik only; break-glass: set "true"
               OIDC_AUTH_ENABLED: "true"
               OIDC_SIGNUP_ENABLED: "false"
               OIDC_AUTO_REDIRECT: "true"
               OIDC_REMEMBER_ME: "true"
+              # authentik emits email_verified via the Mealie-only "pinned verified_email" scope mapping
+              OIDC_REQUIRES_EMAIL_VERIFICATION: "true"
               OIDC_PROVIDER_NAME: "Authentik"
               OPENAI_BASE_URL: https://openrouter.ai/api/v1
               OPENAI_MODEL: anthropic/claude-sonnet-4.5
