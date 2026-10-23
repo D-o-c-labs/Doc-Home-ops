@@ -10,7 +10,8 @@ REPO_DIR=${REPO_DIR:-/config}
 BRANCH=${GIT_BRANCH:-master}
 REMOTE_URL=${GIT_REMOTE_URL:?GIT_REMOTE_URL is required}
 INTERVAL=${SYNC_INTERVAL:-300}
-HASS_URL=${HASS_URL:-http://localhost:8123}
+# Not localhost: busybox wget only tries ::1 and Home Assistant listens on IPv4.
+HASS_URL=${HASS_URL:-http://127.0.0.1:8123}
 
 export HOME=/tmp
 install -m 600 /secrets/ssh/id_ed25519 /tmp/id_ed25519
