@@ -46,12 +46,20 @@ spec:
             enabled: true
           - name: pg_autoscaler
             enabled: true
+          # Not recommended upstream for Tentacle; explicit false so Rook disables it live
           - name: rook
-            enabled: true
+            enabled: false
       network:
         provider: host
         connections:
           requireMsgr2: true
+      security:
+        cephx:
+          # CVE-2025-30156: rotate mon/mgr/OSD/MDS keys to AES256K (needs Ceph 20.2.4+).
+          # CSI keys stay aes (chart default) until nodes run kernel 7.0+.
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
       resources:
         mgr:
           requests:
