@@ -28,11 +28,14 @@
         "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
       ],
       matchStrings: [
-        "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\\r?\\n(?<indentation>\\s+)TALOS_VERSION: (?<currentValue>\\S+)",
+        "# renovate: depName=siderolabs/talos datasource=custom.talos-factory\\r?\\n(?<indentation>\\s+)TALOS_VERSION: (?<currentValue>\\S+)",
       ],
-      depNameTemplate: "ghcr.io/siderolabs/installer",
-      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\n{{{indentation}}}TALOS_VERSION: {{{newValue}}}",
-      datasourceTemplate: "docker",
+      // Same depName and datasource as the talosFactory preset (talconfig), so both bumps land in one PR.
+      // ghcr.io/siderolabs/installer is no longer published from Talos 1.14.
+      depNameTemplate: "siderolabs/talos",
+      autoReplaceStringTemplate: "# renovate: depName=siderolabs/talos datasource=custom.talos-factory\n{{{indentation}}}TALOS_VERSION: {{{newValue}}}",
+      datasourceTemplate: "custom.talos-factory",
+      versioningTemplate: "semver",
     },
     {
       customType: "regex",
@@ -45,17 +48,6 @@
       ],
       depNameTemplate: "ghcr.io/siderolabs/kubelet",
       autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\n{{{indentation}}}KUBERNETES_VERSION: {{{newValue}}}",
-      datasourceTemplate: "docker",
-    },
-    {
-      customType: "regex",
-      description: "Update Talos version in talconfig",
-      managerFilePatterns: ["/(^|/)kubernetes/talos/talconfig\\.ya?ml$/"],
-      matchStrings: [
-        "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\\r?\\n(?<indentation>\\s*)talosVersion: (?<currentValue>\\S+)",
-      ],
-      depNameTemplate: "ghcr.io/siderolabs/installer",
-      autoReplaceStringTemplate: "# renovate: depName=ghcr.io/siderolabs/installer datasource=docker\n{{{indentation}}}talosVersion: {{{newValue}}}",
       datasourceTemplate: "docker",
     },
     {
@@ -76,11 +68,8 @@
       matchFileNames: [
         "kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
       ],
-      matchDatasources: ["docker"],
-      matchPackageNames: [
-        "ghcr.io/siderolabs/installer",
-        "ghcr.io/siderolabs/kubelet",
-      ],
+      matchDatasources: ["docker", "custom.talos-factory"],
+      matchPackageNames: ["siderolabs/talos", "ghcr.io/siderolabs/kubelet"],
       postUpgradeTasks: {
         commands: [
           "scripts/renovate/ensure-next-minor.sh kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",

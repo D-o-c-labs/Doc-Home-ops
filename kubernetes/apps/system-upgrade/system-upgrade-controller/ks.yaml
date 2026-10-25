@@ -41,7 +41,7 @@ spec:
       namespace: system-upgrade
   postBuild:
     substitute:
-      # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
-      TALOS_VERSION: v1.13.12
+      # renovate: depName=siderolabs/talos datasource=custom.talos-factory
+      TALOS_VERSION: v1.14.4
       # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
       KUBERNETES_VERSION: v1.36.2
