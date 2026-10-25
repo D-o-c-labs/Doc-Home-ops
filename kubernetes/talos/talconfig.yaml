@@ -263,10 +263,14 @@ controlPlane:
             - SUBSYSTEM=="apex", KERNEL=="apex*", GROUP="44", MODE="0660"
 
     # Disable default API server admission plugins.
+    # `admissionControl: []` is a no-op merge and keeps the Talos PodSecurity default (enforce baseline);
+    # JSON patches are rejected for multi-document configs, so delete the key with $patch
+    # ($$ escapes talhelper's env substitution).
     - |-
       cluster:
         apiServer:
-          admissionControl: []
+          admissionControl:
+            $$patch: delete
 
     # Enable K8s Talos API Access
     - |-
