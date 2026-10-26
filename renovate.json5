@@ -23,9 +23,9 @@
   customManagers: [
     {
       customType: "regex",
-      description: "Update Talos version in system-upgrade Kustomization",
+      description: "Update Talos version in tuppr upgrades Kustomization",
       managerFilePatterns: [
-        "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
+        "/(^|/)kubernetes/apps/system-upgrade/tuppr/ks\\.ya?ml$/",
       ],
       matchStrings: [
         "# renovate: depName=siderolabs/talos datasource=custom.talos-factory\\r?\\n(?<indentation>\\s+)TALOS_VERSION: (?<currentValue>\\S+)",
@@ -39,9 +39,9 @@
     },
     {
       customType: "regex",
-      description: "Update Kubernetes version in system-upgrade Kustomization",
+      description: "Update Kubernetes version in tuppr upgrades Kustomization",
       managerFilePatterns: [
-        "/(^|/)kubernetes/apps/system-upgrade/system-upgrade-controller/ks\\.ya?ml$/",
+        "/(^|/)kubernetes/apps/system-upgrade/tuppr/ks\\.ya?ml$/",
       ],
       matchStrings: [
         "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\\r?\\n(?<indentation>\\s+)KUBERNETES_VERSION: (?<currentValue>\\S+)",
@@ -64,19 +64,15 @@
   ],
   packageRules: [
     {
-      description: "Enforce sequential minor upgrades for system-upgrade-controller versions",
-      matchFileNames: [
-        "kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
-      ],
+      description: "Enforce sequential minor upgrades for tuppr versions",
+      matchFileNames: ["kubernetes/apps/system-upgrade/tuppr/ks.yaml"],
       matchDatasources: ["docker", "custom.talos-factory"],
       matchPackageNames: ["siderolabs/talos", "ghcr.io/siderolabs/kubelet"],
       postUpgradeTasks: {
         commands: [
-          "scripts/renovate/ensure-next-minor.sh kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
+          "scripts/renovate/ensure-next-minor.sh kubernetes/apps/system-upgrade/tuppr/ks.yaml",
         ],
-        fileFilters: [
-          "kubernetes/apps/system-upgrade/system-upgrade-controller/ks.yaml",
-        ],
+        fileFilters: ["kubernetes/apps/system-upgrade/tuppr/ks.yaml"],
       },
     },
   ],

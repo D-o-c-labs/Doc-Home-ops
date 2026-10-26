@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/tuppr.home-operations.com/talosupgrade_v1alpha1.json
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: TalosUpgrade
+metadata:
+  name: talos
+spec:
+  talos:
+    version: ${TALOS_VERSION}
+  policy:
+    # Drain moves both MDS pods and waits on the Rook PDBs
+    drainTimeout: 15m
+    timeout: 30m
+    waitForVolumeDetach: true
+  healthChecks:
+    - apiVersion: v1
+      kind: Node
+      expr: status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m
+    # Ceph stays HEALTH_WARN (insecure CSI key types); gate on mons, OSDs, PGs and MDS instead
+    - apiVersion: ceph.rook.io/v1
+      kind: CephCluster
+      name: rook-ceph
+      namespace: rook-ceph
+      expr: >-
+        status.ceph.health != "HEALTH_ERR" &&
+        (!has(status.ceph.details) ||
+        !["MON_DOWN", "OSD_DOWN", "OSD_HOST_DOWN", "PG_AVAILABILITY", "PG_DEGRADED",
+        "MDS_ALL_DOWN", "MDS_INSUFFICIENT_STANDBY", "FS_DEGRADED"].exists(c, c in status.ceph.details))
+      timeout: 30m
