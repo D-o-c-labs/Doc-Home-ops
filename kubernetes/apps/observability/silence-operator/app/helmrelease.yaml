@@ -11,5 +11,9 @@ spec:
   interval: 30m
   values:
     alertmanagerAddress: http://alertmanager-operated.observability.svc.cluster.local:9093
+    image:
+      # The chart defaults the tag to .Chart.Version, which Flux suffixes with the OCI digest (0.20.0+ff704465ac61)
+      # renovate: datasource=docker depName=gsoci.azurecr.io/giantswarm/silence-operator
+      tag: 0.20.0
     networkPolicy:
       enabled: false
