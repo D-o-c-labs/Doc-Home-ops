@@ -8,8 +8,9 @@ spec:
   talos:
     version: ${TALOS_VERSION}
   policy:
-    # Drain moves both MDS pods and waits on the Rook PDBs
-    drainTimeout: 15m
+    # waitForVolumeDetach makes tuppr drain the node itself (fixed 10m timeout, so no
+    # drainTimeout); its drain fails on the first PDB-blocked eviction instead of retrying,
+    # so the PodDisruptionBudget check below holds each node until Rook allows a disruption
     timeout: 30m
     waitForVolumeDetach: true
   healthChecks:
@@ -27,4 +28,11 @@ spec:
         (!has(status.ceph.details) ||
         !["MON_DOWN", "OSD_DOWN", "OSD_HOST_DOWN", "PG_AVAILABILITY", "PG_DEGRADED",
         "MDS_ALL_DOWN", "MDS_INSUFFICIENT_STANDBY", "FS_DEGRADED"].exists(c, c in status.ceph.details))
+      timeout: 30m
+    # Rook adds maxUnavailable 0 PDBs while PGs are degraded and the mon PDB allows no
+    # disruption until the rebooted mon is back in quorum
+    - apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      namespace: rook-ceph
+      expr: has(status.disruptionsAllowed) && status.disruptionsAllowed > 0
       timeout: 30m
