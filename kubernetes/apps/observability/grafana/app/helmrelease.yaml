@@ -20,6 +20,10 @@ spec:
       secret.reloader.stakater.com/reload: grafana-secret
 
     replicas: 1
+    # The config PVC is RWO: a rolling update that schedules the new pod on another node
+    # deadlocks on Multi-Attach while the old pod holds the volume.
+    deploymentStrategy:
+      type: Recreate
 
     dashboardProviders:
       dashboardproviders.yaml:
