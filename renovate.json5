@@ -30,7 +30,7 @@
       matchStrings: [
         "# renovate: depName=siderolabs/talos datasource=custom.talos-factory\\r?\\n(?<indentation>\\s+)TALOS_VERSION: (?<currentValue>\\S+)",
       ],
-      // Same depName and datasource as the talosFactory preset (talconfig), so both bumps land in one PR.
+      // Same depName and datasource as the talosFactory preset (topf.yaml talosVersion), so both bumps land in one PR.
       // ghcr.io/siderolabs/installer is no longer published from Talos 1.14.
       depNameTemplate: "siderolabs/talos",
       autoReplaceStringTemplate: "# renovate: depName=siderolabs/talos datasource=custom.talos-factory\n{{{indentation}}}TALOS_VERSION: {{{newValue}}}",
@@ -52,8 +52,8 @@
     },
     {
       customType: "regex",
-      description: "Update Kubernetes version in talconfig",
-      managerFilePatterns: ["/(^|/)kubernetes/talos/talconfig\\.ya?ml$/"],
+      description: "Update Kubernetes version in topf.yaml",
+      managerFilePatterns: ["/(^|/)kubernetes/talos/topf\\.ya?ml$/"],
       matchStrings: [
         "# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker\\r?\\n(?<indentation>\\s*)kubernetesVersion: (?<currentValue>\\S+)",
       ],

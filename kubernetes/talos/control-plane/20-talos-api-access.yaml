@@ -1,0 +1,8 @@
+---
+# tuppr drives Talos and Kubernetes upgrades from system-upgrade
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+allowedRoles:
+  - os:admin
+allowedKubernetesNamespaces:
+  - system-upgrade

@@ -10,34 +10,42 @@ Talos is the operating system layer for the cluster. Node state is managed decla
 
 ## Source of truth
 
-- `kubernetes/talos/talconfig.yaml`: cluster intent and node topology.
-- `kubernetes/talos/clusterconfig/`: generated machine configs.
-- `kubernetes/talos/talhelper-secrets.env`: 1Password-backed secret mappings for rendering.
+Machine configs are assembled by [topf](https://postfinance.github.io/topf/) from the files in `kubernetes/talos/`:
+
+- `topf.yaml`: cluster name, endpoint, Talos and Kubernetes versions, and the nodes with their per-node data (install disk, VLAN 40 address).
+- `schematic.yaml`: Image Factory schematic (kernel args and system extensions); topf derives the installer image from it and `talosVersion`.
+- `all/`, `control-plane/`: strategic merge patches, applied in that order and alphabetically within each directory. Files ending in `.yaml.tpl` are Go templates (`.Node.Host`, `.Node.Data.<key>`, `.Data.<key>`).
+- `secrets.sh`: topf's secrets provider. It renders `secrets.yaml.tpl` with the 1Password references in `secrets.env`, so the bundle never touches disk.
+
+The patches use the Talos 1.14 config documents (`KubeAPIServerConfig`, `ResolverConfig`, `SysctlConfig`, ...). Only fields without a document stay in v1alpha1: `machine.certSANs`, `cluster.etcd`, and the whole kubelet (`KubeletConfig` has no `extraMounts`, which the openebs-hostpath local PVs under `/var/mnt/extra` need).
+
+topf renders with the contract of the Talos version each node runs, so Talos 1.14 defaults appear in every config. The patches pin the ones that would change the nodes: no Flannel, CoreDNS, kube-proxy, PodSecurity admission or control-plane taint, and `workloadIsolation`/secure `/var` mount options stay off.
 
 ## Common operations
 
-Generate machine configs:
+Show what would change on the running nodes:
 
 ```bash
-just talos generate-clusterconfig
+just talos diff
 ```
 
-Dry-run apply to all nodes:
+Apply to every node, or to one (topf shows the diff and asks first):
 
 ```bash
-just talos apply-clusterconfig dry_run=true
+just talos apply
+just talos apply-node zeus
 ```
 
-Apply to a single node:
+Inspect the merged configs (plaintext secrets, delete afterwards):
 
 ```bash
-just talos apply-node node=zeus.piscio.net
+just talos render
 ```
 
-Upgrade a node:
+Upgrade a node by hand (tuppr drives upgrades in-cluster):
 
 ```bash
-just talos upgrade-node node=zeus.piscio.net
+just talos upgrade-node zeus
 ```
 
 Upgrade Kubernetes control plane version:
@@ -48,8 +56,7 @@ just talos upgrade-k8s version=1.30.2
 
 ## Change checklist
 
-1. Update `talconfig.yaml`.
-2. Generate `clusterconfig`.
-3. Validate with dry-run apply.
-4. Apply in controlled order.
-5. Verify node health and Kubernetes readiness.
+1. Edit the patch or `topf.yaml`.
+2. Review the change with `just talos diff`.
+3. Apply one node at a time with `just talos apply-node <node>`.
+4. Verify node health and Kubernetes readiness.

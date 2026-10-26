@@ -20,7 +20,7 @@ Install the required tooling before making changes:
 - [`mise`](https://mise.jdx.dev) to sync tool versions defined in `.mise.toml` (installs `uv`, `flux-local`, and exports `KUBECONFIG`/`TALOSCONFIG`).
 - [`just`](https://just.systems) to execute the automation recipes declared in `.justfile` and the `mod.just` modules.
 - Kubernetes toolchain: `kubectl`, `flux`, `flux-local`, `helmfile`, `helm`, `yq`, `jq`, `stern`.
-- Talos utilities: `talosctl`, `talhelper`, `minijinja-cli`.
+- Talos utilities: `talosctl`, [`topf`](https://postfinance.github.io/topf/), `minijinja-cli`.
 - Secrets tooling: `sops`, `age`, and the 1Password CLI (`op`).
 
 Run `mise install` followed by `just -l` to confirm everything is available.
@@ -33,7 +33,7 @@ Run `mise install` followed by `just -l` to confirm everything is available.
 | `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, replacements transformers, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                                 |
 | `kubernetes/bootstrap/`  | Helmfile-driven cluster bootstrap (Cilium, CoreDNS, cert-manager, flux-operator) plus supporting templates and environment.                                                                                                                                   |
 | `kubernetes/flux/`       | Flux `GitRepository` and `Kustomization` definitions that reconcile the rest of the repository.                                                                                                                                                               |
-| `kubernetes/talos/`      | Talos cluster configuration (`talconfig.yaml`), secrets wiring (`talhelper-secrets.env`), and generated machine configs in `clusterconfig/`.                                                                                                                  |
+| `kubernetes/talos/`      | Talos cluster configuration for topf: nodes in `topf.yaml`, config patches in `all/` and `control-plane/`, and the 1Password secrets provider (`secrets.sh`).                                                                                                 |
 | `kubernetes/*/mod.just`  | `just` automation modules for Flux stacks, Talos lifecycle, VolSync workflows, and supporting operations scoped to each domain.                                                                                                                               |
 | `sops/mod.just`          | Repository-wide SOPS helpers (bulk re-encryption) exposed via `just`.                                                                                                                                                                                         |
 | `docs/`                  | Space for architecture notes and runbooks; expand as new components are added.                                                                                                                                                                                |
@@ -41,7 +41,7 @@ Run `mise install` followed by `just -l` to confirm everything is available.
 
 ## GitOps Flow
 
-1. **Talos** provisions the control plane using machine configs rendered from `talconfig.yaml` and 1Password secrets.
+1. **Talos** provisions the control plane with machine configs that topf builds from `topf.yaml`, the patches and 1Password secrets.
 2. **Bootstrap** applies the Helmfile in `kubernetes/bootstrap/` to install foundational controllers (Cilium, CoreDNS, cert-manager, Flux Operator/Instance).
 3. **Flux** reconciles `kubernetes/flux/cluster/cluster.yaml`, which in turn syncs all app stacks under `kubernetes/apps/` and supporting repositories.
 4. **Applications** rely on the bjw-s app-template or upstream charts, with configuration and credentials pulled from External Secrets and VolSync for stateful data.
@@ -51,26 +51,26 @@ Run `mise install` followed by `just -l` to confirm everything is available.
 
 Manage Talos operations with the `just talos` module:
 
-- Generate machine configs (requires an active 1Password session):
+- Show what would change on the running nodes (requires 1Password access):
 
   ```bash
-  just talos generate-clusterconfig
+  just talos diff
   ```
 
-- Apply configs cluster-wide or node-specific (optionally dry-run or insecure for bring-up):
+- Apply cluster-wide or to one node; topf shows the diff and asks before applying:
 
   ```bash
-  just talos apply-clusterconfig dry_run=true
-  just talos apply-node node=zeus.piscio.net
+  just talos apply
+  just talos apply-node zeus
   ```
 
-- Upgrade Talos on a node:
+- Upgrade Talos on a node by hand (tuppr normally drives upgrades):
 
   ```bash
-  just talos upgrade-node node=zeus.piscio.net
+  just talos upgrade-node zeus
   ```
 
-The helper environment file `kubernetes/talos/talhelper-secrets.env` maps Talos secrets to 1Password items so nothing sensitive lives in Git.
+`kubernetes/talos/secrets.env` maps the Talos secrets to 1Password items; `secrets.sh` renders the bundle on demand for topf, so nothing sensitive lives in Git or on disk.
 
 ## Flux & Application Stacks
 
@@ -106,7 +106,7 @@ When introducing a new service:
   just sops re-encrypt
   ```
 
-- Talos bootstrap secrets come from 1Password via `op run` inside the `just talos generate-clusterconfig` recipe.
+- Talos secrets come from 1Password via `op run` in `kubernetes/talos/secrets.sh`, which topf calls as its secrets provider.
 
 ## Operations & Maintenance
 
@@ -169,7 +169,7 @@ Before merging changes:
 2. `pre-commit run -a` to satisfy formatting, linting, and secret policies.
 3. `just flux build-ks dir=<path>` to render and validate the affected Kustomization(s).
 4. (Optional) `just flux apply-ks dir=<path>` against a test cluster for a server-side dry run.
-5. For Talos modifications, `just talos generate-clusterconfig` followed by `just talos apply-clusterconfig dry_run=true`.
+5. For Talos modifications, `just talos diff` to review the change against the running nodes.
 6. Capture any relevant Flux diff output or `just` logs in the PR description.
 
 ## Further Reading
@@ -222,13 +222,14 @@ Each `just` module exposes reusable workflows. The examples below assume you are
 
 ### Talos (`just talos ...`)
 
-- `generate-clusterconfig`: Render Talos machineconfigs via talhelper with 1Password secrets injected (`just talos generate-clusterconfig`).
-- `apply-clusterconfig`: Apply generated machineconfigs with optional dry-run/insecure flags (`just talos apply-clusterconfig mode=auto dry_run=true`).
-- `apply-node`: Patch a single node using the templated config (`just talos apply-node node=zeus.piscio.net -- --dry-run`).
-- `apply-cluster`: Re-render configs on the fly and push to every node (`just talos apply-cluster`).
-- `upgrade-node`: Perform an in-place Talos upgrade (`just talos upgrade-node node=zeus.piscio.net`).
+- `diff`: Show pending config changes against the running nodes (`just talos diff`).
+- `apply`: Apply the config to every node, one at a time, after a diff and confirmation (`just talos apply`).
+- `apply-node`: Apply the config to one node (`just talos apply-node zeus mode=no-reboot`).
+- `render`: Write the merged machine configs to `kubernetes/talos/rendered/` (plaintext secrets; delete after use).
+- `nodes` / `schematic-ids`: List node state, or the schematic IDs computed from `schematic.yaml`.
+- `talosconfig`: Regenerate `kubernetes/talos/talosconfig` from the secrets bundle.
+- `upgrade-node`: Upgrade Talos on one node with the installer from `topf.yaml` (`just talos upgrade-node zeus`).
 - `upgrade-k8s`: Upgrade the control plane Kubernetes version (`just talos upgrade-k8s version=1.30.2`).
-- `render-config`: Output the merged Talos config for a node (`just talos render-config node=zeus.piscio.net > /tmp/zeus.yaml`).
 
 ### Bootstrap (`just k8s-bootstrap ...`)
 

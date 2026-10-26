@@ -57,8 +57,8 @@ Write an `app/networkpolicy.yaml` only when no label fits or tighter port/CIDR s
 ## Live cluster
 
 - Read-only inspection (`kubectl get/describe/logs`, `flux get`) is fine.
-- Ask before anything that changes the cluster: `apply-ks`, deletes, reconcile/suspend/resume, scaling, and any Talos `apply-*`, `upgrade-*`, `reset-*` or `reboot-node` recipe.
-- `just talos generate-clusterconfig` only regenerates machine configs locally (needs `talhelper` and `op`); it has no dry-run.
+- Ask before anything that changes the cluster: `apply-ks`, deletes, reconcile/suspend/resume, scaling, and any Talos `apply*`, `upgrade-*`, `reset-*` or `reboot-node` recipe.
+- `just talos diff` shows the Talos config change against the running nodes (needs `topf` and `op`); `just talos apply` changes them.
 
 ## Git
 

@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/postfinance/topf/main/schema/topf.json
+# https://postfinance.github.io/topf/main/configuration/
+clusterName: doc-home-ops
+clusterEndpoint: https://k8s.piscio.net:6443
+
+# Installer image only; rolling upgrades are driven by tuppr. Renovate reads this
+# via the talosFactory preset, which groups it with tuppr's TALOS_VERSION.
+talosVersion: v1.14.4
+# renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
+kubernetesVersion: v1.36.2
+
+schematicId: "@schematic.yaml"
+
+# Streams the secrets bundle from 1Password; see secrets.sh
+secretsProvider: ./secrets.sh
+
+data:
+  certSANs:
+    - k8s.piscio.net
+    - 192.168.32.120 # control-plane VIP
+    - 127.0.0.1 # KubePrism
+    - doc-home-cluster.kube.piscio.net
+    - doc-home-cluster.piscio.net
+
+# installDisk is a CEL expression for UnattendedInstallConfig
+nodes:
+  - host: zeus.piscio.net
+    ip: 192.168.32.121
+    role: control-plane
+    data:
+      installDisk: disk.size <= 300u * GB
+      domusAddress: 192.168.40.121/24
+  - host: ares.piscio.net
+    ip: 192.168.32.122
+    role: control-plane
+    data:
+      installDisk: disk.size <= 300u * GB
+      domusAddress: 192.168.40.122/24
+  - host: athena.piscio.net
+    ip: 192.168.32.123
+    role: control-plane
+    data:
+      installDisk: disk.model == "Samsung SSD 970 EVO Plus 500GB"
+      domusAddress: 192.168.40.123/24
