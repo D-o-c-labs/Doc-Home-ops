@@ -1,0 +1,2 @@
+{{- /* Reuse the inline values of the HelmRelease at kubernetes/apps/<namespace>/<release>/app */ -}}
+{{ (fromYaml (readFile (printf "%s/kubernetes/apps/%s/%s/app/helmrelease.yaml" (requiredEnv "ROOT_DIR") .Release.Namespace .Release.Name))).spec.values | toYaml }}

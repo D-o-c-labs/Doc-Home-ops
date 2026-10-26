@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+# Rendered with `helmfile template`, filtered to CRDs by the `crds` recipe and
+# applied before the apps, so charts creating ServiceMonitors can install.
+helmDefaults:
+  args:
+    - --include-crds
+    - --no-hooks
+
+releases:
+  - name: kube-prometheus-stack
+    namespace: observability
+    chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+    version: 87.15.2
