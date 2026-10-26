@@ -124,7 +124,7 @@ spec:
           git-sync:
             image:
               repository: docker.io/alpine/git
-              tag: v2.52.0@sha256:4a0e72d49596a1f5d3701aeedafdadc5c0da4062be4657c7bdc4017387f591cc
+              tag: v2.54.0@sha256:e8ceedc73bd80992ae8d58a7d24c58b8322146c354f1d2e81a97db4452068ec0
             command:
               - /bin/sh
               - /etc/git-sync/sync.sh
