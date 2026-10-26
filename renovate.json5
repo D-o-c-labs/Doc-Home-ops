@@ -5,7 +5,7 @@
     "github>bjw-s/renovate-config:automerge-github-actions",
     "github>D-o-c-labs/Doc-Home-ops//.renovate/allowedVersions.json5",
     "github>D-o-c-labs/Doc-Home-ops//.renovate/autoMerge.json5",
-    "github>D-o-c-labs/Doc-home-ops//.renovate/versioning.json5",
+    "github>D-o-c-labs/Doc-Home-ops//.renovate/versioning.json5",
     "github>D-o-c-labs/Doc-Home-ops//.renovate/groups.json5",
     "github>D-o-c-labs/Doc-Home-ops//.renovate/customManagers.json5",
     "config:recommended",
@@ -63,6 +63,29 @@
     },
   ],
   packageRules: [
+    {
+      description: "Let infra releases and apps that publish pre-releases under normal tags soak for a week",
+      matchPackageNames: [
+        "/cilium/",
+        "/rook-ceph/",
+        "/cert-manager/",
+        "/siderolabs/",
+        "/flux-operator/",
+        "/flux-instance/",
+        "/controlplaneio-fluxcd/",
+        "/envoyproxy/",
+        "/n8n/",
+        "/sonarr/",
+      ],
+      minimumReleaseAge: "7 days",
+      // Some OCI chart registries return no release timestamp; don't hold those updates forever.
+      minimumReleaseAgeBehaviour: "timestamp-optional",
+    },
+    {
+      description: "Widen Python ranges instead of narrowing them to the new minor",
+      matchManagers: ["pip_requirements"],
+      rangeStrategy: "widen",
+    },
     {
       description: "Enforce sequential minor upgrades for tuppr versions",
       matchFileNames: ["kubernetes/apps/system-upgrade/tuppr/ks.yaml"],

@@ -2,6 +2,15 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
+      description: "app-template Group (HelmRepository and OCIRepository references)",
+      groupName: "app-template",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/app-template/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
       description: "Actions Runner Controller Group",
       groupName: "Actions Runner Controller",
       matchDatasources: ["docker"],
@@ -73,6 +82,8 @@
       groupName: "Rook-Ceph",
       matchDatasources: ["docker"],
       matchPackageNames: ["/rook-ceph/", "/rook-ceph-cluster/"],
+      // Patch releases get their own PR instead of riding along with the next minor.
+      separateMinorPatch: true,
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -102,7 +113,7 @@
     {
       description: "Librechat Group",
       groupName: "Librechat",
-      matchPaths: ["kubernetes/apps/selfhosted/librechat/**"],
+      matchFileNames: ["kubernetes/apps/selfhosted/librechat/**"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
