@@ -121,6 +121,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           case "${MATRIX_IMAGE}" in
+            # tuppr publishes no GitHub attestations or image signatures (upstream signs only the chart)
+            ghcr.io/home-operations/tuppr[@:]*)
+              echo "Skipping attestation for ${MATRIX_IMAGE}: none published upstream" ;;
             *home-operations*)
               gh attestation verify --owner home-operations oci://"${MATRIX_IMAGE}" ;;
             *bjw-s-labs*)

@@ -35,4 +35,4 @@ Infrastructure services provide networking, storage, observability, security, an
 - `kubernetes/apps/system/reloader/`: workload restarts on config changes.
 - `kubernetes/apps/system/descheduler/`: pod placement balancing.
 - `kubernetes/apps/system/node-feature-discovery/` and device plugins.
-- `kubernetes/apps/system-upgrade/system-upgrade-controller/`: upgrade orchestration.
+- `kubernetes/apps/system-upgrade/tuppr/`: Talos and Kubernetes upgrade orchestration (tuppr).
