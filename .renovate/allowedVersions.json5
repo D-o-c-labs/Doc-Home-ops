@@ -16,5 +16,11 @@
       matchPackageNames: ["docker.io/kopia/kopia"],
       allowedVersions: "<999",
     },
+    {
+      description: "Envoy proxy must match the Envoy Gateway release (compatibility matrix); raise with each EG bump",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/envoyproxy/envoy$/"],
+      allowedVersions: "<1.40.0",
+    },
   ],
 }

@@ -5,4 +5,16 @@
     "github>D-o-c-labs/Doc-Home-ops//.renovate/grafanaDashboards.json5",
     "github>home-operations/renovate-presets//managers/talosFactory.json5#2.1.0",
   ],
+  customManagers: [
+    {
+      customType: "regex",
+      description: "Process annotated dependencies (# renovate: datasource=... depName=... above the version line)",
+      managerFilePatterns: ["/^kubernetes/.+\\.ya?ml$/"],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\r?\\n\\s*[\\w-]+: "?(?<currentValue>[^\\s"]+)"?',
+      ],
+      datasourceTemplate: "{{{datasource}}}",
+      extractVersionTemplate: "^v?(?<version>.+)$",
+    },
+  ],
 }
