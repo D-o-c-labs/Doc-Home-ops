@@ -20,6 +20,11 @@ generate-clusterconfig:
   --secret-file "{{ talos_dir }}/talsecret.yaml" \
   --config-file "{{ talos_dir }}/talconfig.yaml" \
   --out-dir "{{ clusterconfig_dir }}"
+  # talhelper's Talos machinery (v1.14.0-alpha.2) drops the empty ResolverConfig domains list that clears
+  # the DHCP search domains; restore it until talhelper ships the v1.14 GA encoder.
+  for file in "{{ clusterconfig_dir }}"/*.yaml; do \
+    yq -i '(select(.kind == "ResolverConfig") | .searchDomains.domains) = []' "$file"; \
+  done
 
 [doc('Apply talhelper-generated Talos machineconfigs to every node')]
 apply-clusterconfig *args:
