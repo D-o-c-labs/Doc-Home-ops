@@ -4,6 +4,8 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 kubernetes_dir := justfile_dir() + '/kubernetes'
 bootstrap_dir := kubernetes_dir + '/bootstrap'
 
+export ROOT_DIR := justfile_dir()
+
 [private]
 default: talos kubernetes (kubeconfig "node") wait namespaces resources crds apps kubeconfig
 
@@ -59,14 +61,14 @@ namespaces:
 [doc('Apply Kubernetes resources')]
 resources:
   just log info "Running stage..." "stage" "$0"
-  if ! just template "{{ bootstrap_dir }}/resources.yaml.j2" | kubectl apply --server-side -f -; then \
+  if ! op run --env-file "{{ bootstrap_dir }}/bootstrap.env" --no-masking -- just template "{{ bootstrap_dir }}/templates/resources.yaml.j2" | kubectl apply --server-side -f -; then \
   just log fatal "Failed to apply resources" "stage" "$0"; \
   fi;
 
 [doc('Apply Helmfile CRDs')]
 crds:
   just log info "Running stage..." "stage" "$0"
-  if ! helmfile -f "{{ bootstrap_dir }}/helmfile.d/00-crds.yaml" template -q | kubectl apply --server-side -f -; then \
+  if ! helmfile -f "{{ bootstrap_dir }}/helmfile.d/00-crds.yaml" template -q | yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' | kubectl apply --server-side -f -; then \
   just log fatal "Failed to apply crds" "stage" "$0"; \
   fi;
 
