@@ -10,16 +10,10 @@ default: talos kubernetes (kubeconfig "node") wait namespaces resources crds app
 [doc('Install Talos')]
 talos:
   just log info "Running stage..." "stage" "$0"
-  nodes=$(talosctl config info -o yaml | yq -e '.nodes | join (" ")')
-  for n in $nodes; do
-  if ! op=$(just talos apply-node "$n" --insecure 2>&1); then
-  if [[ "$op" == *"certificate required"* ]]; then
-  just log info "Talos already configured, skipping apply of config" "stage" "$0" "node" "$n"
-  continue
+  # topf applies maintenance-mode nodes insecurely and only prompts for nodes whose config changes
+  if ! just talos apply; then
+  just log fatal "Failed to apply Talos configuration" "stage" "$0"
   fi
-  just log fatal "Failed to apply Talos configuration" "stage" "$0" "node" "$n" "output" "$op"
-  fi
-  done
 
 [doc('Install Kubernetes')]
 kubernetes:

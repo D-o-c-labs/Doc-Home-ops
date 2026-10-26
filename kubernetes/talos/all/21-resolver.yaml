@@ -1,0 +1,13 @@
+---
+# Disable search domains everywhere: the default one derived from the hostname and the ones from DHCP.
+# Talos 1.14 applies DHCPv4 search domains, and `piscio.net` plus its `*.piscio.net` wildcard
+# broke external lookups; an explicit empty list overrides them.
+apiVersion: v1alpha1
+kind: ResolverConfig
+searchDomains:
+  disableDefault: true
+  domains: []
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: false
+  resolveMemberNames: true

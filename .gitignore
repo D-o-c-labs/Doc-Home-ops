@@ -34,3 +34,6 @@ talosconfig
 !.claude/
 .claude/*
 !.claude/skills/
+
+# topf render output (plaintext machine configs and secrets)
+kubernetes/talos/rendered/

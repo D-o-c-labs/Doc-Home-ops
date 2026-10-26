@@ -1,0 +1,12 @@
+---
+# Talos 1.14 generates both as true for new configs; the nodes were upgraded from 1.13 and run without them.
+# Switching either changes the runtime (sandboxed containerd/kubelet, nosuid,nodev /var): do it on purpose, not here.
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+workloadIsolation: false
+---
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: EPHEMERAL
+mount:
+  secure: false
