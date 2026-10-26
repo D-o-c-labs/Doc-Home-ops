@@ -98,11 +98,19 @@ jobs:
       - name: Generate Diff
         id: diff
         run: |
+          if [[ -s diff.patch ]]; then
+              echo "changed=true" >> "${GITHUB_OUTPUT}"
+          fi
+          # Inputs are passed to actions as environment variables and PR comments
+          # are capped at 65536 characters, so the comment reads a truncated file.
           {
-              echo 'diff<<EOF'
-              cat diff.patch
-              echo EOF
-          } >> "${GITHUB_OUTPUT}";
+              echo '```diff'
+              head -c 60000 diff.patch
+              echo '```'
+              if (( $(wc -c < diff.patch) > 60000 )); then
+                  echo "Diff truncated, see the job summary for the full output."
+              fi
+          } > comment.md
           {
               echo "## Flux ${{ matrix.resources }} diff"
               echo '```diff'
@@ -112,22 +120,19 @@ jobs:
 
       - name: Generate Token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && steps.diff.outputs.diff != '' }}
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && steps.diff.outputs.changed == 'true' }}
         id: app-token
         with:
           app-id: ${{ secrets.DOC_APP_ID }}
           private-key: ${{ secrets.DOC_APP_PRIVATE_KEY }}
 
-      - if: ${{ steps.diff.outputs.diff != '' }}
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
         name: Add Comment
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           header: ${{ github.event.pull_request.number }}/kubernetes/${{ matrix.resources }}
-          message: |
-            ```diff
-            ${{ steps.diff.outputs.diff }}
-            ```
+          path: comment.md
 
   flux-local-success:
     needs:
