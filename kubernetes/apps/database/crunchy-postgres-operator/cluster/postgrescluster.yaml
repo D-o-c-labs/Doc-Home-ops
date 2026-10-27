@@ -16,7 +16,7 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: postgres.piscio.net
+        external-dns.kubernetes.io/hostname: postgres.piscio.net
         io.cilium/lb-ipam-ips: 192.168.32.159
 
   patroni: # turn on sync writes to at least 1 other replica

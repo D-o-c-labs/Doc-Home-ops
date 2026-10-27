@@ -58,7 +58,7 @@ spec:
   listenersServiceTemplate:
     metadata:
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: "mqtt.piscio.net"
+        external-dns.kubernetes.io/hostname: "mqtt.piscio.net"
         lbipam.cilium.io/ips: 192.168.32.156
     spec:
       # Keep listener endpoints published during broker rebuilds so clients can
