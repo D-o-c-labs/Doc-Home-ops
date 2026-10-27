@@ -43,7 +43,7 @@ spec:
           app:
             image:
               repository: golift/unpackerr
-              tag: 0.15.2
+              tag: v1.0.0
             probes:
               liveness:
                 enabled: false
@@ -71,6 +71,13 @@ spec:
                   - ALL
 
     persistence:
+      config:
+        type: configMap
+        name: unpackerr
+        globalMounts:
+          - path: /config/unpackerr.conf
+            subPath: unpackerr.conf
+            readOnly: true
       media:
         type: nfs
         server: piscionas.piscio.net
