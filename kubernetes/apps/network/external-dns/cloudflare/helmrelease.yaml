@@ -31,7 +31,6 @@ spec:
       - --cloudflare-proxied
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
-      - --enable-legacy-annotation-prefix
       - --gateway-name=envoy-external
     podAnnotations:
       secret.reloader.stakater.com/reload: externaldns-cloudflare-secrets
