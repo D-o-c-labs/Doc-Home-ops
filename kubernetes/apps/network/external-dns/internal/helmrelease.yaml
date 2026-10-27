@@ -14,7 +14,6 @@ spec:
     domainFilters:
       - piscio.net
     extraArgs:
-      - --enable-legacy-annotation-prefix
       - --ignore-ingress-tls-spec
       - --rfc2136-axfr
     podAnnotations:
