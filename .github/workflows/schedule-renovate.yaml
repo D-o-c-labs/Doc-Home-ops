@@ -20,8 +20,8 @@ on:
   schedule:
     # Off the top of the hour, where GitHub delays or drops most scheduled runs
     - cron: "17 * * * *"
-    # Extra runs for the 04:00-06:00 Europe/Amsterdam Plex/Jellyfin automerge window (UTC, CET and CEST)
-    - cron: "47 2-4 * * *"
+    # Extra runs for the 04:00-07:00 Europe/Amsterdam Plex/Jellyfin automerge window (UTC, CET and CEST)
+    - cron: "47 2-5 * * *"
 
 concurrency:
   group: ${{ github.workflow }}

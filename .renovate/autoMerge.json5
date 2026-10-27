@@ -50,7 +50,7 @@
       matchDatasources: ["docker"],
       automerge: true,
       automergeType: "branch",
-      automergeSchedule: ["* 4-5 * * *"],
+      automergeSchedule: ["* 2-5 * * *"],
       matchUpdateTypes: ["digest", "patch"],
       matchPackageNames: [
         "ghcr.io/home-operations/plex",
