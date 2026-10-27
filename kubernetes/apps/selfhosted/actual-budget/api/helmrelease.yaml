@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: jhonderson/actual-http-api
-              tag: 26.10.0@sha256:9147533895544c50d663ca712216fe2c295aeb230074c4af392413be7d907989
+              tag: 26.10.1@sha256:5f61c9fa7a2aa980c9701ae314031e92976c673272fac26286b77d2f85790918
               pullPolicy: IfNotPresent
 
             env:
