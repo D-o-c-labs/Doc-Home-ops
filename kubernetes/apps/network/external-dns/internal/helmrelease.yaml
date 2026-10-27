@@ -11,16 +11,15 @@ spec:
     name: externaldns-internal
   values:
     fullnameOverride: &name externaldns-internal
-    image: # TODO: Remove this block when new chart version is released
-      repository: registry.k8s.io/external-dns/external-dns
-      tag: v0.21.0
     domainFilters:
       - piscio.net
     extraArgs:
+      - --enable-legacy-annotation-prefix
       - --ignore-ingress-tls-spec
-      - --rfc2136-tsig-axfr
+      - --rfc2136-axfr
     podAnnotations:
       secret.reloader.stakater.com/reload: externaldns-internal-secrets
+    policy: upsert-only
     provider:
       name: rfc2136
     env:
