@@ -96,11 +96,11 @@ spec:
             app:
               - path: /data/external-media
                 readOnly: true
-      # Library of symlinks managed by Radarr/Sonarr, on its own Synology share.
+      # Library of symlinks managed by Radarr/Sonarr, exported by the external media VM.
       external-library:
         type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/ExternalLibrary
+        server: external-library.piscio.net
+        path: /data/external-library
         advancedMounts:
           jellyfin:
             app:

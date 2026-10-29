@@ -86,12 +86,12 @@ spec:
         globalMounts:
           - path: /data/external-media
             readOnly: true
-      # Symlink library: the download client stages links in downloads/,
-      # the *arr moves them into its root folder on the same share.
+      # Symlink library exported by the external media VM: the download client
+      # stages links in downloads/, the *arr moves them into its root folder.
       external-library:
         type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/ExternalLibrary
+        server: external-library.piscio.net
+        path: /data/external-library
         globalMounts:
           - path: /data/external-library
 

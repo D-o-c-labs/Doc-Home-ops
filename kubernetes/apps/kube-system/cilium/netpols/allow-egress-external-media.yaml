@@ -10,7 +10,8 @@ spec:
       egress.home.arpa/external-media: allow
   egress:
     # External media VM (external-media.piscio.net): download client API only.
-    # The NFS export is mounted by the kubelet from the host network, not from pods.
+    # The NFS exports (2049, 20490) are mounted by the kubelet from the host
+    # network, not from pods.
     - toCIDRSet:
         - cidr: 192.168.32.202/32
       toPorts:

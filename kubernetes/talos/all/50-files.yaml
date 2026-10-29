@@ -23,6 +23,9 @@ contents: |
   noatime=True
   nconnect=16
 
-  # External media VM serves NFSv4.0 only.
+  # External media VM content export: NFSv4.0 only, on a non-standard port
+  # (kubelet inline NFS volumes cannot set one). external-library.piscio.net,
+  # same VM, uses the defaults above.
   [ Server "external-media.piscio.net" ]
   nfsvers=4.0
+  port=20490
