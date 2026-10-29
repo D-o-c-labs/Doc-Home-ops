@@ -22,3 +22,7 @@ contents: |
   hard=True
   noatime=True
   nconnect=16
+
+  # External media VM serves NFSv4.0 only.
+  [ Server "external-media.piscio.net" ]
+  nfsvers=4.0
