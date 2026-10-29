@@ -23,3 +23,13 @@ spec:
         - ports:
             - port: "8096"
               protocol: TCP
+  egress:
+    # seerr (requests proxied by the Moonfin server plugin)
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "5055"
+              protocol: TCP
