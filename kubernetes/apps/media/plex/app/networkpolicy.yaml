@@ -44,6 +44,9 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: sonarr
             k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyplex-watched
+            k8s:io.kubernetes.pod.namespace: media
       toPorts:
         - ports:
             - port: "32400"

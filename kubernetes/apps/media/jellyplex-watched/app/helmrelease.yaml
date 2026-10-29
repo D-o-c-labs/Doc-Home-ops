@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jellyplex-watched
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  interval: 30m
+  dependsOn:
+    - name: plex
+      namespace: media
+    - name: jellyfin
+      namespace: media
+  values:
+    controllers:
+      jellyplex-watched:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            # plex.tv is needed to resolve Plex users and their tokens.
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          securityContext:
+            runAsUser: ${APP_UID}
+            runAsGroup: ${APP_GID}
+            runAsNonRoot: true
+            fsGroup: ${APP_GID}
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/luigi311/jellyplex-watched
+              tag: 8.5.3
+            env:
+              YAML_FILE: /app/config/config.yaml
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+    persistence:
+      # The entrypoint copies a sample config next to config.yaml, so the
+      # directory must be writable; config.yaml itself comes from the secret.
+      config-dir:
+        type: emptyDir
+        globalMounts:
+          - path: /app/config
+      config:
+        type: secret
+        name: jellyplex-watched-secret
+        globalMounts:
+          - path: /app/config/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
