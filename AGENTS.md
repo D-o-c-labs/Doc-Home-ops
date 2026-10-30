@@ -42,6 +42,7 @@ Grant access by adding pod labels (app-template `controllers.<name>.pod.labels` 
 | `egress.home.arpa/lan`              | `192.168.32.0/24`, `192.168.3.0/24`, `192.168.4.0/24`, `192.168.40.0/24`              |
 | `egress.home.arpa/domus-vlan`       | `192.168.40.0/24`                                                                     |
 | `egress.home.arpa/synology`         | `piscionas.piscio.net`, `192.168.32.201/32`                                           |
+| `egress.home.arpa/external-media`   | external media VM (`external-media.piscio.net`, `192.168.32.202/32`) on 8282          |
 | `egress.home.arpa/apiserver`        | kube-apiserver (6443)                                                                 |
 | `egress.home.arpa/envoy-internal`   | Envoy internal gateway (80, 443, 10080, 10443)                                        |
 | `egress.home.arpa/sso`              | Authentik and `auth.piscio.net`                                                       |

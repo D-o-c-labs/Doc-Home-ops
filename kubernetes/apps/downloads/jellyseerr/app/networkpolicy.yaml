@@ -13,6 +13,9 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: maintainerr
             k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyfin
+            k8s:io.kubernetes.pod.namespace: media
       toPorts:
         - ports:
             - port: "5055"

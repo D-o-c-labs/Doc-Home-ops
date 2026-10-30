@@ -136,6 +136,27 @@ spec:
             app:
               - path: /data/nas-media/library
                 subPath: library
+      # Read-only content tree served by the external media VM (NFSv4.0).
+      # The path must match the symlink targets written into external-library.
+      external-media:
+        type: nfs
+        server: external-media.piscio.net
+        path: /
+        advancedMounts:
+          plex:
+            app:
+              - path: /data/external-media
+                readOnly: true
+      # Library of symlinks managed by Radarr/Sonarr, exported by the external media VM.
+      external-library:
+        type: nfs
+        server: external-library.piscio.net
+        path: /data/external-library
+        advancedMounts:
+          plex:
+            app:
+              - path: /data/external-library
+                readOnly: true
       transcode:
         type: emptyDir
         advancedMounts:
