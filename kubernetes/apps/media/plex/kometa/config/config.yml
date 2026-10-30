@@ -1,0 +1,104 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kometa-team/kometa/nightly/json-schema/config-schema.json
+---
+# Kometa builds Netflix-style collections and home rows in Plex.
+# Secrets are injected as <<PLACEHOLDER>> from KOMETA_* env vars (ExternalSecret).
+# Collections only: no overlays (they rewrite posters) and nothing is added to
+# Radarr/Sonarr (the import lists stay the single source of new titles).
+
+plex:
+  url: http://plex.media.svc.cluster.local:32400
+  token: env # read from KOMETA_PLEX_TOKEN
+  timeout: 60
+  clean_bundles: false
+  empty_trash: false
+  optimize: false
+
+tmdb:
+  apikey: <<TMDB_APIKEY>>
+  language: it
+  region: IT
+  cache_expiration: 60
+
+libraries:
+  Films:
+    collection_files:
+      - default: basic
+        template_variables:
+          use_separator: false
+          name_released: Nuove uscite
+          visible_home_released: true
+          visible_shared_released: true
+      - default: tmdb
+        template_variables:
+          use_separator: false
+          name_trending: Di tendenza
+          name_popular: Popolari
+          name_top: I più votati
+          visible_home_trending: true
+          visible_shared_trending: true
+          visible_home_popular: true
+          visible_shared_popular: true
+      - default: imdb
+        template_variables:
+          use_separator: false
+          use_lowest: false
+          use_popular: false
+      - default: streaming
+        template_variables:
+          use_separator: false
+          region: IT
+      - default: genre
+        template_variables:
+          use_separator: false
+      - default: franchise
+        template_variables:
+          use_separator: false
+
+  Series:
+    collection_files:
+      - default: basic
+        template_variables:
+          use_separator: false
+          name_episodes: Nuovi episodi
+          name_released: Nuove serie
+          visible_home_episodes: true
+          visible_shared_episodes: true
+      - default: tmdb
+        template_variables:
+          use_separator: false
+          use_airing: false
+          name_trending: Serie di tendenza
+          name_popular: Serie popolari
+          name_air: In onda
+          name_top: Serie più votate
+          visible_home_trending: true
+          visible_shared_trending: true
+      - default: streaming
+        template_variables:
+          use_separator: false
+          region: IT
+      - default: genre
+        template_variables:
+          use_separator: false
+      - default: network
+        template_variables:
+          use_separator: false
+
+settings:
+  run_order:
+    - collections
+  cache: true
+  cache_expiration: 60
+  asset_directory: []
+  sync_mode: sync
+  minimum_items: 5
+  delete_below_minimum: true
+  delete_not_scheduled: false
+  missing_only_released: true
+  show_unmanaged: false
+  show_unconfigured: false
+  show_missing: false
+  show_missing_assets: false
+  save_report: false
+  tvdb_language: ita
+  verify_ssl: true
