@@ -24,6 +24,8 @@ spec:
   values:
     controllers:
       unpackerr:
+        # Suspended while the Synology NAS is down: its data lives on the NAS.
+        replicas: 0
         annotations:
           secret.reloader.stakater.com/reload: unpackerr-secret
 
@@ -70,10 +72,12 @@ spec:
                 drop:
                   - ALL
 
-    persistence:
-      media:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media
-        globalMounts:
-          - path: /data/nas-media
+    persistence: {}
+      # Synology NAS mount disabled while the NAS is down (failed disks).
+      # Restore it once the NAS is back.
+      # media:
+      #   type: nfs
+      #   server: piscionas.piscio.net
+      #   path: /volume1/Media
+      #   globalMounts:
+      #     - path: /data/nas-media

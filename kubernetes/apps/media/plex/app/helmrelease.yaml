@@ -127,15 +127,17 @@ spec:
           plex:
             app:
               - path: /config/Library/Application Support/Plex Media Server/Logs
-      nfs-nas-media:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media
-        advancedMounts:
-          plex:
-            app:
-              - path: /data/nas-media/library
-                subPath: library
+      # Synology NAS mount disabled while the NAS is down (failed disks).
+      # Restore it once the NAS is back.
+      # nfs-nas-media:
+      #   type: nfs
+      #   server: piscionas.piscio.net
+      #   path: /volume1/Media
+      #   advancedMounts:
+      #     plex:
+      #       app:
+      #         - path: /data/nas-media/library
+      #           subPath: library
       # Read-only content tree served by the external media VM (NFSv4.0).
       # The path must match the symlink targets written into external-library.
       external-media:

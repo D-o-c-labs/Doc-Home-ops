@@ -71,12 +71,14 @@ spec:
     persistence:
       config:
         existingClaim: "${VOLSYNC_CLAIM}"
-      media:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media
-        globalMounts:
-          - path: /data/nas-media
+      # Synology NAS mount disabled while the NAS is down (failed disks).
+      # Restore it once the NAS is back.
+      # media:
+      #   type: nfs
+      #   server: piscionas.piscio.net
+      #   path: /volume1/Media
+      #   globalMounts:
+      #     - path: /data/nas-media
       # Read-only content tree served by the external media VM (NFSv4.0),
       # needed to probe the files behind the symlinks on import.
       external-media:
