@@ -22,6 +22,8 @@ spec:
   values:
     controllers:
       sabnzbd:
+        # Suspended while the Synology NAS is down: its data lives on the NAS.
+        replicas: 0
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -93,12 +95,14 @@ spec:
           sabnzbd:
             app:
               - path: /config
-      downloads:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media
-        globalMounts:
-          - path: /data/nas-media
+      # Synology NAS mount disabled while the NAS is down (failed disks).
+      # Restore it once the NAS is back.
+      # downloads:
+      #   type: nfs
+      #   server: piscionas.piscio.net
+      #   path: /volume1/Media
+      #   globalMounts:
+      #     - path: /data/nas-media
       temp:
         type: emptyDir
         advancedMounts:
