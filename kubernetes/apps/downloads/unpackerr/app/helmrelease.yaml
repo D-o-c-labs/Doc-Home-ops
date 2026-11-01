@@ -72,7 +72,7 @@ spec:
                 drop:
                   - ALL
 
-    persistence:
+    persistence: {}
       # Synology NAS mount disabled while the NAS is down (failed disks).
       # Restore it once the NAS is back.
       # media:
