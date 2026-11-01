@@ -33,6 +33,8 @@ spec:
         type: cronjob
         cronjob: &cronJobSpec
           schedule: "@hourly"
+          # Suspended while the Synology NAS is down: its data lives on the NAS.
+          suspend: true
           backoffLimit: 0
           concurrencyPolicy: Forbid
           failedJobsHistory: 1
@@ -80,6 +82,8 @@ spec:
         type: cronjob
         cronjob: &cronJobSpec
           schedule: "@hourly"
+          # Suspended while the Synology NAS is down: its data lives on the NAS.
+          suspend: true
           backoffLimit: 0
           concurrencyPolicy: Forbid
           failedJobsHistory: 1
@@ -116,7 +120,8 @@ spec:
         cronjob:
           <<: *cronJobSpec
           schedule: 0 0 * * 0
-          suspend: false
+          # Suspended while the Synology NAS is down (was false).
+          suspend: true
         containers:
           app:
             <<: *container
@@ -135,10 +140,12 @@ spec:
           - path: /.config/tqm/config.yaml
             subPath: config.yaml
             readOnly: true
-      downloads:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media
-        globalMounts:
-          - path: /data/nas-media/downloads/qbittorrent
-            subPath: downloads/qbittorrent
+      # Synology NAS mount disabled while the NAS is down (failed disks).
+      # Restore it once the NAS is back.
+      # downloads:
+      #   type: nfs
+      #   server: piscionas.piscio.net
+      #   path: /volume1/Media
+      #   globalMounts:
+      #     - path: /data/nas-media/downloads/qbittorrent
+      #       subPath: downloads/qbittorrent

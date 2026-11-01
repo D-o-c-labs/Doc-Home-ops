@@ -76,15 +76,17 @@ spec:
           jellyfin:
             app:
               - path: /cache
-      nfs-nas-media:
-        type: nfs
-        server: piscionas.piscio.net
-        path: /volume1/Media
-        advancedMounts:
-          jellyfin:
-            app:
-              - path: /data/nas-media/library
-                subPath: library
+      # Synology NAS mount disabled while the NAS is down (failed disks).
+      # Restore it once the NAS is back.
+      # nfs-nas-media:
+      #   type: nfs
+      #   server: piscionas.piscio.net
+      #   path: /volume1/Media
+      #   advancedMounts:
+      #     jellyfin:
+      #       app:
+      #         - path: /data/nas-media/library
+      #           subPath: library
       external-media:
         existingClaim: external-media
         advancedMounts:
