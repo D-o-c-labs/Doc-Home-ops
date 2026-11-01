@@ -15,34 +15,43 @@ spec:
       - piscio.net
     extraArgs:
       - --ignore-ingress-tls-spec
-      - --rfc2136-axfr
     podAnnotations:
-      secret.reloader.stakater.com/reload: externaldns-internal-secrets
+      secret.reloader.stakater.com/reload: &secret externaldns-internal-secrets
     policy: upsert-only
+    # Records are Unbound host overrides on OPNsense, written through its API.
     provider:
-      name: rfc2136
-    env:
-      - name: EXTERNAL_DNS_RFC2136_ZONE
-        value: piscio.net
-      - name: EXTERNAL_DNS_RFC2136_PORT
-        value: "53"
-      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
-        value: hmac-sha512
-      - name: EXTERNAL_DNS_RFC2136_HOST
-        valueFrom:
-          secretKeyRef:
-            name: externaldns-internal-secrets
-            key: host
-      - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
-        valueFrom:
-          secretKeyRef:
-            name: externaldns-internal-secrets
-            key: tsig-keyname
-      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: externaldns-internal-secrets
-            key: tsig-secret
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/crutonjohn/external-dns-opnsense-webhook
+          tag: v1.0.0@sha256:0bf02fe18db4fe3a86fe5f561313ee434a203f4dcee7d19e770f67df854f3cff
+        env:
+          - name: OPNSENSE_HOST
+            value: https://tank.piscio.net
+          - name: OPNSENSE_SKIP_TLS_VERIFY
+            value: "false"
+          - name: OPNSENSE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: api-key
+          - name: OPNSENSE_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: api-secret
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
     resources:
       requests:
         cpu: 16m
