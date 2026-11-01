@@ -24,7 +24,9 @@ spec:
       webhook:
         image:
           repository: ghcr.io/crutonjohn/external-dns-opnsense-webhook
-          tag: v1.0.0@sha256:0bf02fe18db4fe3a86fe5f561313ee434a203f4dcee7d19e770f67df854f3cff
+          # CNAME (host alias) support is only on main, not in v1.0.0.
+          # Move back to a release tag once one ships it.
+          tag: main@sha256:92bc3f6cedbc964a15902117f25ef42d87f74742ee9c4ed4900085d3edc56857
         env:
           - name: OPNSENSE_HOST
             value: https://tank.piscio.net
