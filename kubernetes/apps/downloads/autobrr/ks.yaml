@@ -22,8 +22,6 @@ spec:
       namespace: external-secrets
     - name: volsync
       namespace: system
-    - name: qbittorrent
-      namespace: downloads
   components:
     - ../../../../components/volsync
   postBuild:
