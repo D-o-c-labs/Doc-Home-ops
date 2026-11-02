@@ -49,7 +49,7 @@ spec:
           app:
             image:
               repository: docker.io/kometateam/kometa
-              tag: v2.5.3
+              tag: v2.5.4
             args:
               - --run
               - --read-only-config
