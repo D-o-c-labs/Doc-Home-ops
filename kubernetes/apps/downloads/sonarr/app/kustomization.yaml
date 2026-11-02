@@ -6,3 +6,13 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./networkpolicy.yaml
+
+configMapGenerator:
+  - name: sonarr-scripts
+    files:
+      - scripts/import.sh
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+configurations:
+  - kustomizeconfig.yaml
