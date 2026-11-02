@@ -96,6 +96,13 @@ spec:
         path: /data/external-library
         globalMounts:
           - path: /data/external-library
+      # Import script that moves Decypharr symlinks (scripts/import.sh).
+      scripts:
+        type: configMap
+        name: sonarr-scripts
+        defaultMode: 0775
+        globalMounts:
+          - path: /config/scripts
 
     route:
       app:
