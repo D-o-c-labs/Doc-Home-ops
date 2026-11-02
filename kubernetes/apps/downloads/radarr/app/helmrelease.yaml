@@ -29,7 +29,7 @@ spec:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             ingress.home.arpa/gateway-route: allow
-          securityContext:
+          securityContext: &podSecurityContext
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
             fsGroup: ${APP_GID}
@@ -39,7 +39,7 @@ spec:
 
         containers:
           app:
-            image:
+            image: &image
               repository: ghcr.io/home-operations/radarr
               tag: 6.4.4.10685@sha256:1902ad2c08e9bac276ff9a1429af2eaa2f3c635a51f138f1b3eb734995171537
 
@@ -61,6 +61,48 @@ spec:
               limits:
                 memory: 2Gi
 
+      # Unblocks upgrades and removes folders of deleted titles that Radarr
+      # cannot clean on the external library (scripts/reconcile.sh).
+      reconcile:
+        type: cronjob
+        cronjob:
+          schedule: "*/10 * * * *"
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          failedJobsHistory: 1
+          successfulJobsHistory: 3
+          ttlSecondsAfterFinished: 3600
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          securityContext: *podSecurityContext
+        containers:
+          app:
+            image: *image
+            command:
+              - /config/scripts/reconcile.sh
+            env:
+              ARR_APP: radarr
+              ARR_URL: http://radarr.downloads.svc.cluster.local:7878
+              ARR_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: api_key
+              LIBRARY_ROOT: /data/external-library/movies
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
     service:
       app:
         controller: radarr
@@ -71,6 +113,10 @@ spec:
     persistence:
       config:
         existingClaim: "${VOLSYNC_CLAIM}"
+        advancedMounts:
+          radarr:
+            app:
+              - path: /config
       # Synology NAS mount disabled while the NAS is down (failed disks).
       # Restore it once the NAS is back.
       # media:
@@ -85,9 +131,11 @@ spec:
         type: nfs
         server: external-media.piscio.net
         path: /
-        globalMounts:
-          - path: /data/external-media
-            readOnly: true
+        advancedMounts:
+          radarr:
+            app:
+              - path: /data/external-media
+                readOnly: true
       # Symlink library exported by the external media VM: the download client
       # stages links in downloads/, the *arr moves them into its root folder.
       external-library:
@@ -96,13 +144,21 @@ spec:
         path: /data/external-library
         globalMounts:
           - path: /data/external-library
-      # Import script that moves Decypharr symlinks (scripts/import.sh).
+      # import.sh moves Decypharr symlinks on import; reconcile.sh runs in the
+      # reconcile CronJob.
       scripts:
         type: configMap
         name: radarr-scripts
         defaultMode: 0775
         globalMounts:
           - path: /config/scripts
+      # Bash here-strings need a writable /tmp under readOnlyRootFilesystem.
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          reconcile:
+            app:
+              - path: /tmp
 
     route:
       app:

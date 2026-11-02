@@ -11,6 +11,7 @@ configMapGenerator:
   - name: radarr-scripts
     files:
       - scripts/import.sh
+      - scripts/reconcile.sh
 generatorOptions:
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
