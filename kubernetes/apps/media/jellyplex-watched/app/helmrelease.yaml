@@ -42,8 +42,37 @@ spec:
             image:
               repository: ghcr.io/luigi311/jellyplex-watched
               tag: 8.5.3
+            # 8.5.3 reads only environment variables (or a .env file): the
+            # tokens and the user mapping come from the secret below.
             env:
-              YAML_FILE: /app/config/config.yaml
+              DRYRUN: "${JPW_DRYRUN}"
+              DEBUG_LEVEL: INFO
+              RUN_ONLY_ONCE: "False"
+              SLEEP_DURATION: "3600"
+              LOG_FILE: /tmp/jpw/log.log
+              MARK_FILE: /tmp/jpw/mark.log
+              REQUEST_TIMEOUT: "300"
+              MAX_THREADS: "1"
+              GENERATE_GUIDS: "True"
+              GENERATE_LOCATIONS: "True"
+              PLEX_BASEURL: http://plex.media.svc.cluster.local:32400
+              JELLYFIN_BASEURL: http://jellyfin.media.svc.cluster.local:8096
+              # Plex and Jellyfin name the same libraries differently.
+              LIBRARY_MAPPING: '{"Film": "Movies", "Programmi TV": "Shows"}' # yamllint disable-line rule:quoted-strings
+              WHITELIST_LIBRARY: Film,Programmi TV,Movies,Shows
+              WHITELIST_LIBRARY_TYPE: movie,show,movies,tvshows
+              SYNC_FROM_PLEX_TO_JELLYFIN: "True"
+              SYNC_FROM_JELLYFIN_TO_PLEX: "True"
+              SYNC_FROM_PLEX_TO_PLEX: "False"
+              SYNC_FROM_JELLYFIN_TO_JELLYFIN: "False"
+              SYNC_FROM_PLEX_TO_EMBY: "False"
+              SYNC_FROM_JELLYFIN_TO_EMBY: "False"
+              SYNC_FROM_EMBY_TO_PLEX: "False"
+              SYNC_FROM_EMBY_TO_JELLYFIN: "False"
+              SYNC_FROM_EMBY_TO_EMBY: "False"
+            envFrom:
+              - secretRef:
+                  name: jellyplex-watched-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -58,19 +87,6 @@ spec:
                 memory: 512Mi
 
     persistence:
-      # The entrypoint copies a sample config next to config.yaml, so the
-      # directory must be writable; config.yaml itself comes from the secret.
-      config-dir:
-        type: emptyDir
-        globalMounts:
-          - path: /app/config
-      config:
-        type: secret
-        name: jellyplex-watched-secret
-        globalMounts:
-          - path: /app/config/config.yaml
-            subPath: config.yaml
-            readOnly: true
       tmp:
         type: emptyDir
         globalMounts:
