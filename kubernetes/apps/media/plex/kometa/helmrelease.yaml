@@ -1,0 +1,100 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kometa
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+  interval: 30m
+  dependsOn:
+    - name: plex
+      namespace: media
+  values:
+    controllers:
+      kometa:
+        type: cronjob
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        cronjob:
+          # After the nightly external media repair (04:00) and before people watch.
+          schedule: "15 5 * * *"
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 2
+          backoffLimit: 0
+
+        pod:
+          labels:
+            # TMDb, IMDb and the Kometa defaults/version checks on GitHub.
+            egress.home.arpa/internet: allow
+            egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 2000
+            runAsNonRoot: true
+            fsGroup: 2000
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          app:
+            image:
+              repository: docker.io/kometateam/kometa
+              tag: v2.5.3
+            args:
+              - --run
+              - --read-only-config
+            env:
+              KOMETA_CONFIG: /config/config.yml
+              KOMETA_NO_COUNTDOWN: "true"
+              KOMETA_NO_MISSING: "true"
+              TZ: Europe/Rome
+            envFrom:
+              - secretRef:
+                  name: kometa-secret
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    persistence:
+      # Cache and logs; recreated on every run (the cache only speeds lookups up).
+      config-dir:
+        type: emptyDir
+        globalMounts:
+          - path: /config
+      config:
+        type: configMap
+        name: kometa-config
+        globalMounts:
+          - path: /config/config.yml
+            subPath: config.yml
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

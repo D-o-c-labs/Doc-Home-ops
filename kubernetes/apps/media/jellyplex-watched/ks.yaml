@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &appname jellyplex-watched
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 30m
+  timeout: 5m
+  path: "./kubernetes/apps/media/jellyplex-watched/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
+  postBuild:
+    substitute:
+      APP: *appname
+      APP_UID: "2000"
+      APP_GID: "2000"
+      # Start in dry run: check the logs, then flip to "false" in a follow-up commit.
+      JPW_DRYRUN: "true"

@@ -18,6 +18,9 @@ spec:
             app.kubernetes.io/name: plex-image-cleanup
             k8s:io.kubernetes.pod.namespace: media
         - matchLabels:
+            app.kubernetes.io/name: kometa
+            k8s:io.kubernetes.pod.namespace: media
+        - matchLabels:
             app.kubernetes.io/name: plex-trakt-sync
             k8s:io.kubernetes.pod.namespace: media
         - matchLabels:
@@ -38,6 +41,15 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: maintainerr
             k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: radarr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: sonarr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyplex-watched
+            k8s:io.kubernetes.pod.namespace: media
       toPorts:
         - ports:
             - port: "32400"

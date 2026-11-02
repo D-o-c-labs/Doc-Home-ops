@@ -68,3 +68,23 @@ spec:
         - ports:
             - port: "9696"
               protocol: TCP
+
+    # jellyfin (library refresh on import)
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: jellyfin
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+
+    # plex (library refresh on import)
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: plex
+            k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP

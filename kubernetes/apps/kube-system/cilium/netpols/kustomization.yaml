@@ -7,6 +7,7 @@ resources:
   - ./allow-egress-authentik.yaml
   - ./allow-egress-domus-vlan.yaml
   - ./allow-egress-envoy-internal.yaml
+  - ./allow-egress-external-media.yaml
   - ./allow-egress-internet.yaml
   # FIXME: Remove when cluster-wide default is in place
   - ./allow-egress-kubedns.yaml

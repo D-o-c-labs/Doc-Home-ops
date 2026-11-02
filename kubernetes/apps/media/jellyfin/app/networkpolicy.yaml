@@ -13,7 +13,29 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: jellyseerr
             k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: radarr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: sonarr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: maintainerr
+            k8s:io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: jellyplex-watched
+            k8s:io.kubernetes.pod.namespace: media
       toPorts:
         - ports:
             - port: "8096"
+              protocol: TCP
+  egress:
+    # seerr (requests proxied by the Moonfin server plugin)
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: jellyseerr
+            k8s:io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "5055"
               protocol: TCP
