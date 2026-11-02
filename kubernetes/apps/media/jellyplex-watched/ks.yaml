@@ -25,5 +25,4 @@ spec:
       APP: *appname
       APP_UID: "2000"
       APP_GID: "2000"
-      # Start in dry run: check the logs, then flip to "false" in a follow-up commit.
-      JPW_DRYRUN: "true"
+      JPW_DRYRUN: "false"
