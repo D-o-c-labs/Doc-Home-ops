@@ -5,9 +5,11 @@
 # so this moves or copies the link itself. Every other import goes back to the app.
 set -euo pipefail
 
-source_path=${Radarr_SourcePath:-${Sonarr_SourcePath:-}}
-destination_path=${Radarr_DestinationPath:-${Sonarr_DestinationPath:-}}
-transfer_mode=${Radarr_TransferMode:-${Sonarr_TransferMode:-}}
+# Source and destination come as arguments. The apps build the environment with
+# a StringDictionary, which lowercases the variable names.
+source_path=${1:-}
+destination_path=${2:-}
+transfer_mode=${radarr_transfermode:-${sonarr_transfermode:-}}
 
 # Only absolute links stay valid after being moved to another folder.
 if [[ -z "$source_path" || -z "$destination_path" || ! -L "$source_path" || "$(readlink -- "$source_path")" != /* ]]; then
