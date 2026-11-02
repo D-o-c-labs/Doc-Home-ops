@@ -37,7 +37,7 @@ spec:
 
         containers:
           app:
-            image:
+            image: &image
               repository: ghcr.io/home-operations/prowlarr
               tag: 2.7.0.5723@sha256:fcf7498692f97698ea8b8f7078a0f81120a16e7354e4c232b5e3810e3e783dff
             env:
@@ -58,6 +58,28 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+        initContainers:
+          # Torrentio custom definition (it can return only releases cached on
+          # TorBox). Pinned to an upstream commit; a failed download keeps the
+          # copy already on the volume.
+          torrentio-definition:
+            image: *image
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /config/Definitions/Custom &&
+                curl -fsSL --retry 3 -o /config/Definitions/Custom/torrentio.yml.new \
+                  https://raw.githubusercontent.com/dreulavelle/Prowlarr-Indexers/2b0f7eb72a64fe062186d1c284257010830daa7d/Custom/torrentio.yml &&
+                mv /config/Definitions/Custom/torrentio.yml.new /config/Definitions/Custom/torrentio.yml ||
+                echo "torrentio definition not updated, keeping the existing one"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
