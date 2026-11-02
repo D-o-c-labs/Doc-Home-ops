@@ -159,8 +159,13 @@ spec:
             app:
               - path: /data/external-library
                 readOnly: true
+      # RAM-backed: transcoding and audio analysis (EasyAudioEncode) write tens
+      # of MB/s, and on the node disk they starve etcd, which shares it.
+      # Counts against the container memory limit.
       transcode:
         type: emptyDir
+        medium: Memory
+        sizeLimit: 4Gi
         advancedMounts:
           plex:
             app:
