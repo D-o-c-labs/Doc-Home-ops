@@ -9,6 +9,10 @@ theme:
 plugins:
   - search
 
+# Token-lean architecture maps for tooling; kept in the repo, not published.
+exclude_docs: |
+  CODEMAPS/
+
 nav:
   - Home: index.md
   - Talos:
