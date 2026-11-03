@@ -51,7 +51,7 @@ just talos upgrade-node zeus
 Upgrade Kubernetes control plane version:
 
 ```bash
-just talos upgrade-k8s version=1.30.2
+just talos upgrade-k8s 1.36.2
 ```
 
 ## Change checklist

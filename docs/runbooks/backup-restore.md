@@ -4,16 +4,18 @@ This runbook covers snapshot-based recovery for stateful workloads.
 
 ## VolSync snapshots
 
+Arguments are positional (`app`, then the namespace, which defaults to `default`).
+
 List available snapshots:
 
 ```bash
-just volsync list app=<app> ns=<namespace>
+just volsync list <app> <namespace>
 ```
 
 Create a snapshot:
 
 ```bash
-just volsync snapshot app=<app> ns=<namespace> wait=true
+just volsync snapshot <app> <namespace>
 ```
 
 Create snapshots for all replication sources:
@@ -22,10 +24,10 @@ Create snapshots for all replication sources:
 just volsync snapshot-all
 ```
 
-Restore from snapshot:
+Restore from snapshot. `previous` is how many snapshots to skip back (`0` = latest, `1` = the one before):
 
 ```bash
-just volsync restore app=<app> ns=<namespace> previous=<snapshot-timestamp>
+just volsync restore <app> <previous> <namespace>
 ```
 
 ## Postgres dump and restore

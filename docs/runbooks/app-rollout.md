@@ -16,14 +16,14 @@ Use this runbook to deploy a new application stack in the GitOps workflow.
 mkdir -p kubernetes/apps/<domain>/<app>/app
 ```
 
-1. Add stack files:
+1. Add stack files, copying `kubernetes/apps/selfhosted/n8n/` as the reference layout:
 
-- `kustomization.yaml`
-- `ks.yaml`
+- `ks.yaml` (Flux Kustomization: `dependsOn`, `components`, `postBuild.substitute`)
+- `app/kustomization.yaml`
 - `app/helmrelease.yaml`
-- Optional: `app/externalsecret.yaml`, `app/networkpolicy.yaml`, PVC manifests
+- Optional: `app/externalsecret.yaml`, `app/networkpolicy.yaml`; add `components/volsync` in `ks.yaml` for a backed-up PVC
 
-1. Add stack reference to the parent `kustomization.yaml` in the domain.
+1. Register `./<app>/ks.yaml` in the domain `kubernetes/apps/<domain>/kustomization.yaml`.
 
 1. Render and validate:
 
@@ -31,7 +31,7 @@ mkdir -p kubernetes/apps/<domain>/<app>/app
 just flux build-ks dir=<domain>/<app>
 ```
 
-1. Apply for immediate reconcile (optional in PR flow):
+1. Apply for immediate reconcile (optional; this changes the live cluster ahead of the PR):
 
 ```bash
 just flux apply-ks dir=<domain>/<app>

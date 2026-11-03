@@ -39,7 +39,7 @@ just flux apply-ks dir=selfhosted/n8n
 Force full reconcile for one Kustomization:
 
 ```bash
-just k8s reconcile-ks namespace=selfhosted name=n8n
+just k8s reconcile-ks selfhosted n8n
 ```
 
 ## Related pages

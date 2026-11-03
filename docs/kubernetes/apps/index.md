@@ -1,6 +1,6 @@
 # Kubernetes Applications
 
-Applications are grouped by domain under `kubernetes/apps/<domain>/`. Each stack follows a Flux-friendly structure with `ks.yaml`, `kustomization.yaml`, and an `app/` directory.
+Applications are grouped by domain under `kubernetes/apps/<domain>/`. Each stack is a `ks.yaml` plus an `app/` directory, registered in the domain `kustomization.yaml`.
 
 ## Active domains
 
@@ -10,8 +10,12 @@ Applications are grouped by domain under `kubernetes/apps/<domain>/`. Each stack
 - `media`: media servers and supporting services.
 - `observability`: metrics, logs, dashboards, exporters.
 - `network`: gateway, DNS automation, and edge routing.
-- `database`: operators and stateful backend services.
-- `system` and `system-controllers`: cluster utility controllers.
+- `database`: Crunchy Postgres and EMQX (MQTT).
+- `authentik`: identity and SSO.
+- `actions-runner-system`: self-hosted GitHub Actions runners.
+- `system`, `system-controllers`, `system-upgrade`: cluster utility controllers and tuppr upgrades.
+
+Platform namespaces (`kube-system`, `flux-system`, `cert-manager`, `external-secrets`, `openebs`, `rook-ceph`) are covered in [Infrastructure](../infrastructure/index.md).
 
 ## Stack conventions
 
@@ -24,10 +28,10 @@ Applications are grouped by domain under `kubernetes/apps/<domain>/`. Each stack
 ## New app rollout checklist
 
 1. Create `kubernetes/apps/<domain>/<app>/`.
-2. Add `kustomization.yaml`, `ks.yaml`, and `app/` manifests.
+2. Add `ks.yaml` and `app/` manifests, then register `./<app>/ks.yaml` in the domain `kustomization.yaml`.
 3. Wire any required shared components via `components:`.
 4. Render with `just flux build-ks dir=<domain>/<app>`.
-5. Apply with `just flux apply-ks dir=<domain>/<app>`.
+5. Merge and let Flux reconcile, or apply early with `just flux apply-ks dir=<domain>/<app>` (changes the live cluster).
 6. Run `pre-commit run -a` before merge.
 
 ## Useful references

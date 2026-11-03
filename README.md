@@ -27,17 +27,17 @@ Run `mise install` followed by `just -l` to confirm everything is available.
 
 ## Repository Layout
 
-| Path                     | Purpose                                                                                                                                                                                                                                                       |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `kubernetes/apps/`       | Application stacks grouped by domain (e.g. `media/`, `observability/`, `network/`). Each stack includes `ks.yaml`, `kustomization.yaml`, and an `app/` folder with manifests such as `helmrelease.yaml`, `externalsecret.yaml`, and network policy resources. |
-| `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, replacements transformers, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                                 |
-| `kubernetes/bootstrap/`  | Helmfile-driven cluster bootstrap (Cilium, CoreDNS, cert-manager, flux-operator) plus supporting templates and environment.                                                                                                                                   |
-| `kubernetes/flux/`       | Flux `GitRepository` and `Kustomization` definitions that reconcile the rest of the repository.                                                                                                                                                               |
-| `kubernetes/talos/`      | Talos cluster configuration for topf: nodes in `topf.yaml`, config patches in `all/` and `control-plane/`, and the 1Password secrets provider (`secrets.sh`).                                                                                                 |
-| `kubernetes/*/mod.just`  | `just` automation modules for Flux stacks, Talos lifecycle, VolSync workflows, and supporting operations scoped to each domain.                                                                                                                               |
-| `sops/mod.just`          | Repository-wide SOPS helpers (bulk re-encryption) exposed via `just`.                                                                                                                                                                                         |
-| `docs/`                  | Space for architecture notes and runbooks; expand as new components are added.                                                                                                                                                                                |
-| `.github/workflows/`     | CI pipelines for linting, flux-local diff/test, CodeQL, image pre-pulls, Renovate scheduling, and label automation.                                                                                                                                           |
+| Path                     | Purpose                                                                                                                                                                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kubernetes/apps/`       | Application stacks grouped by domain (e.g. `media/`, `observability/`, `network/`). Each stack has a `ks.yaml` and an `app/` folder (`helmrelease.yaml`, `externalsecret.yaml`, `networkpolicy.yaml`, `kustomization.yaml`); the domain `kustomization.yaml` registers each `ks.yaml`. |
+| `kubernetes/components/` | Reusable Kustomize components (namespaces, Flux alerts, replacements transformers, VolSync boilerplate). Referenced from app stacks via `components:` blocks.                                                                                                                          |
+| `kubernetes/bootstrap/`  | Helmfile-driven cluster bootstrap (Cilium, CoreDNS, cert-manager, flux-operator) plus supporting templates and environment.                                                                                                                                                            |
+| `kubernetes/flux/`       | Flux `GitRepository` and `Kustomization` definitions that reconcile the rest of the repository.                                                                                                                                                                                        |
+| `kubernetes/talos/`      | Talos cluster configuration for topf: nodes in `topf.yaml`, config patches in `all/` and `control-plane/`, and the 1Password secrets provider (`secrets.sh`).                                                                                                                          |
+| `kubernetes/*/mod.just`  | `just` automation modules for Flux stacks, Talos lifecycle, VolSync workflows, and supporting operations scoped to each domain.                                                                                                                                                        |
+| `sops/mod.just`          | Repository-wide SOPS helpers (bulk re-encryption) exposed via `just`.                                                                                                                                                                                                                  |
+| `docs/`                  | MkDocs wiki published to `docs.d-o-c.cloud` (Talos, Kubernetes, runbooks, troubleshooting). `docs/CODEMAPS/` holds token-lean architecture maps that are excluded from the site.                                                                                                       |
+| `.github/workflows/`     | CI pipelines for linting, flux-local diff/test, CodeQL, image pre-pulls, Renovate scheduling, label automation, and the docs site deploy.                                                                                                                                              |
 
 ## GitOps Flow
 
@@ -79,25 +79,25 @@ Manage Talos operations with the `just talos` module:
 - Workloads typically use the [`bjw-s/app-template`](https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common) via a `HelmRelease` in `app/helmrelease.yaml` plus overlays for PVCs, ConfigMaps, and network policies.
 - Shared behavior (Flux alerting, VolSync replication, namespace creation) is composed with `components` references.
 - External dependencies (databases, monitoring exporters, ingress gateways, etc.) live alongside application code so Flux can reconcile the full graph.
-- Required Cilium network policies are included either as standalone manifests or via annotations, aligning with the cluster-wide policies in `kubernetes/apps/kube-system/cilium/netpols/`.
+- Required Cilium network policies are included either as standalone manifests or via `*.home.arpa/*` pod labels, aligning with the cluster-wide policies in `kubernetes/apps/kube-system/cilium/netpols/`.
 
 When introducing a new service:
 
-1. Create a new directory under the appropriate domain with `kustomization.yaml`, `ks.yaml`, and an `app/` folder.
-2. Start from an existing app-template example (e.g. `kubernetes/apps/selfhosted/n8n/app/helmrelease.yaml`).
-3. Add `components` such as `../../../../components/namespace` or `../../../../components/volsync` as needed.
-4. Provide secrets via an `externalsecret.yaml` referencing a 1Password item, and ensure SOPS encryption if storing credentials locally.
-5. Add or reference the necessary Cilium network policies to constrain ingress/egress.
-6. Run `just flux build-ks dir=<domain/...>` to validate before opening a PR.
+1. Create a new directory under the appropriate domain with a `ks.yaml` and an `app/` folder, copying `kubernetes/apps/selfhosted/n8n/` as the reference layout.
+2. Register the new `ks.yaml` in the domain `kubernetes/apps/<domain>/kustomization.yaml`.
+3. Add `components` such as `../../../../components/volsync` in `ks.yaml` as needed (the domain kustomization already adds `namespace` and `flux/alerts`).
+4. Provide secrets via an `externalsecret.yaml` referencing a 1Password item (Postgres credentials come from the `crunchy-pgo-secrets` store).
+5. Add the `*.home.arpa/*` pod labels for Cilium access, or an `app/networkpolicy.yaml` when no label fits.
+6. Run `just flux build-ks dir=<domain>/<app>` to validate before opening a PR.
 
 ## Secrets and Credentials
 
 - SOPS rules in `.sops.yaml` enforce age encryption for any `*.sops.yaml` files, with keys shared between the repo owner and cluster automation user.
-- `kubernetes/apps/*/externalsecret.yaml` bridge secrets from 1Password into Kubernetes. Use descriptive names and keep ExternalSecrets in place even when values are defined elsewhere.
-- To rotate secrets, decrypt, edit, and re-encrypt the file:
+- `kubernetes/apps/<domain>/<app>/app/externalsecret.yaml` bridge secrets from 1Password into Kubernetes through the `onepassword` ClusterSecretStore. Use descriptive names and keep ExternalSecrets in place even when values are defined elsewhere.
+- The only SOPS file today is the Flux decryption key (`kubernetes/components/flux/sops/secret.sops.yaml`). To edit a SOPS file in place:
 
   ```bash
-  sops kubernetes/apps/<path>/externalsecret.sops.yaml
+  sops kubernetes/components/flux/sops/secret.sops.yaml
   ```
 
   or run the bulk helper:
@@ -124,22 +124,21 @@ Key automation entry points:
 
   ```bash
   just k8s cleanup-pods
-  just k8s sync-externalsecrets
+  just k8s sync-all-es
   ```
 
-- VolSync snapshot management:
+- VolSync snapshot management (arguments are positional: `app`, then `ns`; `previous` is the number of snapshots to skip, `0` = latest):
 
   ```bash
-  just volsync snapshot app=n8n ns=selfhosted
-  just volsync list app=n8n ns=selfhosted
-  just volsync restore app=n8n ns=selfhosted previous=2024-01-01T00:00:00Z
+  just volsync snapshot n8n selfhosted
+  just volsync list n8n selfhosted
+  just volsync restore n8n 0 selfhosted
   ```
 
-- Bootstrap sequence for a new cluster:
+- Bootstrap a new cluster (runs `talos`, `kubernetes`, `kubeconfig`, `wait`, `namespaces`, `resources`, `crds`, `apps` in order; each step is also its own recipe):
 
   ```bash
-  just k8s-bootstrap talos
-  just k8s-bootstrap apps
+  just k8s-bootstrap
   ```
 
 ## Automation & CI
@@ -151,14 +150,16 @@ Key automation entry points:
   - `codeql.yml` performs static analysis on the repository.
   - `pre-pull-images.yaml` primes frequently used container images.
   - `schedule-renovate.yaml` triggers Renovate to file dependency PRs.
+  - `labeler.yaml` labels pull requests by path.
+  - `deploy-mkdocs.yml` builds the MkDocs site and publishes it to GitHub Pages.
 - **Renovate** configuration in `renovate.json5` keeps Talos, Helm charts, and container images up to date using shared presets from bjw-s and repo-local rules.
 
 ## Conventions
 
 - YAML uses two spaces, LF endings, lowercase-kebab-case resource names, and `app.kubernetes.io/*` labels wherever possible.
 - Prefer bjw-s app-template charts unless there is a documented exception.
-- Commit messages follow Conventional Commit syntax (`feat(selfhosted/n8n): ...`).
-- Keep changes scoped to a single app or namespace per PR when possible, and include Flux build output in the description.
+- Commit messages follow Conventional Commit syntax scoped by app or area (`feat(n8n): ...`, `docs(cilium): ...`); `chore(container|helm|...)` scopes belong to Renovate.
+- Keep changes scoped to a single app or namespace per PR when possible, and note any 1Password items or manual steps in the description.
 - Always apply or reference Cilium network policies for new services to ensure least-privilege traffic flows.
 
 ## Validation Checklist
@@ -167,8 +168,8 @@ Before merging changes:
 
 1. `mise install` (only needed once per environment).
 2. `pre-commit run -a` to satisfy formatting, linting, and secret policies.
-3. `just flux build-ks dir=<path>` to render and validate the affected Kustomization(s).
-4. (Optional) `just flux apply-ks dir=<path>` against a test cluster for a server-side dry run.
+3. `just flux build-ks dir=<domain>/<app>` to render and validate the affected Kustomization(s).
+4. (Optional) `just flux apply-ks dir=<domain>/<app>` applies to the live cluster ahead of Flux; use it only when you mean to deploy outside the PR flow.
 5. For Talos modifications, `just talos diff` to review the change against the running nodes.
 6. Capture any relevant Flux diff output or `just` logs in the PR description.
 
@@ -176,7 +177,7 @@ Before merging changes:
 
 - Extend documentation under `docs/` for runbooks, network maps, or architecture decisions.
 - Review existing stacks (e.g. `kubernetes/apps/observability/`, `kubernetes/apps/network/`) for patterns to reuse.
-- Review `docs/kubernetes/observability.md` for log and metrics stack details and runbooks.
+- `docs/CODEMAPS/` maps the architecture, stacks and `dependsOn` graph, network paths, storage and external dependencies.
 - Consult the upstream projects referenced here:
   - [Talos Linux](https://www.talos.dev)
   - [FluxCD](https://fluxcd.io)
@@ -186,62 +187,101 @@ Before merging changes:
 
 ## Just Automation Reference
 
-Each `just` module exposes reusable workflows. The examples below assume you are at the repository root with `mise`-provisioned tooling on your `PATH`.
+Recipe arguments are positional: `just k8s reconcile-ks selfhosted n8n`, not `ns=selfhosted name=n8n`. Only the `flux` module strips a `dir=`/`name=` prefix, so `just flux build-ks dir=selfhosted/n8n` also works. Run `just -l <module>` for the live list.
 
-### Flux (`just flux ...`)
+Use the `sync-*` helpers when Flux only needs to retry with the revision it already fetched; use `reconcile-*` to fetch sources (`--with-source`), rebuild and apply immediately.
 
-- `build-ks`: Render a stack for inspection before committing (`just flux build-ks dir=selfhosted/n8n`).
-- `apply-ks`: Apply a stack to the cluster using server-side apply (`just flux apply-ks dir=selfhosted/n8n`).
-- `delete-ks`: Remove a stack by piping the rendered manifest to `kubectl delete` (`just flux delete-ks dir=selfhosted/n8n name=n8n`).
-- `suspend-ks-all`: Pause reconciliation across namespaces (e.g. `just flux suspend-ks-all`).
-- `resume-ks-all`: Resume reconciliation across namespaces (e.g. `just flux resume-ks-all`).
+<!-- AUTO-GENERATED: just --dump --dump-format json -->
 
-### Kubernetes (`just k8s ...`)
+### `just flux`
 
-- Use the `sync-*` helpers when you only need Flux to retry reconciliation with the currently fetched revision. Reach for the `reconcile-*` helpers when you want Flux to fetch sources with `--with-source`, rebuild manifests, and apply immediately.
+| Recipe           | Arguments                                | Description                                                               |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------------------------- |
+| `apply-ks`       | `dir ns_flag="--all-namespaces" name=""` | Render and apply a Flux Kustomization stack                               |
+| `build-ks`       | `dir ns_flag="--all-namespaces" name=""` | Render a Flux Kustomization stack to stdout                               |
+| `delete-ks`      | `dir ns_flag="--all-namespaces" name=""` | Render and delete a Flux Kustomization stack                              |
+| `resume-ks-all`  | `namespaces=""`                          | Resume all Flux Kustomizations, optionally scoped to specific namespaces  |
+| `suspend-ks-all` | `namespaces=""`                          | Suspend all Flux Kustomizations, optionally scoped to specific namespaces |
 
-- `browse-pvc`: Mount a PVC into an ephemeral Alpine shell (`just k8s browse-pvc namespace=media claim=tdarr-config`).
-- `node-shell`: Spawn a debug pod on a node (`just k8s node-shell node=k8s-master-01`).
-- `cleanup-pods`: Remove pods stuck in Failed/Pending/Succeeded phases (`just k8s cleanup-pods`).
-- `sync-externalsecrets`: Force-refresh every ExternalSecret (`just k8s sync-externalsecrets`).
-- `sync-all-hr`: Trigger HelmRelease reconciles across the cluster using the existing revision cached by Flux (`just k8s sync-all-hr`).
-- `sync-all-ks`: Trigger Flux Kustomization reconciles across the cluster using the existing revision cached by Flux (`just k8s sync-all-ks`).
-- `reconcile-hr`: Force a HelmRelease to pull its source, re-render the chart, and apply immediately (`just k8s reconcile-hr namespace=media name=unpackerr`).
-- `reconcile-ks`: Force a Flux Kustomization to pull its source, rebuild manifests, and apply immediately (`just k8s reconcile-ks namespace=selfhosted name=n8n`).
-- `reconcile-all-hr`: Loop every HelmRelease and perform a full `flux reconcile --with-source` refresh (`just k8s reconcile-all-hr`).
-- `reconcile-all-ks`: Loop every Flux Kustomization and perform a full `flux reconcile --with-source` refresh (`just k8s reconcile-all-ks`).
-- `snapshot`: Fan out VolSync snapshots for every replication source (`just k8s snapshot`).
+### `just k8s`
 
-### VolSync (`just volsync ...`)
+| Recipe             | Arguments         | Description                                                                       |
+| ------------------ | ----------------- | --------------------------------------------------------------------------------- |
+| `apply-ks`         | `ns ks`           | Apply local Flux Kustomization                                                    |
+| `browse-pvc`       | `namespace claim` | Browse a PVC                                                                      |
+| `cleanup-pods`     | -                 | Clean up pods stuck in Failed, Pending, or Succeeded states (alias: `prune-pods`) |
+| `delete-ks`        | `ns ks`           | Delete local Flux Kustomization                                                   |
+| `node-shell`       | `node`            | Open a shell on a node                                                            |
+| `reconcile-all-hr` | -                 | Reconcile all Flux HelmReleases                                                   |
+| `reconcile-all-ks` | -                 | Reconcile all Flux Kustomizations                                                 |
+| `reconcile-hr`     | `ns name`         | Reconcile Flux HelmRelease                                                        |
+| `reconcile-ks`     | `ns name`         | Reconcile Flux Kustomization                                                      |
+| `snapshot`         | -                 | Snapshot all VolSync replication sources                                          |
+| `sync-all-es`      | -                 | Sync all ExternalSecrets (alias: `sync-externalsecrets`)                          |
+| `sync-all-hr`      | -                 | Sync all Flux HelmReleases                                                        |
+| `sync-all-ks`      | -                 | Sync all Flux Kustomizations                                                      |
+| `sync-es`          | `ns name`         | Sync single ExternalSecret                                                        |
+| `sync-hr`          | `ns name`         | Sync single Flux HelmRelease                                                      |
+| `sync-ks`          | `ns name`         | Sync single Flux Kustomizations                                                   |
 
-- `list`: Launch a throw-away job to list snapshots for an app (`just volsync list app=n8n ns=selfhosted`).
-- `snapshot`: Patch a replication source to take a snapshot, optionally waiting for completion (`just volsync snapshot app=n8n ns=selfhosted wait=true`).
-- `snapshot-all`: Trigger non-blocking snapshots for every replication source (`just volsync snapshot-all`).
-- `restore`: Perform a manual restore workflow and resync the associated workloads (`just volsync restore app=n8n ns=selfhosted previous=2024-01-01T00:00:00Z`).
-- `unlock`: Clear restic locks after interrupted jobs (`just volsync unlock`).
+### `just k8s-bootstrap`
 
-### Talos (`just talos ...`)
+| Recipe       | Arguments     | Description                    |
+| ------------ | ------------- | ------------------------------ |
+| `apps`       | -             | Apply Helmfile Apps            |
+| `crds`       | -             | Apply Helmfile CRDs            |
+| `kubeconfig` | `lb="cilium"` | Fetch kubeconfig               |
+| `kubernetes` | -             | Install Kubernetes             |
+| `namespaces` | -             | Apply Kubernetes namespaces    |
+| `resources`  | -             | Apply Kubernetes resources     |
+| `talos`      | -             | Install Talos                  |
+| `wait`       | -             | Wait for nodes to be not-ready |
 
-- `diff`: Show pending config changes against the running nodes (`just talos diff`).
-- `apply`: Apply the config to every node, one at a time, after a diff and confirmation (`just talos apply`).
-- `apply-node`: Apply the config to one node (`just talos apply-node zeus mode=no-reboot`).
-- `render`: Write the merged machine configs to `kubernetes/talos/rendered/` (plaintext secrets; delete after use).
-- `nodes` / `schematic-ids`: List node state, or the schematic IDs computed from `schematic.yaml`.
-- `talosconfig`: Regenerate `kubernetes/talos/talosconfig` from the secrets bundle.
-- `upgrade-node`: Upgrade Talos on one node with the installer from `topf.yaml` (`just talos upgrade-node zeus`).
-- `upgrade-k8s`: Upgrade the control plane Kubernetes version (`just talos upgrade-k8s version=1.30.2`).
+### `just postgres`
 
-### Bootstrap (`just k8s-bootstrap ...`)
+| Recipe            | Arguments                                                                                   | Description                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `crunchy-dump`    | `db_name output_dir="." ns=default_ns db_cluster=default_cluster cli_args=default_cli_args` | Run pg_dump on the master instance of a CrunchyData Postgres cluster |
+| `crunchy-exec`    | `ns=default_ns db_cluster=default_cluster`                                                  | Open a shell inside the CrunchyData master pod                       |
+| `crunchy-restore` | `db_name db_user file ns=default_ns db_cluster=default_cluster cli_args=""`                 | Restore a pg_dump backup into a CrunchyData Postgres cluster         |
+| `pgadmin`         | `local_port=pgadmin_port ns=default_ns timeout="5m"`                                        | Run an on-demand local PGAdmin session and scale it down on exit     |
+| `pgadmin-down`    | `ns=default_ns timeout="5m"`                                                                | Scale PGAdmin down and wait for its pod to terminate                 |
+| `pgadmin-up`      | `ns=default_ns timeout="5m"`                                                                | Scale PGAdmin up and wait until it is ready                          |
 
-- `talos`: Apply bootstrap namespaces, CRDs, and Helm releases after machines are reachable (`just k8s-bootstrap talos`).
-- `apps`: Apply the app bootstrap helmfile once the cluster is ready (`just k8s-bootstrap apps`).
+### `just sops`
 
-### SOPS (`just sops ...`)
+| Recipe       | Arguments | Description                                               |
+| ------------ | --------- | --------------------------------------------------------- |
+| `re-encrypt` | -         | Decrypt and re-encrypt every SOPS managed secret in-place |
 
-- `re-encrypt`: Decrypt and re-encrypt every `*.sops.yaml` in place (`just sops re-encrypt`).
+### `just talos`
 
-### Crunchy Postgres (`just postgres ...`)
+| Recipe           | Arguments            | Description                                                                                         |
+| ---------------- | -------------------- | --------------------------------------------------------------------------------------------------- |
+| `apply`          | `mode="auto"`        | Apply the Talos config to every node, one at a time (shows a diff and asks first)                   |
+| `apply-node`     | `node mode="auto"`   | Apply the Talos config to one node, e.g. `just talos apply-node zeus` (shows a diff and asks first) |
+| `defrag-etcd`    | `*nodes`             | Defragment etcd members sequentially with the current leader last                                   |
+| `diff`           | -                    | Show the pending config changes against the running nodes without applying them                     |
+| `download-image` | `version schematic`  | Download Talos machine image                                                                        |
+| `gen-kubeconfig` | -                    | Generate kubeconfig for Talos cluster                                                               |
+| `nodes`          | -                    | List the nodes with their Talos version, schematic and stage                                        |
+| `reboot-node`    | `node`               | Reboot a node                                                                                       |
+| `render`         | -                    | Render the machine configs to kubernetes/talos/rendered (plaintext secrets, delete after use)       |
+| `reset-cluster`  | `mode="reboot"`      | Reset all nodes in the cluster                                                                      |
+| `reset-node`     | `node mode="reboot"` | Reset a node                                                                                        |
+| `schematic-ids`  | -                    | Print the schematic ID of each node from schematic.yaml                                             |
+| `talosconfig`    | -                    | Generate kubernetes/talos/talosconfig from the secrets bundle                                       |
+| `upgrade-k8s`    | `version`            | Upgrade Kubernetes version on the cluster                                                           |
+| `upgrade-node`   | `node`               | Upgrade Talos on one node, e.g. `just talos upgrade-node zeus`                                      |
 
-- `crunchy-dump`: Run `pg_dump` on the primary and copy it locally (`just postgres crunchy-dump immich [output_dir]`).
-- `crunchy-restore`: Upload and restore a backup into the primary pod (`just postgres crunchy-restore immich immich backups/immich.psql`).
-- `crunchy-exec`: Open an interactive shell in the Crunchy primary (`just postgres crunchy-exec`).
+### `just volsync`
+
+| Recipe         | Arguments                      | Description                                                     |
+| -------------- | ------------------------------ | --------------------------------------------------------------- |
+| `list`         | `app ns="default"`             | List VolSync snapshots for an application                       |
+| `restore`      | `app previous ns="default"`    | Restore a VolSync snapshot for an application                   |
+| `snapshot`     | `app ns="default" wait="true"` | Trigger a VolSync snapshot for an application                   |
+| `snapshot-all` | -                              | Trigger VolSync snapshots for every application without waiting |
+| `unlock`       | -                              | Unlock all VolSync replication sources across the cluster       |
+
+<!-- /AUTO-GENERATED -->
