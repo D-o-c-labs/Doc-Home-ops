@@ -5,7 +5,8 @@
 # (timeo 15 s, linear backoff, 2 retries) instead of hanging ffprobe and the
 # whole import queue in uninterruptible sleep. Safe because the mount is
 # read-only. nosharecache keeps it apart from the hard mounts of Plex and
-# Jellyfin on the same node. Talos nfsmount.conf still applies; these options win.
+# Jellyfin on the same node. Talos nfsmount.conf adds only defaults that do not
+# clash with these (no global hard).
 apiVersion: v1
 kind: PersistentVolume
 metadata:
