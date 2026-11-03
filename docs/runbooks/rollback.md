@@ -28,8 +28,8 @@ just k8s reconcile-all-hr
 If data corruption or schema mismatch occurred, perform targeted restore after config rollback:
 
 ```bash
-just volsync list app=<app> ns=<namespace>
-just volsync restore app=<app> ns=<namespace> previous=<snapshot-timestamp>
+just volsync list <app> <namespace>
+just volsync restore <app> <previous> <namespace>
 ```
 
 For Crunchy Postgres:

@@ -32,7 +32,7 @@ kubectl logs -n flux-system deploy/helm-controller
 1. Reconcile with source refresh:
 
 ```bash
-just k8s reconcile-hr namespace=<namespace> name=<release>
+just k8s reconcile-hr <namespace> <release>
 ```
 
 1. If change is unsafe, revert commit and let Flux roll back desired state.

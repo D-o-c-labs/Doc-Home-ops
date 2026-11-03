@@ -35,13 +35,13 @@ just k8s sync-all-ks
 Force full source refresh and reconcile for a specific stack:
 
 ```bash
-just k8s reconcile-ks namespace=selfhosted name=n8n
+just k8s reconcile-ks selfhosted n8n
 ```
 
 Force full reconcile for HelmRelease:
 
 ```bash
-just k8s reconcile-hr namespace=selfhosted name=n8n
+just k8s reconcile-hr selfhosted n8n
 ```
 
 ## Verification
