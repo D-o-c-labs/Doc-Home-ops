@@ -17,9 +17,11 @@ kind: EtcFileConfig
 name: nfsmount.conf
 mode: 0o644
 contents: |
+  # No hard=True here: mount.nfs appends it after the volume's own options, so
+  # it overrides soft on the static volumes (radarr/sonarr external-media).
+  # hard is already the kernel default for every other mount.
   [ NFSMount_Global_Options ]
   nfsvers=4.1
-  hard=True
   noatime=True
   nconnect=16
 
