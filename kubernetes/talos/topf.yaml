@@ -8,7 +8,7 @@ clusterEndpoint: https://k8s.piscio.net:6443
 # via the talosFactory preset, which groups it with tuppr's TALOS_VERSION.
 talosVersion: v1.14.4
 # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
-kubernetesVersion: v1.36.2
+kubernetesVersion: v1.37.2
 
 schematicId: "@schematic.yaml"
 
