@@ -129,7 +129,7 @@ spec:
               - /bin/sh
               - /etc/git-sync/sync.sh
             env:
-              GIT_REMOTE_URL: git@github.com:D-o-c/Home-Assistant.git
+              GIT_REMOTE_URL: git@github.com:D-o-c-labs/Home-Assistant.git
               GIT_BRANCH: master
               GIT_AUTHOR_NAME: &gitName Home Assistant
               GIT_AUTHOR_EMAIL: &gitEmail 8810257+D-o-c@users.noreply.github.com
