@@ -26,6 +26,16 @@ spec:
     syncPeriodSeconds: 20
     dynamicConfiguration:
       synchronous_mode: true
+      # The lease alone does not prevent demotions: Patroni demotes the leader once a
+      # DCS write keeps failing for retry_timeout (default 10s), and etcd stalls on the
+      # slow VM disks last longer than that. Must satisfy loop_wait + 2 * retry_timeout <= ttl.
+      retry_timeout: 120
+      # Keep the primary up while the Kubernetes API is unreachable, as long as it can
+      # still reach every member over the Patroni REST API.
+      failsafe_mode: true
+      # Every demote/promote opens a new timeline; uncapped, the history outgrew the
+      # 256 KiB annotation limit on the postgres-ha-config Endpoints.
+      max_timelines_history: 100
       postgresql:
         max_wal_size: 5GB
         synchronous_commit: "on"
