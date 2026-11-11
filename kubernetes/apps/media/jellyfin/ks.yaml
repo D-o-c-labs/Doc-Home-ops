@@ -29,6 +29,6 @@ spec:
       APP: *appname
       HOSTNAME: jellyfin.piscio.net
       VOLSYNC_CLAIM: jellyfin-config
-      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_CAPACITY: 10Gi
       APP_UID: "2000"
       APP_GID: "2000"
