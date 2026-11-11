@@ -128,12 +128,9 @@ spec:
     prometheus:
       prometheusSpec:
         externalUrl: https://${HOSTNAME}
-        version: v2.55.1
         enableAdminAPI: true
         enableFeatures:
-          - auto-gomaxprocs
           - memory-snapshot-on-shutdown
-          - new-service-discovery-manager
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         replicas: 1
