@@ -51,9 +51,13 @@ spec:
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
+  # Each entry needs its codec object, even when empty: without it Envoy Gateway
+  # drops the entry while still reporting Accepted (envoyproxy/gateway#9870).
   compressor:
     - type: Brotli
+      brotli: {}
     - type: Gzip
+      gzip: {}
 ---
 # yaml-language-server: $schema=https://k8s-schemas.bjw-s.dev/gateway.envoyproxy.io/clienttrafficpolicy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
