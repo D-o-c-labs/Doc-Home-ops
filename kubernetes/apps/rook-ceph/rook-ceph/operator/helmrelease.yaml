@@ -14,6 +14,9 @@ spec:
     crds:
       enabled: true
     csi:
+      # Chart 1.21.x dropped this default but still templates it, rendering an
+      # empty ROOK_CREATE_CSI_OPERATOR_RESOURCES that the operator reads as false.
+      createCsiOperatorResources: true
       serviceMonitor:
         enabled: true
     enableDiscoveryDaemon: true
