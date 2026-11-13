@@ -20,7 +20,7 @@
       description: "Envoy proxy must match the Envoy Gateway release (compatibility matrix); raise with each EG bump",
       matchDatasources: ["docker"],
       matchPackageNames: ["/envoyproxy/envoy$/"],
-      allowedVersions: "<1.40.0",
+      allowedVersions: "<1.41.0",
     },
   ],
 }
