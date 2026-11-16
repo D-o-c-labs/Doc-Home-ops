@@ -33,8 +33,8 @@ spec:
         type: cronjob
         cronjob: &cronJobSpec
           schedule: "@hourly"
-          # Suspended while the Synology NAS is down: its data lives on the NAS.
-          suspend: true
+          # The qbt client does not depend on the NAS.
+          suspend: false
           backoffLimit: 0
           concurrencyPolicy: Forbid
           failedJobsHistory: 1
@@ -71,6 +71,7 @@ spec:
         cronjob:
           <<: *cronJobSpec
           schedule: 0 0 * * 0
+          # Stays suspended: the pod has no access to the qbt download path.
           suspend: true
         containers:
           app:
