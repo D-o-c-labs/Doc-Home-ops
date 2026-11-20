@@ -12,6 +12,7 @@ configMapGenerator:
   - name: radarr-scripts
     files:
       - scripts/import.sh
+      - scripts/probe-watchdog.sh
       - scripts/reconcile.sh
 generatorOptions:
   annotations:
