@@ -134,6 +134,15 @@ spec:
             app:
               - path: /data/external-media
                 readOnly: true
+      # Read-only remote download folder (pvc.yaml): import.sh links its files
+      # into the library instead of copying them.
+      remote-library:
+        existingClaim: sonarr-remote-library
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /data/remote-library
+                readOnly: true
       # Symlink library exported by the external media VM: the download client
       # stages links in downloads/, the *arr moves them into its root folder.
       external-library:
@@ -142,8 +151,8 @@ spec:
         path: /data/external-library
         globalMounts:
           - path: /data/external-library
-      # import.sh moves Decypharr symlinks on import; reconcile.sh runs in the
-      # reconcile CronJob.
+      # import.sh moves external media symlinks and links remote downloads on import;
+      # reconcile.sh runs in the reconcile CronJob.
       scripts:
         type: configMap
         name: sonarr-scripts

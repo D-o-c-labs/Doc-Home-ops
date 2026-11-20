@@ -149,6 +149,15 @@ spec:
             app:
               - path: /data/external-media
                 readOnly: true
+      # Read-only remote download folder (pvc.yaml). The path must match the
+      # symlink targets the *arr write into external-library.
+      remote-library:
+        existingClaim: plex-remote-library
+        advancedMounts:
+          plex:
+            app:
+              - path: /data/remote-library
+                readOnly: true
       # Library of symlinks managed by Radarr/Sonarr, exported by the external media VM.
       external-library:
         type: nfs
