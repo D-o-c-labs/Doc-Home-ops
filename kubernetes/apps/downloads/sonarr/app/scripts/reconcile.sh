@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Clean up after Radarr/Sonarr on the external library. Both clear the read-only
-# flag of a file before deleting it; on a Decypharr symlink that follows the link
-# to the read-only TorBox mount and fails with EROFS, so:
+# flag of a file before deleting it; on a symlink into a read-only mount (the
+# external media export or the remote download folder) that follows the link
+# and fails with EROFS, so:
 # - an upgrade stays blocked in the queue because the old file cannot be deleted.
 #   Drop the old links the app logged as undeletable while a download for the
 #   title still waits: the next import retry skips the delete and moves the new
 #   link with import.sh;
 # - a deleted title leaves its folder behind. Remove folders the app no longer
-#   knows that hold only links into the TorBox mount.
-# Only links into the TorBox mount are ever removed, and no file is ever probed:
+#   knows that hold only links into those mounts.
+# Only links into those mounts are ever removed, and no file is ever probed:
 # reading a stalled TorBox file hangs on the hard NFS mount. DRY_RUN=true logs instead.
 set -euo pipefail
 
@@ -16,6 +17,7 @@ app=${ARR_APP:?ARR_APP must be radarr or sonarr}
 url=${ARR_URL:?}
 library_root=${LIBRARY_ROOT:?}
 media_root=${MEDIA_ROOT:-/data/external-media}
+remote_root=${REMOTE_ROOT:-/data/remote-library}
 dry_run=${DRY_RUN:-false}
 queue_page_size=${QUEUE_PAGE_SIZE:-2000}
 # The app retries a blocked import every minute, so recent entries are enough.
@@ -28,7 +30,12 @@ max_orphans=${MAX_ORPHANS:-50}
 # The API key reaches curl on stdin, so it never shows up in the process list.
 api() { curl -fsS --max-time 300 -H @- "$url/api/v3/$1" <<<"X-Api-Key: ${ARR_API_KEY:?}"; }
 
-is_media_link() { [[ -L "$1" && "$(readlink -- "$1")" == "$media_root"/* ]]; }
+is_media_link() {
+  [[ -L "$1" ]] || return 1
+  local target
+  target=$(readlink -- "$1")
+  [[ "$target" == "$media_root"/* || "$target" == "$remote_root"/* ]]
+}
 
 remove() {
   if [[ "$dry_run" == true ]]; then
@@ -91,7 +98,7 @@ unblock_upgrades() {
   done < <(failed_deletes)
 }
 
-# True when the folder holds nothing but subfolders and links into the TorBox mount.
+# True when the folder holds nothing but subfolders and links into the read-only mounts.
 only_media_links() { # only_media_links <folder>
   local file
   while IFS= read -r -d '' file; do
