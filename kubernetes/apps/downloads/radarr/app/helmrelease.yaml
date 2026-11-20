@@ -29,6 +29,8 @@ spec:
             egress.home.arpa/internet: allow
             egress.home.arpa/kubedns: allow # FIXME: Remove when clusterNetworkPolicy is in place
             ingress.home.arpa/gateway-route: allow
+          # Lets probe-watchdog see and kill the app's hung ffprobe runs.
+          shareProcessNamespace: true
           securityContext: &podSecurityContext
             runAsUser: ${APP_UID}
             runAsGroup: ${APP_GID}
@@ -60,6 +62,31 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 2Gi
+
+          # Kills ffprobe runs hung on an unreadable file, which block every
+          # import, and blocklists their download (scripts/probe-watchdog.sh).
+          probe-watchdog:
+            image: *image
+            command:
+              - /config/scripts/probe-watchdog.sh
+            env:
+              ARR_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: api_key
+            resources:
+              requests:
+                cpu: 5m
+                memory: 16Mi
+              limits:
+                memory: 64Mi
+            securityContext: &restrictedContainer
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
       # Unblocks upgrades and removes folders of deleted titles that Radarr
       # cannot clean on the external library (scripts/reconcile.sh).
@@ -96,12 +123,7 @@ spec:
                 memory: 64Mi
               limits:
                 memory: 512Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+            securityContext: *restrictedContainer
 
     service:
       app:
@@ -143,7 +165,7 @@ spec:
         globalMounts:
           - path: /data/external-library
       # import.sh moves Decypharr symlinks on import; reconcile.sh runs in the
-      # reconcile CronJob.
+      # reconcile CronJob; probe-watchdog.sh runs in the probe-watchdog sidecar.
       scripts:
         type: configMap
         name: radarr-scripts
@@ -154,6 +176,9 @@ spec:
       tmp:
         type: emptyDir
         advancedMounts:
+          radarr:
+            probe-watchdog:
+              - path: /tmp
           reconcile:
             app:
               - path: /tmp
