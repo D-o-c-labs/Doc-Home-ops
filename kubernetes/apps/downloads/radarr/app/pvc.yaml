@@ -1,12 +1,15 @@
 ---
-# Read-only content tree served by the external media VM (Decypharr, NFSv4.0 on
-# port 20490). A static volume instead of an inline one so it can be mounted
-# soft: a read that TorBox never answers fails with EIO after about 90 seconds
-# (timeo 15 s, linear backoff, 2 retries) instead of hanging ffprobe and the
-# whole import queue in uninterruptible sleep. Safe because the mount is
-# read-only. nosharecache keeps it apart from the hard mounts of Plex and
-# Jellyfin on the same node. Talos nfsmount.conf adds only defaults that do not
-# clash with these (no global hard).
+# Read-only content tree from the external media VM, re-served for the apps as
+# NFSv3 on port 20492 with files owned by the app user and owner-writable (the
+# export and this mount stay read-only). The direct export on 20490 reports
+# every file as root-owned 0444, and the apps treat such a symlink target as
+# read-only when they replace a file: they chmod it through the old symlink
+# before deleting it, get EROFS and drop the upgrade. Static volume so it can
+# set the port and be soft: a read that never returns fails with EIO after
+# about 90 seconds (timeo 15 s, linear backoff, 2 retries) instead of hanging
+# ffprobe and the whole import queue. Safe because read-only. nolock and
+# mountport keep it to one port (no rpcbind, no lock manager); nosharecache
+# keeps it apart from the other mounts of the same server on the node.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -19,8 +22,12 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
   mountOptions:
-    - nfsvers=4.0
-    - port=20490
+    - nfsvers=3
+    - proto=tcp
+    - port=20492
+    - mountproto=tcp
+    - mountport=20492
+    - nolock
     - ro
     - soft
     - timeo=150
